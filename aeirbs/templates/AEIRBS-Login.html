@@ -1,0 +1,94 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <!--Favicon-->
+  <link rel="icon" href="{% static 'icons/logo.png' %}">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <!--Font-->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+  <!--Login CSS-->
+  <link href="{% static 'css/login-css.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+
+  <title>AEIRBS | Login</title>
+</head>
+
+<body>
+  <div class="container" style="padding-top:5%;">
+    <div class="container">
+      <center>  
+        <svg class = "AEIRBS" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 484.66 532.51">
+          <title>AEIRBS Logo_SVG</title>
+          <g class="fire_ring">
+            <circle cx="242.33" cy="242.33" r="173.57" fill="rgba(255, 125, 102, 0.3)" stroke="none" stroke-miterlimit="10" stroke-wclassth="10"/>
+          </g>
+          <g class="quake_ring">
+            <circle cx="242.33" cy="242.33" r="173.57" fill="rgba(229, 191, 154, 0.3)" stroke="none" stroke-miterlimit="10" stroke-wclassth="10"/>
+          </g>
+          <g class="water_ring">
+            <circle cx="242.33" cy="242.33" r="173.57" fill="rgba(161, 212, 242, 0.3)" stroke="none" stroke-miterlimit="10" stroke-wclassth="10"/>
+          </g>
+          <g class="base_logo">
+            <circle cx="242.33" cy="242.33" r="240.83" fill="#ff7e67" stroke="#ff7e67" stroke-miterlimit="10" stroke-wclassth="3"/>
+            <circle cx="242.33" cy="242.33" r="173.57" fill="#e5bf9a" stroke="#e5bf9a" stroke-miterlimit="10" stroke-wclassth="3"/>
+            <circle cx="242.33" cy="242.33" r="107.73" fill="#a2d5f2" stroke="#a2d5f2" stroke-miterlimit="10" stroke-wclassth="3"/>
+            <g>
+              <path d="M302.64,406c-2.75-4.76-7.25-4.76-10,0L149.19,654.45c-2.75,4.76-.5,8.66,5,8.66H441.09c5.5,0,7.75-3.9,5-8.66Z" transform="translate(-55.31 -177.28)" fill="#ffc107"/>
+              <path d="M302.64,406c-2.75-4.76-7.25-4.76-10,0L149.19,654.45c-2.75,4.76-.5,8.66,5,8.66H441.09c5.5,0,7.75-3.9,5-8.66Z" transform="translate(-55.31 -177.28)" fill="none" stroke="#000" stroke-miterlimit="10" stroke-wclassth="6"/>
+            </g>
+            <circle cx="242.33" cy="247.23" r="27.2"/>
+            <text transform="translate(187.45 464.51) scale(1.38 1)" font-size="227.57" font-family="Cambria-Bold, Cambria" font-weight="700">!</text>
+          </g>
+        </svg>
+      </center>
+      <center> <img class="mb-4" src="{% static 'icons/AEIRBS-text.png' %}" height="90"> </center>
+
+      <div class="container col-5 login-form">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+              {{message}}
+            </div>
+          {% endfor %}
+        {% endif %}
+        <!--Login Form-->
+        <form  action="{% url 'login_action' %}" method="post">
+          {% csrf_token %}
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><img src="{% static 'icons/flat/user.png' %}" height="23"></span>
+            </div>
+            <input type="text" name="company_id" class="form-control" placeholder="Enter Company ID">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><img src="{% static 'icons/flat/password.png' %}" height="23"></span>
+            </div>
+            <input type="password" name="password" class="form-control" placeholder="Enter Password">
+          </div>
+
+          <div class="text-center">
+            <center><button type="submit" name = "forgotPassword" class="btn btn-link" data-dismiss="modal" style="color:#CD6155;">Forgot Password?</button></center>
+            <center><button type="submit" name = "login" class="btn" data-dismiss="modal" style="background-color:#FFC107; color: black;">LOGIN</button></center>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!--GSAP js-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.0.4/gsap.min.js"></script>
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <!--Login JS-->
+  <script src="{% static 'js/login-logo.js' %}"></script>
+</body>
+</html>

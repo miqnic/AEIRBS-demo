@@ -1,0 +1,32 @@
+body, html{
+    font-family: 'Montserrat', sans-serif;
+    background: #000000;
+    background-image: url("../img/cartographer.png");
+    display: grid;
+}
+.left-padding{
+    width: 50%;
+    height: 100%;
+    float: left;
+    text-align: center;
+}
+.right-padding{
+    width: 50%;
+    height: 100%;
+    float: right;
+}
+.login-form{
+    padding: 5% 3% 7% 3%;
+    box-shadow: 0 4px 8px 0 rgba(56, 53, 53, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: #333633;
+}
+.AEIRBS {
+    position: relative;
+    width: 10vh;
+    overflow: visible;
+}
+.container-fluid, .content{
+    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
+}

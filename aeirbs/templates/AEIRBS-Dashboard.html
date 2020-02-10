@@ -294,7 +294,7 @@
 
 
                 <div class="col-8">
-                  <form>
+                  <form action="{% url 'add_comp' %}" >
                     {% csrf_token %}
                     <div class="row">
 
@@ -328,7 +328,9 @@
                         <div class="form-group">
                           <label for="selectComponentName">Component Name</label>
                           <select class="form-control" id="selectComponentName" name="selectComponentName">
-                            <option></option>
+                            {% for comp in all_components %}
+                              <option value="{{comp.sensor_id}}">{{comp.sensor_name}}</option>
+                            {% endfor %}
                             <option id="selectSpecifyNameButton" value ="selectSpecifyNameButton">Others, please specify</option>
                           </select>
                         </div>
@@ -339,22 +341,22 @@
                         <div class="form-group">
                           <label for="selectLocation">Location</label>
                           <select class="form-control" name="selectLocation">
-                            <option></option>
+                            <option>1</option>
                           </select>
                         </div>
                       </div>
 
                     </div>
 
-                    <!--Input Component ID-->
+                    <!--Input Device ID-->
                     <div class="row mb-3" id="inputSpecifiedName">
                       <div class="col">
-                        <input type="text" class="form-control" name="componentID" placeholder="Specify Component ID">
+                        <input type="text" class="form-control" name="deviceID" placeholder="Specify Device">
                       </div>
                     </div>
-                  </form>
+                  
                     <button type="submit" class="btn btn-dark float-right btn-sm" id="submitComponent">Submit</button>
-
+                  </form>
                 </div>
 
                 <div class="col-1">
@@ -563,6 +565,7 @@
                             </div>
                             <div class="col-8 mt-3">
                               <h6>{{ot.device_name}}</h6>
+                              <h6>{{sensor_reading}}</h6>
                             </div>
                           </div>
                         </div>
@@ -584,6 +587,7 @@
       </div>
 
       <!--Component Modal-->
+      
       <div class="modal fade" id="componentModal" >
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">

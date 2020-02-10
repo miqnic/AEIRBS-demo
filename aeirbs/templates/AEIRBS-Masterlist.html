@@ -381,7 +381,7 @@
                 </thead>
                 <tbody>
                   {% for user in users %}
-                    <tr class="table-row">
+                    <tr class="table-row" data-user_id="{{user.username}}">
                       <td>
                         <input type="checkbox">
                       </td>
@@ -430,57 +430,62 @@
           <div class="container-fluid" id="userDetailsContainer" style="padding:0 25px 25px 12.5px;">
             <div class="container-fluid" style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
               <div style="background-color:#343A40; min-height: 45vh; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); text-align:center; position:relative;">
-                <div>
+                  <div>
                   <button type="submit" class="btn btn-link icon mt-2 mr-2" id="closeAdmin" style="color:white; position:absolute; right: 0;"><i class="fas fa-times fa-sm"></i></button>
                   <button type="submit" class="btn btn-light btn-sm mt-2 ml-2" id="editAdmin" style="color:black; opacity:0.3; position:absolute; left: 0;"><i class="fas fa-user-edit fa-sm mr-2"></i>Edit</button>
+                  <form action="" method="post">
+                    {% csrf_token %}
                   <button type="submit" class="btn btn-light btn-sm mt-2 ml-2" id="saveAdmin" style="color:black; opacity:0.3; position:absolute; left: 0;"><i class="fas fa-save fa-sm mr-2"></i>Save</button>
                 </div>
                 <div style="padding-top: 5vh;">
                   <img src="{% static 'icons/sample.png' %}" style="border-radius: 50%; height:20vh; border: 8px solid white;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3)">
                 </div>
 
-                <div id="adminDetails" class="mt-4" style="color: white;">
-                  <h3><b>First Name Last Name</b></h3>
-                  <div class="mt-2">
-                    <h6><i class="fas fa-user fa-sm mr-2"></i>Super-Admin</h6>
-                    <h6><i class="fas fa-envelope fa-sm mr-2"></i>Employee Email</h6>
+                  <div id="adminDetails" class="mt-4" style="color: white;">
+                    <h3><b>First Name Last Name</b></h3>
+                    <div class="mt-2">
+                      <h6><i class="fas fa-user fa-sm mr-2"></i>Super-Admin</h6>
+                      <h6><i class="fas fa-envelope fa-sm mr-2"></i>Employee Email</h6>
+                    </div>
                   </div>
-                </div>
 
-                <div id="adminForm" class="m-4" style="color: white; text-align: left;">
-                  <div class="form-group">
-                    <label for="accessRole">Access Role</label>
-                    <select class="form-control" name="accessRole">
-                      <option></option>
-                      <option id="adminRole">Admin</option>
-                      <option id="superRole">Super Admin</option>
-                    </select>
+                  <!-- Form for Updating user -->
+
+                  <div id="adminForm" class="m-4" style="color: white; text-align: left;">
+                    <div class="form-group">
+                      <label for="accessRole">Access Role</label>
+                      <select class="form-control" name="accessRole">
+                        <option></option>
+                        <option id="adminRole" value="adminRole">Admin</option>
+                        <option id="superRole" value="superRole">Super Admin</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="employeeID">Employee ID</label>
+                      <input type="text" class="form-control" id="employeeID" value="employeeID" placeholder="user_id">
+                    </div>
+                    <div class="form-group">
+                      <label for="employeeID">Company Email</label>
+                      <input type="text" class="form-control" id="companyEmail" value="companyEmail" placeholder="Company Email">
+                    </div>
+                    <div class="form-group">
+                      <label for="employeeID">Employee ID</label>
+                      <input type="text" class="form-control" id="employeeID" value="employeeID" placeholder="Employee ID">
+                    </div>
+                    <div class="form-group">
+                      <label for="employeeID">First Name</label>
+                      <input type="text" class="form-control" id="firstName" value="firstName" placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                      <label for="employeeID">Middle Name</label>
+                      <input type="text" class="form-control" id="middleName" value="middleName" placeholder="Middle Name">
+                    </div>
+                    <div class="form-group">
+                      <label for="employeeID">Last Name</label>
+                      <input type="text" class="form-control" id="lastName" value="lastName" placeholder="Last Name">
+                    </div>
                   </div>
-                  <div class="form-group">
-                    <label for="employeeID">Employee ID</label>
-                    <input type="text" class="form-control" id="employeeID" placeholder="Employee ID">
-                  </div>
-                  <div class="form-group">
-                    <label for="employeeID">Company Email</label>
-                    <input type="text" class="form-control" id="companyEmail" placeholder="Company Email">
-                  </div>
-                  <div class="form-group">
-                    <label for="employeeID">Employee ID</label>
-                    <input type="text" class="form-control" id="employeeID" placeholder="Employee ID">
-                  </div>
-                  <div class="form-group">
-                    <label for="employeeID">First Name</label>
-                    <input type="text" class="form-control" id="firstName" placeholder="First Name">
-                  </div>
-                  <div class="form-group">
-                    <label for="employeeID">Middle Name</label>
-                    <input type="text" class="form-control" id="middleName" placeholder="Middle Name">
-                  </div>
-                  <div class="form-group">
-                    <label for="employeeID">Last Name</label>
-                    <input type="text" class="form-control" id="lastName" placeholder="Last Name">
-                  </div>
-                </div>
+                </form>
                 <br>
               </div>
               <div  class="mt-3" style="background-color:#EAEDED; padding: 20px; min-height: 30vh; height: auto;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3)">

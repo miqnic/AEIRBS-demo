@@ -7,13 +7,13 @@ import json
 from .models import Device, Sensor, Device_Sensor
 
 # Create your views here.
-def getsensordata():
-    print("------Reading collection starts now------")
-    sr = serial.Serial("COM3",9600)
-    st = list(str(sr.readline(),'utf-8'))
-    sr.close() 
-    print("------Reading collection ends successfully------")
-    return float(str(''.join(st[:])))
+
+# Connect to Arduino through COM3 port
+def getArduinoData():
+    port_stream = serial.Serial("COM3",9600)
+    ard_data = list(str(port_stream.readline(),'utf-8'))
+    port_stream.close() 
+    return float(str(''.join(ard_data[:])))
 
 def home(request):
     if request.user.is_authenticated:
@@ -24,7 +24,7 @@ def home(request):
         earthquake_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, sensor_status=1, device_id__device_status=1)
         other_components = Device.objects.all().filter(device_status=1)
 
-        sensor_reading = getsensordata()
+        sensor_reading = getArduinoData()
 
         return render(request, 'AEIRBS-Dashboard.html', {'sensor_reading': sensor_reading, 'all_sensors': all_sensors, 'all_components': all_components, 'other_components': other_components, 'fire_components': fire_components, 'flood_components': flood_components, 'earthquake_components': earthquake_components})
     else:

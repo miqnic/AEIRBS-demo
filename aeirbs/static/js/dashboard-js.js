@@ -177,12 +177,12 @@ $(document).ready(function () {
       $("#searchComponent").show();
       $("#sortComponent").show();
     });
-    $('#selectComponentName').change(function () {
+    /*$('#selectComponentName').change(function () {
       var selectedId = $('option:selected', this).attr('id');
       if (selectedId == "selectSpecifyNameButton") {
         $("#inputSpecifiedName").show();
       }
-    });
+    });*/
 
 
     //Add Image
@@ -212,7 +212,7 @@ $(document).ready(function () {
       });
     });
 
-    $(".component-card").click(function() {
+    /*$(".component-card").click(function() {
       $('#componentModal').modal('toggle')
     });
 
@@ -224,20 +224,27 @@ $(document).ready(function () {
     $("#saveComponentButton").click(function() {
       $('#componentModal').modal('toggle')
       $('#confirmationModal').modal('toggle')
-    });
+    });*/
 
     $("#submitComponent").click(function() {
       $('#confirmationModal').modal('toggle')
     });
 
     $("#status").css("background-color", "rgb(30, 132, 73, 0.5)");
-    $("#status-inactive").hide();
-    $("#status-needsMaintenance").hide();
-    $("#status-underMaintenance").hide();
-    $("#maintenance-status").addClass("m-2");
-    $("#needsMaintenance").hide();
-    $("#underMaintenance").hide();
-    $("#connectivity-disconnected").hide();
+    $(".status-inactive-class").hide();
+    $(".status-needsMaintenance-class").hide();
+    $(".status-underMaintenance-class").hide();
+    $(".maintenance-status-class").addClass("m-2");
+    $(".needsMaintenanceClass").hide();
+    $(".underMaintenanceClass").hide();
+    $(".connectivity-disconnected-class").hide();
+
+    $(".componentIDFormClass").hide();
+    $(".componentNameFormClass").hide();
+    $(".componentTypeFormClass").hide();
+    $(".componentLocationFormClass").hide();
+    $(".specifyNameFormClass").hide();
+    $(".saveComponentButtonClass").hide();
 
     $("#status-switch"). click(function(){
       if($(this). prop("checked") == true){
@@ -318,12 +325,7 @@ $(document).ready(function () {
       }
     });
 
-    $("#componentIDForm").hide();
-    $("#componentNameForm").hide();
-    $("#componentTypeForm").hide();
-    $("#componentLocationForm").hide();
-    $("#specifyNameForm").hide();
-    $("#saveComponentButton").hide();
+    
 
     $("#confirmDeleteComponent").hide();
     $("#confirmSaveComponent").hide();
@@ -359,18 +361,18 @@ $(document).ready(function () {
       $("#saveComponentText").hide();
     }
 
-    $("#editComponent" ).click(function() {
-      $("#editComponent" ).hide();
-      $("#componentID").hide();
-      $("#componentIDForm").show();
-      $("#componentName").hide();
-      $("#componentNameForm").show();
-      $("#componentType").hide();
-      $("#componentTypeForm").show();
-      $("#componentLocation").hide();
-      $("#componentLocationForm").show();
-      $("#deleteComponentButton").hide();
-      $("#saveComponentButton").show();
+    $(".editComponentClass" ).click(function() {
+      $(".editComponentClass" ).hide();
+      //$("#componentID").hide();
+      $(".componentIDFormClass").show();
+      //$("#componentName").hide();
+      $(".componentNameFormClass").show();
+      //$("#componentType").hide();
+      $(".componentTypeFormClass").show();
+      //$("#componentLocation").hide();
+      $(".componentLocationFormClass").show();
+     //$("#deleteComponentButton").hide();
+      $(".saveComponentButtonClass").show();
     });
 
     $('#componentNameForm').change(function () {

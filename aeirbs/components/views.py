@@ -24,7 +24,7 @@ def home(request):
         earthquake_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, sensor_status=1, device_id__device_status=1)
         other_components = Device.objects.all().filter(device_status=1)
 
-        sensor_reading = getArduinoData()
+        sensor_reading = " "#getArduinoData()
 
         return render(request, 'AEIRBS-Dashboard.html', {'sensor_reading': sensor_reading, 'all_sensors': all_sensors, 'all_components': all_components, 'other_components': other_components, 'fire_components': fire_components, 'flood_components': flood_components, 'earthquake_components': earthquake_components})
     else:

@@ -96,6 +96,31 @@ def del_user(request):
             for user in users:
                 if user.username == employee_id:
                     user.profile.is_deleted = True
+                    user.is_active = False
+                    user.save()
+                    messages.success(request, f'Removed user {user.first_name} {user.last_name} successfully!')
+                    return redirect('masterlist')
+            
+            messages.error(request, f'Cannot find user.')
+            return redirect('masterlist')
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+def edit_user(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            employee_id = request.POST.get("inputEmployeeID")
+            employee_id = request.POST.get("inputEmployeeID")
+            email = request.POST.get("inputCompanyEmail")
+            first_name = request.POST.get("inputFirstName")
+            middle_name = request.POST.get("inputMiddleName")
+            last_name = request.POST.get("inputLastName")
+
+            users = User.objects.all()
+
+            for user in users:
+                if user.username == employee_id:
+                    user.profile.is_deleted = True
                     user.save()
                     messages.success(request, f'Removed user {user.first_name} {user.last_name} successfully!')
                     return redirect('masterlist')

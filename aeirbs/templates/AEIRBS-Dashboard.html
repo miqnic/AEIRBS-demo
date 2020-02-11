@@ -294,7 +294,7 @@
 
 
                 <div class="col-8">
-                  <form>
+                  <form action="{% url 'add_comp' %}" >
                     {% csrf_token %}
                     <div class="row">
 
@@ -328,7 +328,9 @@
                         <div class="form-group">
                           <label for="selectComponentName">Component Name</label>
                           <select class="form-control" id="selectComponentName" name="selectComponentName">
-                            <option></option>
+                            {% for comp in all_components %}
+                              <option value="{{comp.sensor_id}}">{{comp.sensor_name}}</option>
+                            {% endfor %}
                             <option id="selectSpecifyNameButton" value ="selectSpecifyNameButton">Others, please specify</option>
                           </select>
                         </div>
@@ -339,22 +341,22 @@
                         <div class="form-group">
                           <label for="selectLocation">Location</label>
                           <select class="form-control" name="selectLocation">
-                            <option></option>
+                            <option>1</option>
                           </select>
                         </div>
                       </div>
 
                     </div>
 
-                    <!--Input Component ID-->
+                    <!--Input Device ID-->
                     <div class="row mb-3" id="inputSpecifiedName">
                       <div class="col">
-                        <input type="text" class="form-control" name="componentID" placeholder="Specify Component ID">
+                        <input type="text" class="form-control" name="deviceID" placeholder="Specify Device">
                       </div>
                     </div>
-                  </form>
+                  
                     <button type="submit" class="btn btn-dark float-right btn-sm" id="submitComponent">Submit</button>
-
+                  </form>
                 </div>
 
                 <div class="col-1">
@@ -415,16 +417,16 @@
                   <div class="card-body">
                     <div class="card-columns" style="text-align:center;">
                       {% for eq in earthquake_components %}
-                        <div class="card component-card border-0 mb-3" style="max-width: 20rem; border-radius: 5px;">
+                        <div class="card component-card border-0 mb-3" style="max-width: 20rem; border-radius: 5px;" data-toggle="modal" data-target = "#componentModal{{eq.device_sensor_id}}">
                           <div class="card-header border-0"><h6><b>{{eq.device_sensor_id}}</b></h6></div>
                             <div class="card-body border-0">
                               <div class="row my-2">
                                 <div class="col-4">
-                                  <img src="{% static 'icons/eq.sensor_id.sensor_image' %}" height="90" style="border-radius: 5px;">
+                                  <img src="{{ eq.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
                                 </div>
                                 <div class="col-8 mt-3">
                                   <h6>{{eq.sensor_id.sensor_name}}</h6>
-                                  <small>{{eq.floor_location}}</small>
+                                  <small>{{eq.device_id.floor_location}}</small>
                                 </div>
                               </div>
                             </div>
@@ -462,16 +464,16 @@
                   <div class="card-body">
                     <div class="card-columns">
                       {% for fr in fire_components %}
-                      <div class="card component-card border-0 mb-3" style="max-width: 20rem; border-radius: 5px;">
+                      <div class="card component-card border-0 mb-3" style="max-width: 20rem; border-radius: 5px;" data-toggle="modal" data-target = "#componentModal{{fr.device_sensor_id}}">
                         <div class="card-header border-0"><h6><b>{{fr.device_sensor_id}}</b></h6></div>
                           <div class="card-body border-0">
                             <div class="row my-2">
                               <div class="col-4">
-                                <img src="{% static 'icons/FlameSensor.png' %}" height="90" style="border-radius: 5px;">
+                                <img src="{{ fr.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
                               </div>
                               <div class="col-8 mt-3">
                                 <h6>{{fr.sensor_id.sensor_name}}</h6>
-                                <small>{{fr.floor_location}}</small>
+                                <small>{{fr.device_id.floor_location}}</small>
                               </div>
                             </div>
                           </div>
@@ -508,16 +510,16 @@
                   <div class="card-body">
                     <div class="card-columns">
                       {% for fl in flood_components %}
-                      <div class="card component-card border-0 mb-3" style="max-width: 20rem; border-radius: 5px;">
+                      <div class="card component-card border-0 mb-3" style="max-width: 20rem; border-radius: 5px;" data-toggle="modal" data-target = "#componentModal{{fl.device_sensor_id}}">
                         <div class="card-header border-0"><h6><b>{{fl.device_sensor_id}}</b></h6></div>
                         <div class="card-body border-0">
                           <div class="row my-2">
                             <div class="col-4">
-                              <img src="{% static 'icons/transducer.jpg' %}" height="90" style="border-radius: 5px;">
+                              <img src="{{ fl.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
                             </div>
                             <div class="col-8 mt-3">
                               <h6>{{fl.sensor_id.sensor_name}}</h6>
-                              <small>{{fl.floor_location}}</small>
+                              <small>{{fl.device_id.floor_location}}</small>
                             </div>
                           </div>
                         </div>
@@ -559,10 +561,11 @@
                         <div class="card-body border-0">
                           <div class="row my-2">
                             <div class="col-4">
-                              <img src="{% static 'icons/arduino.png' %}" height="90" style="border-radius: 5px;">
+                              <img src="{{ ot.device_image.url }}" height="90" style="border-radius: 5px;">
                             </div>
                             <div class="col-8 mt-3">
                               <h6>{{ot.device_name}}</h6>
+                              <h6>{{sensor_reading}}</h6>
                             </div>
                           </div>
                         </div>
@@ -584,16 +587,17 @@
       </div>
 
       <!--Component Modal-->
-      <div class="modal fade" id="componentModal" >
+      {% for sensor in all_sensors %}
+      <div class="modal fade" id="componentModal{{sensor.device_sensor_id}}" >
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header" style="position:relative; background-color:#343A40;">
               <div class="row">
-                <div id="componentIDForm" class="form-group ml-3">
-                  <input type="text" class="form-control" id="inputComponentID" placeholder="Component ID">
+                <div id="componentIDForm" class="form-group ml-3 componentIDFormClass">
+                  <input type="text" class="form-control" id="inputComponentID" placeholder="{{sensor.device_sensor_id}}">
                 </div>
-                <h5 id="componentID" class="text-light mt-2 ml-3 mr-2"><b>FL-SEN0101</b></h5>
-                <button id="editComponent" class="btn btn-link text-light icon" title="Edit"><i class="fas fa-edit"></i></button>
+                <h5 id="componentID" class="text-light mt-2 ml-3 mr-2"><b>{{sensor.device_sensor_id}}</b></h5>
+                <button id="editComponent" class="btn btn-link text-light icon editComponentClass" title="Edit"><i class="fas fa-edit"></i></button>
               </div>
               <button data-dismiss="modal" class="btn btn-link text-light float-right btn-sm mt-2 mr-2 icon" style="position:absolute; right: 2px; top:0;"><i class="fas fa-times"></i></button>
             </div>
@@ -601,27 +605,29 @@
 
               <div class="row m-4">
                 <div class="col mt-2">
-                  <center><h6 id="componentName"><b>Ultrasonic Transducer</b></h6></center>
-                  <div id="componentNameForm" class="form-group">
+                  <center><h6 id="componentName"><b>{{sensor.sensor_id.sensor_name}}</b></h6></center>
+                  <div id="componentNameForm" class="form-group componentNameFormClass">
                     <select class="form-control" id="selectComponentName" name="selectComponentName">
-                      <option></option>
+                      {% for component in all_components %}
+                      <option>{{component.sensor_name}}</option>
+                      {% endfor %}
                       <option id="specifyNameFormButton">Others, please specify</option>
                     </select>
                   </div>
 
-                  <div class="row mb-3" id="specifyNameForm">
+                  <div class="row mb-3 specifyNameFormClass" id="specifyNameForm">
                     <div class="col">
                       <input type="text" class="form-control" placeholder="Component Name">
                     </div>
                   </div>
                   <br>
-                  <center><img src="{% static 'icons/transducer.jpg' %}" height="150" style="border-radius: 5px;"></center>
+                  <center><img src="{{ sensor.sensor_id.sensor_image.url }}" height="150" style="border-radius: 5px;"></center>
                 </div>
 
                 <div class="col mx-3" style="background-color: #EAEDED; border-radius: 5px;">
                   <div class="my-2">
                     <b>Incident Type:</b><br>
-                    <div id="componentTypeForm" class="form-group">
+                    <div id="componentTypeForm" class="form-group componentTypeFormClass">
                       <select class="form-control" name="selectIncidentType">
                         <option></option>
                         <option id="earthquakeType">Earthquake</option>
@@ -629,28 +635,34 @@
                         <option id="floodType">Flood</option>
                       </select>
                     </div>
+                    {% if sensor.sensor_id.sensor_type == 0 %}
+                    <small id="componentType">Fire</small>
+                    {% elif sensor.sensor_id.sensor_type == 1 %}
                     <small id="componentType">Flood</small>
+                    {% elif sensor.sensor_id.sensor_type == 2 %}
+                    <small id="componentType">Earthquake</small>
+                    {% endif %}
                   </div>
 
                   <div class="my-2">
                     <b>Location:</b>
                     <br>
-                    <div id="componentLocationForm" class="form-group" >
+                    <div id="componentLocationForm" class="form-group componentLocationFormClass" >
                       <select class="form-control" name="selectLocation">
                         <option></option>
                       </select>
                     </div>
-                    <small id="componentLocation">First Floor</small>
+                    <small id="componentLocation">{{sensor.device_id.floor_location}}</small>
                   </div>
 
                   <div class="my-2">
                     <b>Last Maintained Date:</b>
-                    <small>Date and Time</small>
+                    <small>{{sensor.last_maintained_datetime}}</small>
                   </div>
 
                   <div class="my-2">
                     <b>Last Maintained By:</b>
-                    <small>Admin Name</small>
+                    <small>{{sensor.last_maintained_by}}</small>
                   </div>
                 </div>
 
@@ -660,9 +672,9 @@
                       <div class="my-2">
                         <b>Status:</b><br>
                         <small id="status-active">Active</small>
-                        <small id="status-inactive">Inactive</small>
-                        <small id="status-needsMaintenance">Needs Maintenance</small>
-                        <small id="status-underMaintenance">Under Maintenance</small>
+                        <small id="status-inactive" class="status-inactive-class">Inactive</small>
+                        <small id="status-needsMaintenance" class="status-needsMaintenance-class">Needs Maintenance</small>
+                        <small id="status-underMaintenance" class="status-underMaintenance-class">Under Maintenance</small>
                       </div>
                       <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
                         <label class="switch float-right">
@@ -674,13 +686,13 @@
                   </div>
 
                   <div  class="row">
-                    <div id="maintenance-status" style="width:100%; text-align: center;">
-                      <div id="needsMaintenance">
-                        <input id="maintenance-needsMaintenance" type="checkbox" class="mr-2">
+                    <div id="maintenance-status" class="maintenance-status-class" style="width:100%; text-align: center;">
+                      <div id="needsMaintenance" class="needsMaintenanceClass">
+                        <input id="maintenance-needsMaintenance" class="maintenance-needsMaintenance-class" type="checkbox" class="mr-2">
                         <small>Needs Maintenance</small>
                       </div>
-                      <div id="underMaintenance">
-                        <input id="maintenance-underMaintenance" type="checkbox" class="mr-2">
+                      <div id="underMaintenance" class="underMaintenanceClass">
+                        <input id="maintenance-underMaintenance" class="maintenance-needsMaintenance-class" type="checkbox" class="mr-2">
                         <small>Under Maintenance</small>
                       </div>
                     </div>
@@ -692,7 +704,7 @@
                       <div class="my-2">
                         <b>Connectivity:</b><br>
                         <small id="connectivity-connected">Connected</small>
-                        <small id="connectivity-disconnected">Disconnected</small>
+                        <small id="connectivity-disconnected" class="connectivity-disconnected-class">Disconnected</small>
                       </div>
                     </div>
                   </div>
@@ -702,7 +714,7 @@
                       <center><button type="button" id="deleteComponentButton" class="btn btn-danger btn-sm" data-toggle="modal" data-target="confirmationModal">
                         <i class="fas fa-trash-alt fa-sm mr-2"></i>Delete Component
                       </button>
-                      <button type="button" id="saveComponentButton" class="btn btn-dark btn-sm">
+                      <button type="button" id="saveComponentButton" class="btn btn-dark btn-sm saveComponentButtonClass">
                         Save Component
                       </button></center>
                     </div>
@@ -714,7 +726,9 @@
           </div>
         </div>
       </div>
+      {% endfor %}
 
+      <!-- Confirmation Modal -->
       <div class="modal fade" id="confirmationModal" >
         <div class="modal-dialog modal-md" role="document">
           <div class="modal-content">

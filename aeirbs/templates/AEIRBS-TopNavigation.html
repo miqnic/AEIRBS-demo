@@ -1,3 +1,10 @@
+{%load static%}
+{%block content%}
+
+<head>
+
+</head>
+</head>
 <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <button type="button" id="sidebarCollapse" class="btn btn-link icon">
@@ -42,26 +49,33 @@
         <li class="nav-item">
           <div class="btn-group">
             <button role="button" type="button" class="btn btn-link dropdown" data-toggle="dropdown">
-              <img src="icons\sample.png" height="30" style="border-radius: 50%;">
+              <img src="{{ user.profile.user_image.url }}" height="30" style="border-radius: 50%;">
             </button>
 
             <div class="dropdown-menu dropdown-menu-right">
               <div class="dropdown-header" style=" min-width: 45vh; width:initial; background-color: #343A40; color: white; text-align: center;">
                 <div class="row my-2">
                   <div class="col-4">
-                    <img src="icons\sample.png" height="90" style="border-radius: 5px;">
+                    <img src="{{ user.profile.user_image.url }}" height="90" style="border-radius: 5px;">
                   </div>
                   <div class="col-8 mt-3">
-                    <h6>First Name Last Name</h6>
-                    <small>Super-Admin</small>
+                    <h6>{{request.user.get_full_name}}</h6>
+                    <small>{{request.user.get_username}}</small>
                   </div>
                 </div>
               </div>
 
               <div class="dropdown-body" style="height: 75%; width: auto; padding: 5px;">
-                <button role="button" type="button" class="btn btn btn-sm dropdown float-right m-2" data-toggle="dropdown">
-                  <i class="fas fa-sign-out-alt fa-sm mr-2"></i>Sign Out
-                </button>
+                <a href="{% url 'profile' %}">
+                  <button role="button" type="button" class="btn btn btn-sm icon float-left m-2">
+                    <i class="fas fa-user fa-sm mr-2"></i>Profile
+                  </button>
+                </a>
+                <a href="{% url 'logout_action' %}">
+                  <button role="button" type="button" class="btn btn-danger btn-sm float-right m-2">
+                    <i class="fas fa-sign-out-alt fa-sm mr-2"></i>Sign Out
+                  </button>
+                </a>
               </div>
             </div>
           </li>
@@ -70,3 +84,4 @@
 
     </div>
   </nav>
+  {%endblock%}

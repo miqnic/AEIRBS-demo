@@ -1,118 +1,116 @@
 {% load static %}
-{%block content%}
-<head>
-  <!--Sidenav CSS-->
-  <link rel="stylesheet" href="{% static 'css/aeirbs-wide-css.css' %}">
-  <link rel="stylesheet" href="{% static 'css/sidenav-css.css' %}">
-</head>
+
+{%block body%}
+
 <body>
-    <!-- Sidebar  -->
-    <nav id="sidebar">
-      <div class="sticky-top">
-        <div class="sidebar-header">
-          <img id="logo-AEIRBS" src="{% static 'icons/AEIRBS.png' %}" height="45">
-          <img id="logo" class="hidden" src="{% static 'icons/logo.png' %}" height="45">
-        </div>
-
-        <div class="sidebar-body">
-          <ul class="list-unstyled components border-0">
-            <li>
-              <a id="dashboard" href="{% url 'home' %}">
-                <div class="row">
-                  <div class="col-2">
-                    <i class="fas fa-cogs mx-3"></i>
-                  </div>
-                  <div class="col ml-1">
-                    Dashboard
-                  </div>
-                </div>
-              </a>
-              <a id="dashboard-logo" style="display:none;" href="{% url 'home' %}" title="Dashboard">
-                <i class="fas fa-cogs fa-lg"></i></h6>
-              </a>
-            </li>
-
-            <li>
-              <a id="masterlist" href="{% url 'masterlist' %}">
-                <div class="row">
-                  <div class="col-2">
-                    <i class="fas fa-users mx-3"></i>
-                  </div>
-                  <div class="col ml-1">
-                    Masterlist
-                  </div>
-                </div>
-              </a>
-              <a id="masterlist-logo" style="display:none;" href="{% url 'masterlist' %}" title="Masterlist">
-                <i class="fas fa-users fa-lg"></i>
-              </a>
-            </li>
-            <li>
-              <a id="reports" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown">
-                <div class="row">
-                  <div class="col-2">
-                    <i class="fas fa-folder-open mx-3"></i>
-                  </div>
-                  <div class="col ml-1">
-                    Reports
-                  </div>
-                </div>
-              </a>
-              <a id="reports-logo" style="display:none;" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown" title="Reports">
-                <i class="fas fa-folder-open fa-lg ml-2"></i>
-              </a>
-
-              <ul class="collapse list-unstyled" id="pageSubmenu">
-                <li>
-                  <a id="audit" href="{% url 'audit' %}">
-                    <div class="row">
-                      <div class="col-2">
-                        <i class="fas fa-file-alt mx-3"></i>
-                      </div>
-                      <div class="col ml-1">
-                        Audit Logs
-                      </div>
-                    </div>
-                  </a>
-                  <a id="audit-logo" style="display:none;" href="{% url 'audit' %}" title="Audit Logs">
-                    <i class="fas fa-file-alt fa-sm ml-2"></i>
-                  </a>
-                </li>
-                <li>
-                  <a id="incident" href="{% url 'incident' %}">
-                    <div class="row">
-                      <div class="col-2">
-                        <i class="fas fa-clipboard mx-3"></i>
-                      </div>
-                      <div class="col ml-1">
-                        Incident Reports
-                      </div>
-                    </div>
-                  </a>
-                  <a id="incident-logo" style="display:none;" href="{% url 'incident' %}" title="Incident Reports">
-                    <i class="fas fa-clipboard fa-sm ml-2"></i>
-                  </a>
-                </li>
-                <li>
-                  <a id="summary" href="{% url 'summary' %}">
-                    <div class="row">
-                      <div class="col-2">
-                        <i class="fas fa-chart-bar mx-3"></i>
-                      </div>
-                      <div class="col ml-1">
-                        Summary Reports
-                      </div>
-                    </div>
-                  </a>
-                  <a id="summary-logo"style="display:none;" href="{% url 'summary' %}" title="Summary Reports">
-                    <i class="fas fa-chart-bar fa-sm ml-2"></i>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
+  <nav id="sidebar">
+    <div class="sticky-top">
+      <div class="sidebar-header">
+        <img id="logo-AEIRBS" src="{% static 'icons/AEIRBS.png' %}" height="45">
+        <img id="logo" class="hidden" src="{% static 'icons/logo.png' %}" height="45">
       </div>
-    </nav>
+
+      <div class="sidebar-body">
+        <ul class="list-unstyled components border-0">
+          <li>
+            <a id="dashboard" class="dashboard" href="{% url 'home' %}">
+              <div class="row">
+                <div class="col-2">
+                  <i class="fas fa-cogs mx-3"></i>
+                </div>
+                <div class="col ml-1">
+                  Dashboard
+                </div>
+              </div>
+            </a>
+            <a id="dashboard-logo" class="" style="display:none;" href="{% url 'home' %}" title="Dashboard">
+              <i class="fas fa-cogs fa-lg"></i></h6>
+            </a>
+          </li>
+
+          <li>
+            <a id="masterlist" class="" href="{% url 'masterlist' %}">
+              <div class="row">
+                <div class="col-2">
+                  <i class="fas fa-users mx-3"></i>
+                </div>
+                <div class="col ml-1">
+                  Masterlist
+                </div>
+              </div>
+            </a>
+            <a id="masterlist-logo" class="" style="display:none;" href="{% url 'masterlist' %}" title="Masterlist">
+              <i class="fas fa-users fa-lg"></i>
+            </a>
+          </li>
+          <li>
+            <a id="reports" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown">
+              <div class="row">
+                <div class="col-2">
+                  <i class="fas fa-folder-open mx-3"></i>
+                </div>
+                <div class="col ml-1">
+                  Reports
+                </div>
+              </div>
+            </a>
+            <a id="reports-logo" class="" style="display:none;" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
+              class="dropdown" title="Reports">
+              <i class="fas fa-folder-open fa-lg ml-2"></i>
+            </a>
+
+            <ul class="collapse list-unstyled" id="pageSubmenu">
+              <li>
+                <a id="audit" class="" href="{% url 'audit' %}">
+                  <div class="row">
+                    <div class="col-2">
+                      <i class="fas fa-file-alt mx-3"></i>
+                    </div>
+                    <div class="col ml-1">
+                      Audit Logs
+                    </div>
+                  </div>
+                </a>
+                <a id="audit-logo" class="" style="display:none;" href="{% url 'audit' %}" title="Audit Logs">
+                  <i class="fas fa-file-alt fa-sm ml-2"></i>
+                </a>
+              </li>
+              <li>
+                <a id="incident" class="" href="{% url 'incident' %}">
+                  <div class="row">
+                    <div class="col-2">
+                      <i class="fas fa-clipboard mx-3"></i>
+                    </div>
+                    <div class="col ml-1">
+                      Incident Reports
+                    </div>
+                  </div>
+                </a>
+                <a id="incident-logo" class="" style="display:none;" href="{% url 'incident' %}" title="Incident Reports">
+                  <i class="fas fa-clipboard fa-sm ml-2"></i>
+                </a>
+              </li>
+              <li>
+                <a id="summary" class="" href="{% url 'summary' %}">
+                  <div class="row">
+                    <div class="col-2">
+                      <i class="fas fa-chart-bar mx-3"></i>
+                    </div>
+                    <div class="col ml-1">
+                      Summary Reports
+                    </div>
+                  </div>
+                </a>
+                <a id="summary-logo" class="" style="display:none;" href="{% url 'summary' %}" title="Summary Reports">
+                  <i class="fas fa-chart-bar fa-sm ml-2"></i>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 </body>
-{%endblock%}
+
+{%endblock body%}

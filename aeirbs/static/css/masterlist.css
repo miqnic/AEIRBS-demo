@@ -1,0 +1,8 @@
+.deletebtn{
+  color: #343a40;
+}
+.deletebtn:hover{
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}

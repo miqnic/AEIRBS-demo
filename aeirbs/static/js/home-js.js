@@ -254,8 +254,6 @@ $(document).ready(function () {
   $("#componentTypeForm").hide();
   $("#componentLocationForm").hide();
   $("#specifyNameForm").hide();
-  $(".saveComponentButton").hide();
-  $(".cancelEditComponentButton").hide();
 
   $("#confirmDeleteComponent").hide();
   $("#confirmSaveComponent").hide();
@@ -279,15 +277,15 @@ $(document).ready(function () {
     $("#saveComponentText").hide();
   }
 
-  $("#editComponent").click(function() {
+  $(".editComponent").click(function() {
     $("#editComponent" ).hide();
     $("#componentID").hide();
     $("#componentIDForm").show();
     $("#componentName").hide();
     $("#componentNameForm").show();
-    $("#deleteComponentButton").hide();
-    $("#saveComponentButton").show();
-    $("#cancelEditComponentButton").show();
+    $('.deleteComponentButton').hide();
+    $('.saveComponentButton').show();
+    $('.cancelEditComponentButton').show();
   });
 
   $("#cancelEditComponentButton").click(function() {
@@ -331,7 +329,7 @@ $(document).ready(function () {
     $("#confirmAddButton").hide();
   });
 
-  $("#deleteComponentButton").click(function() {
+  $(".deleteComponentButton").click(function() {
     $("#confirmDeleteComponent").show();
     $("#deleteComponentText").show();
     $("#confirmDeleteButton").show();

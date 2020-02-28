@@ -1,88 +1,87 @@
-{%load static%}
-{%block content%}
+{%load static%} {%block content%}
 
 <head>
-  <link rel="stylesheet" href="{% static 'css/aeirbs-wide-css.css'%}">
-  <link rel="stylesheet" href="{% static 'css/topnav-css.css'%}">
+    <link rel="stylesheet" href="{% static 'css/aeirbs-wide-css.css'%}">
+    <link rel="stylesheet" href="{% static 'css/topnav-css.css'%}">
 </head>
 </head>
 <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <button type="button" id="sidebarCollapse" class="btn btn-link icon">
+    <div class="container-fluid">
+        <button type="button" id="sidebarCollapse" class="btn btn-link icon">
       <span><i class="fas fa-align-justify"></i></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="nav navbar-nav ml-auto">
-        <li class="nav-item">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
 
-          <div class="btn-group">
-            <button type="button" class="btn btn-link icon dropdown" style="border-radius:5px;" title="Notification" data-toggle="dropdown">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-link icon dropdown" style="border-radius:5px;" title="Notification" data-toggle="dropdown">
               <span><i class="fas fa-bell"></i></span>
               <span class="badge">3</span>
             </button>
 
-            <div class="dropdown-menu dropdown-menu-right" style=" min-width: 40vh; width:auto;">
-              <div class="dropdown-header m-0" style="background-color: #343A40; color: white; display: block;">
-                Notifications
-              </div>
-              <div class="list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                  <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-1">Notification 2</h6>
-                    <small class="text-muted">3 minutes ago</small>
-                  </div>
-                  <small class="mb-1">Notification 2 details</small>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                  <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-1">Notification 1</h6>
-                    <small class="text-muted">3 days ago</small>
-                  </div>
-                  <small class="mb-1">Notification 1 details</small>
-                </a>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav">
-        <li class="nav-item">
-          <div class="btn-group">
-            <button role="button" type="button" class="btn btn-link dropdown" data-toggle="dropdown">
+                        <div class="dropdown-menu dropdown-menu-right" style=" min-width: 40vh; width:auto;">
+                            <div class="dropdown-header m-0" style="background-color: #343A40; color: white; display: block;">
+                                Notifications
+                            </div>
+                            <div class="list-group-flush">
+                                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Notification 2</h6>
+                                        <small class="text-muted">3 minutes ago</small>
+                                    </div>
+                                    <small class="mb-1">Notification 2 details</small>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Notification 1</h6>
+                                        <small class="text-muted">3 days ago</small>
+                                    </div>
+                                    <small class="mb-1">Notification 1 details</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav">
+                <li class="nav-item">
+                    <div class="btn-group">
+                        <button role="button" type="button" class="btn btn-link dropdown" data-toggle="dropdown">
               <img src="{{ user.profile.user_image.url }}" height="30" style="border-radius: 50%;">
             </button>
 
-            <div class="dropdown-menu dropdown-menu-right">
-              <div class="dropdown-header" style=" min-width: 45vh; width:initial; background-color: #343A40; color: white; text-align: center;">
-                <div class="row my-2">
-                  <div class="col-4">
-                    <img src="{{ user.profile.user_image.url }}" height="90" style="border-radius: 5px;">
-                  </div>
-                  <div class="col-8 mt-3">
-                    <h6>{{request.user.get_full_name}}</h6>
-                    <small>{{request.user.get_username}}</small>
-                  </div>
-                </div>
-              </div>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-header" style=" min-width: 45vh; width:initial; background-color: #343A40; color: white; text-align: center;">
+                                <div class="row my-2">
+                                    <div class="col-4">
+                                        <img src="{{ user.profile.user_image.url }}" height="90" style="border-radius: 5px;">
+                                    </div>
+                                    <div class="col-8 mt-3">
+                                        <h6>{{request.user.get_full_name}}</h6>
+                                        <small>{{request.user.get_username}}</small>
+                                    </div>
+                                </div>
+                            </div>
 
-              <div class="dropdown-body" style="height: 75%; width: auto; padding: 5px;">
-                <a href="{% url 'profile' %}">
-                  <button role="button" type="button" class="btn btn btn-sm icon float-left m-2">
+                            <div class="dropdown-body" style="height: 75%; width: auto; padding: 5px;">
+                                <a href="{% url 'profile' %}">
+                                    <button role="button" type="button" class="btn btn btn-sm icon float-left m-2">
                     <i class="fas fa-user fa-sm mr-2"></i>Profile
                   </button>
-                </a>
-                <a href="{% url 'logout_action' %}">
-                  <button role="button" type="button" class="btn btn-danger btn-sm float-right m-2">
+                                </a>
+                                <a href="{% url 'logout_action' %}">
+                                    <button role="button" type="button" class="btn btn-danger btn-sm float-right m-2">
                     <i class="fas fa-sign-out-alt fa-sm mr-2"></i>Sign Out
                   </button>
-                </a>
-              </div>
+                                </a>
+                            </div>
+                        </div>
+                </li>
+            </ul>
             </div>
-          </li>
-        </ul>
-      </div>
 
-    </div>
-  </nav>
-  {%endblock%}
+        </div>
+</nav>
+{%endblock%}

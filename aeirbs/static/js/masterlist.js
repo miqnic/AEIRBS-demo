@@ -8,11 +8,13 @@ $(document).ready(function() {
         $("#masterlistLabel").hide();
         $("#addAdminButton").hide();
         $("#masterlistTable").hide();
+        $("#masterlistAccordion").hide();
         $("#searchAdmin").hide();
         $("#sortMasterlist").hide();
         $("#userDetails").hide();
         $("#masterlistPagination").hide();
         $(".left-padding").width("100%");
+        $(".userDetails").hide();
         $("#userContainer").css("padding", "0 25px 25px 25px");
     });
 
@@ -38,9 +40,10 @@ $(document).ready(function() {
         $("#masterlistLabel").show();
         $("#addAdminButton").show();
         $("#masterlistTable").show();
+        $("#masterlistAccordion").show();
         $("#searchAdmin").show();
         $("#sortMasterlist").show();
-        $("#userDetails").hide();
+        $(".userDetails").hide();
         $("#masterlistPagination").show();
         $(".left-padding").width("100%");
     });
@@ -73,36 +76,57 @@ $(document).ready(function() {
 
     $("#userDetails").hide();
 
+
+
     $(".table-row").click(function() {
-        $(".left-padding").width("65%");
-        $("#userContainer").css("padding", "0 12.5px 25px 25px");
-        $("#userDetails").show();
+        /*
+                                if ($(".userDetails").is(':visible')) {
+                                    $(".left-padding").width("100%");
+                                    $(".userContainer").css("padding", "0 25px 25px 25px");
+                                    $(".userDetails").hide();
+                                } else {
+                                    $(".userDetails").show();
+                                }
+*/
     });
 
-    $("#saveAdmin").hide();
-    $("#adminForm").hide();
-
     //Edit Admin Details
-    $("#editAdmin").click(function() {
-        $("#adminDetails").hide();
-        $("#editAdmin").hide();
-        $("#adminForm").show();
-        $("#saveAdmin").show();
+    $(".editAdmin").click(function() {
+        $(".userHeader").hide()
+        $(".userActions").hide();
+        $(".adminForm").show();
+        $(".saveAdmin").show();
+        $(".cancelEditAdmin").show();
+    });
+
+    //Cancel Edit Admin Details
+    $(".cancelEditAdmin").click(function() {
+        $(".userHeader").show();
+        $(".userActions").show();
+        $(".adminForm").hide();
+        $(".saveAdmin").hide();
+        $(".cancelEditAdmin").hide();
     });
 
     //Save Admin Details
-    $("#saveAdmin").click(function() {
-        $("#adminDetails").show();
-        $("#editAdmin").show();
-        $("#adminForm").hide();
-        $("#saveAdmin").hide();
+    $(".saveAdmin").click(function() {
+        $(".adminDetails").show();
+        $(".editAdmin").show();
+        $(".adminForm").hide();
+        $(".saveAdmin").hide();
     });
 
     //Close Admin Details
-    $("#closeAdmin").click(function() {
+    $(".closeAdmin").click(function() {
+        $(".userHeader").show();
+        $(".userActions").show();
+        $(".adminForm").hide();
+        $(".saveAdmin").hide();
+        $(".cancelEditAdmin").hide();
+
         $(".left-padding").width("100%");
         $("#userContainer").css("padding", "0 25px 25px 25px");
-        $("#userDetails").hide();
+        $(".userDetails").hide();
     });
 
 

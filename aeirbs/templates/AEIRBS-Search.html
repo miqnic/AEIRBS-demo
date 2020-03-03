@@ -23,16 +23,15 @@
 
                 <!--Search Component-->
                 <div class="col-3">
-                    <form action="{% url 'search_comp' %}" method="post">
+                    <form action="#" method="post">
                         {% csrf_token %}
                         <div class="input-group mb-3" id="searchComponent">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
                             </div>
-                            
-                            <input type="text" class="input form-control" placeholder="Search Component" name="search">
-                            <input type="submit" hidden>
-                            
+                            <form action="{% url 'search_comp' %}" method="post">
+                                <input type="text" class="input form-control" placeholder="Search Component" name="search">
+                            </form>
                         </div>
                     </form>
                 </div>
@@ -174,7 +173,7 @@
                                     <i class="fas fa-globe" style="color:#E5BF9A;"></i>
                                 </div>
                                 <div class="col-11">
-                                    <b>Earthquake Components</b>
+                                    <b>Searched Components</b>
                                 </div>
                                 <div class="col">
                                     <span id="earthquake-close" class="hidden"><i class="fas fa-caret-up float-right"></i></span>
@@ -186,172 +185,24 @@
 
                     <div id="collapseEarthquake" class="collapse" aria-labelledby="earthquakeHeading" data-parent="#componentAccordion">
                         <div class="card-body d-inline-flex flex-row  justify-content-start text-center" style="padding: 20px 57px 20px 57px;">
-                            {% for eq in earthquake_components %}
-                            <div class="card card-layout border-0 m-2" data-toggle="modal" data-target="#sensorModal{{eq.device_sensor_id}}">
+                            {% for comp in searched %}
+                            <div class="card card-layout border-0 m-2" data-toggle="modal" data-target="#sensorModal{{comp.device_sensor_id}}">
                                 <div class="card-header border-0">
-                                    <h6><b>{{eq.device_sensor_id}}</b></h6>
+                                    <h6><b>{{comp.device_sensor_id}}</b></h6>
                                 </div>
                                 <div class="card-body border-0">
                                     <div class="row my-2">
                                         <div class="col-4">
-                                            <img src="{{ eq.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
+                                            <img src="{{ comp.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
                                         </div>
                                         <div class="col-8 mt-3">
-                                            <h6>{{eq.sensor_id.sensor_name}}</h6>
-                                            <small>{{eq.device_id.floor_location}}</small>
+                                            <h6>{{comp.sensor_id.sensor_name}}</h6>
+                                            <small>{{comp.device_id.floor_location}}</small>
                                         </div>
                                     </div>
                                 </div>
 
-                                {% if eq.sensor_status == 1 and eq.device_id.device_status == 1 %}
-                                    <div class="card-overlay" style="background-color:#1E8449;"></div>
-                                {% else %}
-                                    <div class="card-overlay" style="background-color:#616A6B;"></div>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <!--Fire Components-->
-                <div class="card">
-                    <div id="fireCategory" class="card-header accordion-header btn btn-link icon text-dark text-left float-left" style="text-decoration:none;" data-toggle="collapse" data-target="#collapseFire" aria-expanded="true" aria-controls="collapseFire">
-                        <h5 class="mt-2">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fas fa-fire ml-1" style="color:#FF7E67;"></i>
-                                </div>
-                                <div class="col-11">
-                                    <b>Fire Components</b>
-                                </div>
-                                <div class="col">
-                                    <span id="fire-close" class="hidden"> <i class="fas fa-caret-up float-right"></i></span>
-                                    <span id="fire-open"> <i class="fas fa-caret-down float-right"></i></span>
-                                </div>
-                            </div>
-                        </h5>
-                    </div>
-
-                    <div id="collapseFire" class="collapse" aria-labelledby="fireHeading" data-parent="#componentAccordion">
-                        <div class="card-body d-inline-flex flex-row flex-wrap justify-content-start text-center" style="padding: 20px 57px 20px 57px;">
-                            {% for fr in fire_components %}
-                            <div class="card card-layout border-0 m-3" data-toggle="modal" data-target="#sensorModal{{fr.device_sensor_id}}">
-                                <div class="card-header border-0">
-                                    <h6><b>{{fr.device_sensor_id}}</b></h6>
-                                </div>
-                                <div class="card-body border-0">
-                                    <div class="row my-2">
-                                        <div class="col-4">
-                                            <img src="{{ fr.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
-                                        </div>
-                                        <div class="col-8 mt-3">
-                                            <h6>{{fr.sensor_id.sensor_name}}</h6>
-                                            <small>{{fr.device_id.floor_location}}</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {% if fr.sensor_status == 1 and fr.device_id.device_status == 1 %}
-                                    <div class="card-overlay" style="background-color:#1E8449;"></div>
-                                {% else %}
-                                    <div class="card-overlay" style="background-color:#616A6B;"></div>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <!--Flood Components-->
-                <div class="card">
-                    <div id="floodCategory" class="card-header accordion-header btn btn-link icon text-dark text-left float-left" style="text-decoration:none;" data-toggle="collapse" data-target="#collapseFlood" aria-expanded="true" aria-controls="collapseFlood">
-                        <h5 class="mt-2">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fas fa-tint ml-1" style="color:#A2D5F2;"></i>
-                                </div>
-                                <div class="col-11">
-                                    <b>Flood Components</b>
-                                </div>
-                                <div class="col">
-                                    <span id="flood-close" class="hidden"> <i class="fas fa-caret-up float-right"></i></span>
-                                    <span id="flood-open"> <i class="fas fa-caret-down float-right"></i></span>
-                                </div>
-                            </div>
-                        </h5>
-                    </div>
-
-                    <div id="collapseFlood" class="collapse" aria-labelledby="floodHeading" data-parent="#componentAccordion">
-                        <div class="card-body d-inline-flex flex-row flex-wrap justify-content-start text-center" style="padding: 20px 57px 20px 57px;">
-                            {% for fl in flood_components %}
-                            <div class="card card-layout border-0 m-2" data-toggle="modal" data-target="#sensorModal{{fl.device_sensor_id}}">
-                                <div class="card-header border-0">
-                                    <h6><b>{{fl.device_sensor_id}}</b></h6>
-                                </div>
-                                <div class="card-body border-0">
-                                    <div class="row my-2">
-                                        <div class="col-4">
-                                            <img src="{{ fl.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
-                                        </div>
-                                        <div class="col-8 mt-3">
-                                            <h6>{{fl.sensor_id.sensor_name}}</h6>
-                                            <small>{{fl.device_id.floor_location}}</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {% if fl.sensor_status == 1 and fl.device_id.device_status == 1 %}
-                                    <div class="card-overlay" style="background-color:#1E8449;"></div>
-                                {% else %}
-                                    <div class="card-overlay" style="background-color:#616A6B;"></div>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <!--Others Components-->
-                <div class="card">
-                    <div id="othersCategory" class="card-header accordion-header btn btn-link icon text-dark text-left float-left" style="text-decoration:none;" data-toggle="collapse" data-target="#collapseOthers" aria-expanded="true" aria-controls="collapseOthers">
-                        <h5 class="mt-2">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fas fa-microchip" style="color:#FEC107;"></i>
-                                </div>
-                                <div class="col-11">
-                                    <b>Other Components</b>
-                                </div>
-                                <div class="col">
-                                    <span id="others-close" class="hidden"> <i class="fas fa-caret-up float-right"></i></span>
-                                    <span id="others-open"> <i class="fas fa-caret-down float-right"></i></span>
-                                </div>
-                            </div>
-                        </h5>
-                    </div>
-
-                    <div id="collapseOthers" class="collapse" aria-labelledby="othersHeading" data-parent="#componentAccordion">
-                        <div class="card-body d-inline-flex flex-row flex-wrap justify-content-start text-center" style="padding: 20px 57px 20px 57px;">
-                            {% for ot in other_components %}
-                            <div class="card card-layout border-0 m-2" data-toggle="modal" data-target="#deviceModal{{ot.device_id}}">
-                                <div class="card-header border-0" position="relative;">
-                                    <h6><b>{{ot.device_id}}</b></h6>
-                                </div>
-                                <div class="card-body border-0">
-                                    <div class="row my-2">
-                                        <div class="col-4">
-                                            <img src="{{ ot.device_image.url }}" height="90" style="border-radius: 5px;">
-                                        </div>
-                                        <div class="col-8 mt-3">
-                                            <h6>{{ot.device_name}}</h6>
-                                            <small>{{ot.floor_location}}</small>
-                                            <h6>{{sensor_reading}}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {% if ot.device_status == 1 %}
+                                {% if comp.sensor_status == 1 and comp.device_id.device_status == 1 %}
                                     <div class="card-overlay" style="background-color:#1E8449;"></div>
                                 {% else %}
                                     <div class="card-overlay" style="background-color:#616A6B;"></div>

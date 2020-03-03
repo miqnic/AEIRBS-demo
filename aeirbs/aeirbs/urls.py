@@ -40,6 +40,7 @@ urlpatterns = [
     path('edit-user/', accounts_views.edit_user, name='edit_user'),
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
     path('add-comp/', components_views.add_comp, name='add_comp'),
+    path('search-comp/', components_views.search_comp, name='search_comp'),
     # path('del-comp/', components_views.del_comp, name='del_comp'),
     # path('update-comp/', components_views.update_comp, name='update_comp'),
     path('login/', accounts_views.login_action, name='login_action'),

@@ -1,509 +1,349 @@
-{% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-  <!--Favicon-->
-  <link rel="icon" href="{% static 'icons/logo.png' %}">
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- Bootstrap CSS CDN -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-  <!-- Our Custom CSS -->
-  <link rel="stylesheet" href="{% static 'css/style2.css' %}">
-  <link rel="stylesheet" href="{% static 'css/masterlist-css.css' %}">
-  <!-- Scrollbar Custom CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
-
-  <!-- Font Awesome JS -->
-  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
-
-  <!--Font-->
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,900&display=swap" rel="stylesheet">
-
-  <title>Masterlist</title>
-</head>
-<style>
-
-</style>
+{% extends 'AEIRBS-Default.html' %} {% block title %}AEIRBS-Masterlist{% endblock title %} {% load static %} {% block body %}
 
 <body>
 
-  <div class="wrapper">
-    <!-- Sidebar  -->
-    <nav id="sidebar">
-      <div class="sticky-top">
-        <div class="sidebar-header">
-          <img id="logo-AEIRBS" src="{% static 'icons/AEIRBS.png' %}" height="45">
-          <img id="logo" src="{% static 'icons/logo.png' %}" height="45">
-        </div>
-
-        <div class="sidebar-body">
-          <ul class="list-unstyled components border-0">
-            <li>
-              <a id="dashboard" href="{% url 'home' %}">
-                <div class="row">
-                  <div class="col-2">
-                    <i class="fas fa-cogs mx-3"></i>
-                  </div>
-                  <div class="col ml-1">
-                    Dashboard
-                  </div>
-                </div>
-              </a>
-              <a id="dashboard-logo" href="#" title="Dashboard">
-                <i class="fas fa-cogs fa-lg"></i></h6>
-              </a>
-            </li>
-
-            <li>
-              <a id="masterlist" href="{% url 'masterlist' %}">
-                <div class="row">
-                  <div class="col-2">
-                    <i class="fas fa-users mx-3"></i>
-                  </div>
-                  <div class="col ml-1">
-                    Masterlist
-                  </div>
-                </div>
-              </a>
-              <a id="masterlist-logo" href="#" title="Masterlist">
-                <i class="fas fa-users fa-lg"></i>
-              </a>
-            </li>
-            <li>
-              <a id="reports" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown">
-                <div class="row">
-                  <div class="col-2">
-                    <i class="fas fa-folder-open mx-3"></i>
-                  </div>
-                  <div class="col ml-1">
-                    Reports
-                  </div>
-                </div>
-              </a>
-              <a id="reports-logo" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown" title="Reports">
-                <i class="fas fa-folder-open fa-lg ml-2"></i>
-              </a>
-
-              <ul class="collapse list-unstyled" id="pageSubmenu">
-                <li>
-                  <a id="audit" href="{% url 'audit' %}">
-                    <div class="row">
-                      <div class="col-2">
-                        <i class="fas fa-file-alt mx-3"></i>
-                      </div>
-                      <div class="col ml-1">
-                        Audit Logs
-                      </div>
-                    </div>
-                  </a>
-                  <a id="audit-logo" href="#" title="Audit Logs">
-                    <i class="fas fa-file-alt fa-sm ml-2"></i>
-                  </a>
-                </li>
-                <li>
-                  <a id="incident" href="{% url 'incident' %}">
-                    <div class="row">
-                      <div class="col-2">
-                        <i class="fas fa-clipboard mx-3"></i>
-                      </div>
-                      <div class="col ml-1">
-                        Incident Reports
-                      </div>
-                    </div>
-                  </a>
-                  <a id="incident-logo" href="#" title="Incident Reports">
-                    <i class="fas fa-clipboard fa-sm ml-2"></i>
-                  </a>
-                </li>
-                <li>
-                  <a id="summary" href="{% url 'summary' %}">
-                    <div class="row">
-                      <div class="col-2">
-                        <i class="fas fa-chart-bar mx-3"></i>
-                      </div>
-                      <div class="col ml-1">
-                        Summary Reports
-                      </div>
-                    </div>
-                  </a>
-                  <a id="summary-logo" href="#" title="Summary Reports">
-                    <i class="fas fa-chart-bar fa-sm ml-2"></i>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <!-- Page Content  -->
-    <div id="content">
-      {% if messages %}
-        {% for message in messages %}
-          {% if message.tags == "error" %}
-            <div class="alert alert-danger" role="alert">
-              {{message}}
-            </div>
-          {% endif %}
-
-          {% if message.tags == "success" %}
-            <div class="alert alert-success" role="alert">
-              {{message}}
-            </div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-      <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <button type="button" id="sidebarCollapse" class="btn btn-link icon">
-            <span><i class="fas fa-align-justify"></i></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="nav navbar-nav ml-auto">
-              <li class="nav-item">
-
-                <div class="btn-group">
-                  <button type="button" class="btn btn-link icon dropdown" style="border-radius:5px;" title="Notification" data-toggle="dropdown">
-                    <span><i class="fas fa-bell"></i></span>
-                    <span class="badge">3</span>
-                  </button>
-
-                  <div class="dropdown-menu dropdown-menu-right" style=" min-width: 40vh; width:auto;">
-                    <div class="dropdown-header m-0" style="background-color: #343A40; color: white; display: block;">
-                      Notifications
-                    </div>
-                    <div class="list-group-flush">
-                      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Notification 2</h6>
-                          <small class="text-muted">3 minutes ago</small>
-                        </div>
-                        <small class="mb-1">Notification 2 details</small>
-                      </a>
-                      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Notification 1</h6>
-                          <small class="text-muted">3 days ago</small>
-                        </div>
-                        <small class="mb-1">Notification 1 details</small>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-            <ul class="nav navbar-nav">
-              <li class="nav-item">
-                <div class="btn-group">
-                  <button role="button" type="button" class="btn btn-link dropdown" data-toggle="dropdown">
-                    <img src="{% static 'icons/sample.png' %}" height="30" style="border-radius: 50%;">
-                  </button>
-
-                  <div class="dropdown-menu dropdown-menu-right">
-                    <div class="dropdown-header" style=" min-width: 45vh; width:inherit; background-color: #343A40; color: white; text-align: center;">
-                      <div class="row my-2">
-                        <div class="col-4">
-                          <img src="{% static 'icons/sample.png' %}" height="90" style="border-radius: 5px;">
-                        </div>
-                        <div class="col-8 mt-3">
-                          <h6>Employee ID</h6>
-                          <small>Super-Admin</small>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="dropdown-body" style="height: 75%; width: auto; padding: 5px;">
-                      <button role="button" type="button" class="btn btn btn-sm icon float-left m-2">
-                        <i class="fas fa-user fa-sm mr-2"></i>Profile
-                      </button>
-                      <button role="button" type="button" class="btn btn-danger btn-sm float-right m-2">
-                        <i class="fas fa-sign-out-alt fa-sm mr-2"></i>Sign Out
-                      </button>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-          </div>
-        </nav>
-
-        <div class="left-padding" id="users">
-          <div class="container-fluid" id="userContainer" style="padding:0 25px 25px 25px;">
+    <div class="left-padding" id="users">
+        <div class="container-fluid userContainer" id="userContainer" style="padding:0 25px 25px 25px;">
             <div class="container-fluid" style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
 
-              <div class="row">
-                <!--Page Labels-->
-                <div class="col-7">
-                  <h3 id="masterlistLabel"><b><b>ADMIN MASTERLIST</b></b></h3>
-                  <h3 id="addAdminLabel"><b><b>ADD ADMIN</b></b></h3>
+                <div class="row">
+                    <!--Page Labels-->
+                    <div class="col-7">
+                        <h3 id="masterlistLabel"><b><b>ADMIN MASTERLIST</b></b>
+                        </h3>
+                        <h3 class="hidden" id="addAdminLabel"><b><b>ADD ADMIN</b></b>
+                        </h3>
 
-                </div>
-
-                <!--Add Component Button-->
-                {% if request.user.is_superuser %}
-                  <div class="col-2">
-                    <button type="button" id="addAdminButton" class="btn btn-dark float-right btn-sm mt-1">
-                      <i class="fas fa-user-plus fa-sm mr-2"></i>Add Admin
-                    </button>
-                  </div>
-                {% endif %}
-
-                <!--Search Component-->
-                <div class="col-3 mt-1">
-                  <form  action="#" method="post">
-                    {% csrf_token %}
-                    <div class="input-group mb-3" id="searchAdmin">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                      </div>
-                      <input type="text" class="input form-control" placeholder="Search Admin">
                     </div>
-                  </form>
-                </div>
-              </div>
 
-              <!--Add Admin Form-->
-              <div class="container my-3" id="addAdminForm" style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
-
-                <button type="button" id="cancel-addAdmin" class="btn btn-link text-dark float-left my-2 icon" title="Go Back">
-                  <span><i class="fas fa-arrow-left"></i></span>
-                </button>
-
-                <div class="row my-5">
-                  <!--Upload Admin Image-->
-                  <div class="col-2 imgUp">
-                    <div class="imagePreview"></div>
-                    <label class="btn btn-img btn-sm">
-                      Select Image<input type="file" class="uploadFile img" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;">
-                    </label>
-                  </div>
-
-                  <div class="col-10">
-                    <form action="{% url 'add_user' %}" method="post">
-                      {% csrf_token %}
-                      <div class="row">
-                        <!--Dropdown Access Role-->
-                        <div class="col">
-                          <div class="form-group">
-                            <label for="accessRole">Access Role</label>
-                            <select class="form-control" name="accessRole">
-                              <option></option>
-                              <option id="adminRole" value="adminRole">Admin</option>
-                              <option id="superRole" value="superRole">Super Admin</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <!--Input Employee ID-->
-                        <div class="col">
-                          <div class="form-group">
-                            <label for="employeeID">Employee ID</label>
-                            <input type="text" class="form-control" id="inputEmployeeID" name="inputEmployeeID" placeholder="Employee ID">
-                          </div>
-                        </div>
-
-                        <!--Input Company Email-->
-                        <div class="col">
-                          <div class="form-group">
-                            <label for="companyEmail">Company Email</label>
-                            <input type="email" class="form-control" id="inputCompanyEmail" name="inputCompanyEmail" placeholder="Company Email">
-                          </div>
-                        </div>
-                      </div>
-
-                      <!--Input First Name-->
-                      <div class="row">
-                        <div class="col">
-                          <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" class="form-control" id="inputFirstName" name="inputFirstName" placeholder="First Name">
-                          </div>
-                        </div>
-
-                        <!--Input Middle Name-->
-                        <div class="col">
-                          <div class="form-group">
-                            <label for="middleName">Middle Name</label>
-                            <input type="text" class="form-control" id="inputMiddleName" name="inputMiddleName" placeholder="Middle Name">
-                          </div>
-                        </div>
-
-                        <!--Input last Name-->
-                        <div class="col">
-                          <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" class="form-control" id="inputLastName" name="inputLastName" placeholder="Last Name">
-                          </div>
-                        </div>
-                      </div>
-
-                      <button type="submit" class="btn btn-dark float-right btn-sm" id="submitComponent">Submit</button>
-                    </form>
-                  </div>
-
-                </div>
-
-              </div>
-
-              <!--Sort Admin-->
-              <div class="row mx-2" style="text-align: left;" id="sortMasterlist">
-                <span class="col-2 mt-3" style="font-size: 10px;">
-                  Sort By:
-                </span>
-                <span class="col-3 float-left" >
-                  <div class="form-group btn-sm float-left">
-                    <select class="form-control border-0 btn-sm" name="incidentType" style="font-size: 10px;">
-                      <option id="employeeID" selected >Employee ID</option>
-                    </select>
-                  </div>
-                </span>
-              </div>
-
-              <!--Masterlist Table-->
-              <table class="table table-borderless mt-2" id="masterlistTable" style="text-align:center; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
-                <thead class="table-header">
-                  <tr>
-                    <th scope="col"></th>
-                    <th scope="col">Employee ID</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Middle Name</th>
-                    <th scope="col">Last Name</th>
+                    <!--Add Component Button-->
                     {% if request.user.is_superuser %}
-                      <th scope="col"></th>
+                    <div class="col-2">
+                        <button type="button" id="addAdminButton" class="btn btn-dark float-right btn-sm mt-1">
+              <i class="fas fa-user-plus fa-sm mr-2"></i>Add Admin
+            </button>
+                    </div>
                     {% endif %}
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for user in users %}
-                    <tr class="table-row" data-user_id="{{user.username}}">
-                      <td>
-                        <input type="checkbox">
-                      </td>
-                      <td>{{user.username}}</td>
-                      <td>{{user.first_name}}</td>
-                      <td>{{user.profile.middle_name}}</td>
-                      <td>{{user.last_name}}</td>
-                      {% if request.user.is_superuser %}
-                        <td>
-                          <form action="{% url 'del_user' %}" method="post">
+
+                    <!--Search Component-->
+                    <div class="col-3 mt-1">
+                        <form action="#" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="inputEmployeeID" value="{{user.username}}"></input>
-                            <button type="submit" class="btn btn-link btn-sm deletebtn" id="deleteAdmin" style="text-decoration: none;"><i class="fas fa-user-times fa-sm mr-2"></i>Delete</button>
-                          </form>
-                        </td>
-                      {% endif %}
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-
-              <nav aria-label="Page navigation example" id="masterlistPagination">
-                <ul class="pagination  pagination-sm">
-                  <li class="page-item">
-                    <a class="page-link  text-dark" href="#" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  <li class="page-item"><a class="page-link  text-dark" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link  text-dark" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link  text-dark" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link  text-dark" href="#" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        <div class="right-padding" id="userDetails">
-          <div class="container-fluid" id="userDetailsContainer" style="padding:0 25px 25px 12.5px;">
-            <div class="container-fluid" style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
-              <div style="background-color:#343A40; min-height: 45vh; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); text-align:center; position:relative;">
-                  <div>
-                  <button type="submit" class="btn btn-link icon mt-2 mr-2" id="closeAdmin" style="color:white; position:absolute; right: 0;"><i class="fas fa-times fa-sm"></i></button>
-                  <button type="submit" class="btn btn-light btn-sm mt-2 ml-2" id="editAdmin" style="color:black; opacity:0.3; position:absolute; left: 0;"><i class="fas fa-user-edit fa-sm mr-2"></i>Edit</button>
-                  <form action="" method="post">
-                    {% csrf_token %}
-                  <button type="submit" class="btn btn-light btn-sm mt-2 ml-2" id="saveAdmin" style="color:black; opacity:0.3; position:absolute; left: 0;"><i class="fas fa-save fa-sm mr-2"></i>Save</button>
-                </div>
-                <div style="padding-top: 5vh;">
-                  <img src="{% static 'icons/sample.png' %}" style="border-radius: 50%; height:20vh; border: 8px solid white;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3)">
+                            <div class="input-group mb-3" id="searchAdmin">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                </div>
+                                <input type="text" class="input form-control" placeholder="Search Admin">
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
-                  <div id="adminDetails" class="mt-4" style="color: white;">
-                    <h3><b>First Name Last Name</b></h3>
-                    <div class="mt-2">
-                      <h6><i class="fas fa-user fa-sm mr-2"></i>Super-Admin</h6>
-                      <h6><i class="fas fa-envelope fa-sm mr-2"></i>Employee Email</h6>
-                    </div>
-                  </div>
+                <!--Add Admin Form-->
+                <div class="container my-3 hidden" id="addAdminForm" style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
 
-                  <!-- Form for Updating user -->
+                    <button type="button" id="cancel-addAdmin" class="btn btn-link text-dark float-left my-2 icon" title="Go Back">
+                      <span><i class="fas fa-arrow-left"></i></span>
+                    </button>
 
-                  <div id="adminForm" class="m-4" style="color: white; text-align: left;">
-                    <div class="form-group">
-                      <label for="accessRole">Access Role</label>
-                      <select class="form-control" name="accessRole">
-                        <option></option>
-                        <option id="adminRole" value="adminRole">Admin</option>
-                        <option id="superRole" value="superRole">Super Admin</option>
-                      </select>
+                    <div class="row my-5">
+                        <!--Upload Admin Image-->
+                        <div class="col-2 imgUp mt-4">
+                            <div class="imagePreview"></div>
+                            <label class="btn btn-img btn-sm">
+                              Select Image<input type="file" class="uploadFile img" value="Upload Photo"
+                              style="width: 0px;height: 0px;overflow: hidden;">
+                            </label>
+                        </div>
+
+                        <div class="col-10" style="border-left: 1px solid #343A40;">
+                            <form action="{% url 'add_user' %}" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <!--Dropdown Access Role-->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="accessRole">Access Role</label>
+                                            <select class="form-control" name="accessRole">
+                                            <option></option>
+                                            <option id="adminRole" value="adminRole">Admin</option>
+                                            <option id="superRole" value="superRole">Super Admin</option>
+                                          </select>
+                                        </div>
+                                    </div>
+
+                                    <!--Input Employee ID-->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="employeeID">Employee ID</label>
+                                            <input type="text" class="form-control" id="inputEmployeeID" name="inputEmployeeID" placeholder="Employee ID">
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                    </div>
+                                </div>
+
+                                <!--Input First Name-->
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="firstName">First Name</label>
+                                            <input type="text" class="form-control" id="inputFirstName" name="inputFirstName" placeholder="First Name">
+                                        </div>
+                                    </div>
+
+                                    <!--Input Middle Name-->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="middleName">Middle Name</label>
+                                            <input type="text" class="form-control" id="inputMiddleName" name="inputMiddleName" placeholder="Middle Name">
+                                        </div>
+                                    </div>
+
+                                    <!--Input last Name-->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="lastName">Last Name</label>
+                                            <input type="text" class="form-control" id="inputLastName" name="inputLastName" placeholder="Last Name">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!--Input Job Position-->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="jobPosition">Company Email</label>
+                                            <input type="text" class="form-control" id="inputJobPosition" name="inputJobPosition" placeholder="Job Position">
+                                        </div>
+                                    </div>
+
+                                    <!--Input Company Email-->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="companyEmail">Company Email</label>
+                                            <input type="email" class="form-control" id="inputCompanyEmail" name="inputCompanyEmail" placeholder="Company Email">
+                                        </div>
+                                    </div>
+
+                                    <!--Input Phone Number-->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="mobileNumber">Company Email</label>
+                                            <input type="text" class="form-control" id="inputMobileNumber" name="inputMobileNumber" placeholder="Mobile Number">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-dark float-right btn-sm" id="submitComponent">Submit</button>
+                        </div>
+
+                        </form>
                     </div>
-                    <div class="form-group">
-                      <label for="employeeID">Employee ID</label>
-                      <input type="text" class="form-control" id="employeeID" value="employeeID" placeholder="user_id">
-                    </div>
-                    <div class="form-group">
-                      <label for="employeeID">Company Email</label>
-                      <input type="text" class="form-control" id="companyEmail" value="companyEmail" placeholder="Company Email">
-                    </div>
-                    <div class="form-group">
-                      <label for="employeeID">Employee ID</label>
-                      <input type="text" class="form-control" id="employeeID" value="employeeID" placeholder="Employee ID">
-                    </div>
-                    <div class="form-group">
-                      <label for="employeeID">First Name</label>
-                      <input type="text" class="form-control" id="firstName" value="firstName" placeholder="First Name">
-                    </div>
-                    <div class="form-group">
-                      <label for="employeeID">Middle Name</label>
-                      <input type="text" class="form-control" id="middleName" value="middleName" placeholder="Middle Name">
-                    </div>
-                    <div class="form-group">
-                      <label for="employeeID">Last Name</label>
-                      <input type="text" class="form-control" id="lastName" value="lastName" placeholder="Last Name">
-                    </div>
-                  </div>
-                </form>
-                <br>
-              </div>
-              <div  class="mt-3" style="background-color:#EAEDED; padding: 20px; min-height: 30vh; height: auto;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3)">
-                <h6><b>Recent Activities:</b></h6>
-              </div>
+
+                </div>
+
+                <!--Masterlist Table-->
+                <div class="accordion" id="masterlistAccordion">
+                    <table id="masterlistTable" class="table table-striped table-borderless" style="width:100%; text-align:center; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
+                        <thead class="table-header">
+                            <tr>
+                                <th></th>
+                                <th>Employee ID</th>
+                                <th>First Name</th>
+                                <th>Middle Name</th>
+                                <th>Last Name</th>
+                                <!--
+                            {% if request.user.is_superuser %}
+                            <th>Actions</th>
+                            {% endif %}
+                            -->
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr class="table-row" data-user_id="{{user.username}}" data-toggle="collapse" data-target="#userDetails{{user.username}}" aria-expanded="true" aria-controls="userDetails{{user.username}}">
+                                <td>
+                                    <input type="checkbox">
+                                </td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.first_name}}</td>
+                                <td>{{user.profile.middle_name}}</td>
+                                <td>{{user.last_name}}</td>
+                                <!--
+                            {% if request.user.is_superuser %}
+                            <td>
+                                <form action="{% url 'del_user' %} " method="post ">
+                                    {% csrf_token %}
+                                    <input type="hidden " name="inputEmployeeID " value="{{user.username}} "></input>
+                                    <button type="submit " class="btn btn-link btn-sm deletebtn " id="deleteAdmin " style="text-decoration: none; "><i class="fas fa-user-times fa-sm mr-2 "></i>Delete</button>
+                                </form>
+                            </td>
+                            {% endif %}
+                            -->
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!--
+                <table class="table table-borderless table-striped mt-2 " id="masterlistTable " style="text-align:center; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); ">
+                    <thead class="table-header ">
+                        <tr>
+                            <th scope="col "></th>
+                            <th scope="col ">Employee ID</th>
+                            <th onclick="sortTable(0) " scope="col ">First Name</th>
+                            <th onclick="sortTable(1) " scope="col ">Middle Name</th>
+                            <th onclick="sortTable(2) " scope="col ">Last Name</th>
+                            {% if request.user.is_superuser %}
+                            <th scope="col "></th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr class="table-row " data-user_id="{{user.username}} ">
+                            <td>
+                                <input type="checkbox ">
+                            </td>
+                            <td>{{user.username}}</td>
+                            <td>{{user.first_name}}</td>
+                            <td>{{user.profile.middle_name}}</td>
+                            <td>{{user.last_name}}</td>
+                            {% if request.user.is_superuser %}
+                            <td>
+                                <form action="{% url 'del_user' %} " method="post ">
+                                    {% csrf_token %}
+                                    <input type="hidden " name="inputEmployeeID " value="{{user.username}} "></input>
+                                    <button type="submit " class="btn btn-link btn-sm deletebtn " id="deleteAdmin " style="text-decoration: none; "><i class="fas fa-user-times fa-sm mr-2 "></i>Delete</button>
+                                </form>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation example " id="masterlistPagination ">
+                    <ul class="pagination pagination-sm ">
+                        <li class="page-item ">
+                            <a class="page-link text-dark " href="# " aria-label="Previous ">
+                                <span aria-hidden="true ">&laquo;</span>
+                                <span class="sr-only ">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item "><a class="page-link text-dark " href="# ">1</a></li>
+                        <li class="page-item "><a class="page-link text-dark " href="# ">2</a></li>
+                        <li class="page-item "><a class="page-link text-dark " href="# ">3</a></li>
+                        <li class="page-item ">
+                            <a class="page-link text-dark " href="# " aria-label="Next ">
+                                <span aria-hidden="true ">&raquo;</span>
+                                <span class="sr-only ">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+              -->
             </div>
-          </div>
         </div>
-      </div>
+    </div>
 
-      <!-- jQuery CDN - Slim version (=without AJAX) -->
-      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-      <!-- Popper.JS -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-      <!-- Bootstrap JS -->
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-      <!-- Custom JS -->
-      <script src="{% static 'js/masterlist-js.js' %}"></script>
-  </body>
+    {% for user in users %}
+    <div class="right-padding collapse userDetails" id="userDetails{{user.username}}" aria-labelledby="userDetails" data-parent="#masterlistAccordion">
+        <div class="container-fluid " id="userDetailsContainer " style="padding:0 25px 25px 12.5px; ">
+            <div class="container-fluid " style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px; ">
+                <div style="background-color:#343A40; min-height: 45vh; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); text-align:center; position:relative; ">
+                    <button type="submit " class="btn btn-link icon mt-2 mr-2 closeAdmin" id="closeAdmin " style="color:white; position:absolute; right: 0; "><i class="fas fa-times fa-sm "></i></button>
+                    <button type="submit " class="btn btn-link icon mt-2 ml-2 hidden cancelEditAdmin" id=" " style="color:white; position:absolute; left: 0;"><i class="fas fa-arrow-left fa-sm"></i></button> {% if request.user.is_superuser %}
+                    <div class="dropdown">
+                        <button type="submit " class="btn btn-link icon mt-2 ml-2 userActions" id=" " style="color:white; position:absolute; left: 0;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v fa-sm"></i></button>
+                        <div class="dropdown-menu" style="min-width: 5px;" aria-labelledby="userActions">
+                            <button class="dropdown-item editAdmin" type="button"><i class="fas fa-user-edit fa-sm mr-2 "></i>Edit</button>
+                            <form action="{% url 'del_user' %} " method="post ">
+                                {% csrf_token %}
+                                <input type="hidden" class="" name="inputEmployeeID" value="{{user.username}} "></input>
+                                <button class="dropdown-item" type="submit"><i class="fas fa-user-times fa-sm mr-2 "></i>Delete</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <form class="mb-3" action=" " method="post ">
+                        {% csrf_token %}
 
-  </html>
+                        <div class="userHeader mb-2" style="padding-top: 6vh;">
+                            <div class="mb-3">
+                                <img src="{{ user.profile.user_image.url }}" style="border-radius: 50%; height:20vh; border: 8px solid white;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3) ">
+                            </div>
+
+                            <div id="adminDetails " class="" style="color: white; ">
+                                <h3><b>{{user.first_name}} {{user.profile.middle_name}} {{user.last_name}}</b></h3>
+                                <div class="mt-2 ">
+                                    <h6><i class="fas fa-user fa-sm mr-2 "></i>{% if user.is_superuser%} Super- Admin {% else %} Admin {% endif %}</h6>
+                                    <h6><i class="fas fa-envelope fa-sm mr-2 "></i>{{user.email}}</h6>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Form for Updating user -->
+                        <div id="adminForm " class="mr-4 ml-4 mb-4 adminForm hidden" style="color: white; text-align: left; padding-top: 8vh;">
+                            <div class="form-group ">
+                                <label for="employeeID ">Employee ID</label>
+                                <input type="text" class="form-control " id="employeeID " value="{{user.username}}" placeholder=" ">
+                            </div>
+                            <div class="form-group ">
+                                <label for="accessRole ">Access Role</label>
+                                <select class="form-control " name="accessRole">
+                                    {% if user.is_superuser %}
+                                    <option></option>
+                                    <option id=" adminRole " value="adminRole">Admin</option>
+                                    <option id="superRole " value="superRole" selected>Super Admin</option>
+                                    {% else %}
+                                    <option></option>
+                                    <option id="adminRole" value="adminRole" selected>Admin</option>
+                                    <option id="superRole" value="superRole">Super Admin</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="form-group ">
+                                <label for="employeeID ">First Name</label>
+                                <input type="text " class="form-control " id="firstName " value="{{user.first_name}} " placeholder=" ">
+                            </div>
+                            <div class="form-group ">
+                                <label for="employeeID ">Middle Name</label>
+                                <input type="text " class="form-control " id="middleName " value="{{user.profile.middle_name}} " placeholder=" ">
+                            </div>
+                            <div class="form-group ">
+                                <label for="employeeID ">Last Name</label>
+                                <input type="text " class="form-control " id="lastName " value="{{user.last_name}} " placeholder=" ">
+                            </div>
+                            <div class="form-group ">
+                                <label for="employeeID ">Company Email</label>
+                                <input type="text " class="form-control " id="companyEmail " value="{{user.email}} " placeholder=" ">
+                            </div>
+                            <div class="form-group ">
+                                <label for="employeeID ">Job Position</label>
+                                <input type="text " class="form-control " id="jobPosition " value="{{user.profile.job_title}} " placeholder=" ">
+                            </div>
+                            <div class="form-group ">
+                                <label for="employeeID ">Mobile Number</label>
+                                <input type="text " class="form-control " id="mobileNumber " value="{{user.profile.phone_number}} " placeholder=" ">
+                            </div>
+                            <button type="submit " class="btn btn-success btn-sm mr-3 saveAdmin hidden" id="saveAdmin " style="position:absolute; right: 0; "><i
+                            class="fas fa-save fa-sm mr-2 "></i>Save</button>
+                            <br><br>
+                        </div>
+                    </form>
+                </div>
+                <div class=" mt-3 " style="background-color:#EAEDED; padding: 20px; min-height: 30vh; height: auto;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3) ">
+                    <h6><b>Recent Activities:</b></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</body>
+
+{% endblock body %}

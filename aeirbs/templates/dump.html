@@ -1,0 +1,815 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!--Favicon-->
+  <link rel="icon" href="{% static 'icons/logo.png' %}">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+    integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <!-- Our Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard-css.css' %}">
+  <link rel="stylesheet" href="{% static 'css/aeirbs-wide-css.css'%}">
+
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+    integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+    integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
+    integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+
+  <!--Font-->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,900&display=swap" rel="stylesheet">
+
+  <title>Dashboard</title>
+</head>
+<style>
+  /*temporary css cause its not readable from dashboard-css.css (?)*/
+  .card-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0.3;
+    border-radius: 5px;
+  }
+
+  .card-layout {
+    width: 20rem !important;
+    max-width: 25rem;
+    border-radius: 5px;
+  }
+
+  .card-layout:hover {
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    color: black;
+    top: 3px;
+    cursor: pointer;
+  }
+
+  .card-overlay:hover {
+    opacity: 0;
+  }
+</style>
+
+<body>
+  <div class="wrapper">
+
+    <!--Side Navbar-->
+    {% include 'AEIRBS-SideNavigation.html' %}
+
+    <!-- Page Content  -->
+
+    <!--Alert Messages-->
+    <div id="content">
+      {% if messages %}
+      {% for message in messages %}
+      {% if message.tags == "error" %}
+      <div class="alert alert-danger" role="alert">
+        {{message}}
+      </div>
+      {% endif %}
+
+      {% if message.tags == "success" %}
+      <div class="alert alert-success" role="alert">
+        {{message}}
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+
+      <!--Top Navbar-->
+      {%include 'AEIRBS-TopNavigation.html'%}
+
+      <div class="container-fluid" style="padding:0 25px 25px 25px;">
+        <div class="container-fluid"
+          style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
+
+          <div class="row">
+            <!--Page Labels-->
+            <div class="col-4">
+              <h3 id="dashboardLabel"><b><b>DASHBOARD</b></b></h3>
+              <h3 id="addComponentLabel" class="hidden"><b><b>ADD COMPONENT</b></b></h3>
+            </div>
+
+            <!--Add Component Button-->
+            <div class="col">
+              {% if request.user.is_superuser %}
+              <button type="button" id="addComponentButton" class="btn btn-dark float-right btn-sm mt-1">
+                <i class="fas fa-plus fa-sm mr-2"></i>Add Component
+              </button>
+              {% endif %}
+            </div>
+
+            <!--Search Component-->
+            <div class="col-3">
+              <form action="#" method="post">
+                {% csrf_token %}
+                <div class="input-group mb-3" id="searchComponent">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  </div>
+                  <input type="text" class="input form-control" placeholder="Search Component">
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!--Add Component Form-->
+          <div class="container my-3 hidden" id="addComponentForm"
+            style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
+
+            <button type="button" id="cancel-addComponent" class="btn btn-link text-dark float-left my-2 icon"
+              title="Go Back">
+              <span><i class="fas fa-arrow-left"></i></span>
+            </button>
+
+            <div class="row my-5">
+              <div class="col-1">
+              </div>
+
+              <!--Upload Component Image-->
+              <div class="col-2 imgUp">
+                <div class="imagePreview"></div>
+                <label class="btn btn-img btn-sm">
+                  Select Image<input type="file" class="uploadFile img" value="Upload Photo"
+                    style="width: 0px;height: 0px;overflow: hidden;">
+                </label>
+              </div>
+
+
+              <div class="col-8">
+                <form action="{% url 'add_comp' %}">
+                  {% csrf_token %}
+                  <div class="row">
+
+                    <!--Dropdown Incident Type-->
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="incidentType">Incident Type</label>
+                        <select class="form-control" name="selectIncidentType">
+                          <option></option>
+                          <option id="earthquakeType" value="earthquakeType">Earthquake</option>
+                          <option id="fireType" value="fireType">Fire</option>
+                          <option id="floodType" value="floodType">Flood</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!--Input Component ID-->
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="inputComponentID">Component ID</label>
+                        <input type="text" class="form-control" name="inputComponentID" id="inputComponentID"
+                          placeholder="Component ID">
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <!--Dropdown Component Name-->
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="selectComponentName">Component Name</label>
+                        <select class="form-control" id="selectComponentName" name="selectComponentName">
+                          {% for comp in all_components %}
+                          <option value="{{comp.sensor_id}}">{{comp.sensor_name}}</option>
+                          {% endfor %}
+                          <option id="selectSpecifyNameButton" value="selectSpecifyNameButton">Others, please specify
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!--Dropdown Location-->
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="selectLocation">Location</label>
+                        <select class="form-control" name="selectLocation">
+                          <option>1</option>
+                        </select>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!--Input Device ID-->
+                  <div class="row mb-3" id="inputSpecifiedName">
+                    <div class="col">
+                      <input type="text" class="form-control" name="deviceID" placeholder="Specify Device">
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-dark float-right btn-sm" id="submitComponent">Submit</button>
+                </form>
+              </div>
+
+              <div class="col-1">
+              </div>
+            </div>
+          </div>
+
+          <!--Sort Components-->
+          <div class="row mx-2" id="dashboardHeader">
+            <div id="sortComponent" class="col-3 mt-3">
+              <div class="row">
+                <div class="mt-3 mr-3">
+                  <span style="font-size: 10px;">
+                    Sort By:
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    <div class="form-group btn btn-sm">
+                      <select class="form-control border-1 btn-sm icon sort" name="incidentType"
+                        style="font-size: 10px;">
+                        <option id="selectComponentID" selected>Component ID</option>
+                      </select>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col"></div>
+            <div class="col-5 mt-5 text-right">
+              <div class="row float-right">
+                <div class="mr-3"><small><span
+                      style="background-color:#1E8449; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+                      style="font-size: 10px;">&nbsp;&nbsp;Connected</span></small></div>
+                <div class="mr-3"><small><span
+                      style="background-color:#B7950B; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+                      style="font-size: 10px;">&nbsp;&nbsp;Under Maintenance</span></small></div>
+                <div class="mr-3"><small><span
+                      style="background-color:#922B21; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+                      style="font-size: 10px;">&nbsp;&nbsp;Needs Maintenance</span></small></div>
+                <div class=""><small><span
+                      style="background-color:#616A6B; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+                      style="font-size: 10px;">&nbsp;&nbsp;Inactive</span></small></div>
+              </div>
+            </div>
+          </div>
+
+          <!--Component Accordion-->
+          <div class="accordion" id="componentAccordion"
+            style="box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0;">
+            <!--Earthquake Components-->
+            <div class="card">
+              <div id="earthquakeCategory"
+                class="card-header accordion-header btn btn-link icon text-dark text-left float-left"
+                style="text-decoration:none;" data-toggle="collapse" data-target="#collapseEarthquake"
+                aria-expanded="true" aria-controls="collapseEarthquake">
+                <h5 class="mt-2">
+                  <div class="row">
+                    <div class="col">
+                      <i class="fas fa-globe" style="color:#E5BF9A;"></i>
+                    </div>
+                    <div class="col-11">
+                      <b>Earthquake Components</b>
+                    </div>
+                    <div class="col">
+                      <span id="earthquake-close" class="hidden"><i class="fas fa-caret-up float-right"></i></span>
+                      <span id="earthquake-open"><i class="fas fa-caret-down float-right"></i></span>
+                    </div>
+                  </div>
+                </h5>
+              </div>
+
+              <div id="collapseEarthquake" class="collapse" aria-labelledby="earthquakeHeading"
+                data-parent="#componentAccordion">
+                <div class="card-body d-inline-flex flex-row  justify-content-start text-center"
+                  style="padding: 20px 57px 20px 57px;">
+                  {% for eq in earthquake_components %}
+                  <div class="card card-layout border-0 m-2" data-toggle="modal"
+                    data-target="#componentModal{{eq.device_sensor_id}}">
+                    <div class="card-header border-0">
+                      <h6><b>{{eq.device_sensor_id}}</b></h6>
+                    </div>
+                    <div class="card-body border-0">
+                      <div class="row my-2">
+                        <div class="col-4">
+                          <img src="{{ eq.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
+                        </div>
+                        <div class="col-8 mt-3">
+                          <h6>{{eq.sensor_id.sensor_name}}</h6>
+                          <small>{{eq.device_id.floor_location}}</small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card-overlay" style="background-color:#1E8449;"></div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!--Fire Components-->
+            <div class="card">
+              <div id="fireCategory"
+                class="card-header accordion-header btn btn-link icon text-dark text-left float-left"
+                style="text-decoration:none;" data-toggle="collapse" data-target="#collapseFire" aria-expanded="true"
+                aria-controls="collapseFire">
+                <h5 class="mt-2">
+                  <div class="row">
+                    <div class="col">
+                      <i class="fas fa-fire ml-1" style="color:#FF7E67;"></i>
+                    </div>
+                    <div class="col-11">
+                      <b>Fire Components</b>
+                    </div>
+                    <div class="col">
+                      <span id="fire-close" class="hidden"> <i class="fas fa-caret-up float-right"></i></span>
+                      <span id="fire-open"> <i class="fas fa-caret-down float-right"></i></span>
+                    </div>
+                  </div>
+                </h5>
+              </div>
+
+              <div id="collapseFire" class="collapse" aria-labelledby="fireHeading" data-parent="#componentAccordion">
+                <div class="card-body d-inline-flex flex-row flex-wrap justify-content-start text-center"
+                  style="padding: 20px 57px 20px 57px;">
+                  {% for fr in fire_components %}
+                  <div class="card card-layout border-0 m-3" data-toggle="modal"
+                    data-target="#componentModal{{fr.device_sensor_id}}">
+                    <div class="card-header border-0">
+                      <h6><b>{{fr.device_sensor_id}}</b></h6>
+                    </div>
+                    <div class="card-body border-0">
+                      <div class="row my-2">
+                        <div class="col-4">
+                          <img src="{{ fr.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
+                        </div>
+                        <div class="col-8 mt-3">
+                          <h6>{{fr.sensor_id.sensor_name}}</h6>
+                          <small>{{fr.device_id.floor_location}}</small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card-overlay" style="background-color:#1E8449;"></div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!--Flood Components-->
+            <div class="card">
+              <div id="floodCategory"
+                class="card-header accordion-header btn btn-link icon text-dark text-left float-left"
+                style="text-decoration:none;" data-toggle="collapse" data-target="#collapseFlood" aria-expanded="true"
+                aria-controls="collapseFlood">
+                <h5 class="mt-2">
+                  <div class="row">
+                    <div class="col">
+                      <i class="fas fa-tint ml-1" style="color:#A2D5F2;"></i>
+                    </div>
+                    <div class="col-11">
+                      <b>Flood Components</b>
+                    </div>
+                    <div class="col">
+                      <span id="flood-close" class="hidden"> <i class="fas fa-caret-up float-right"></i></span>
+                      <span id="flood-open"> <i class="fas fa-caret-down float-right"></i></span>
+                    </div>
+                  </div>
+                </h5>
+              </div>
+
+              <div id="collapseFlood" class="collapse" aria-labelledby="floodHeading" data-parent="#componentAccordion">
+                <div class="card-body d-inline-flex flex-row flex-wrap justify-content-start text-center"
+                  style="padding: 20px 57px 20px 57px;">
+                  {% for fl in flood_components %}
+                  <div class="card card-layout border-0 m-2" data-toggle="modal"
+                    data-target="#componentModal{{fl.device_sensor_id}}">
+                    <div class="card-header border-0">
+                      <h6><b>{{fl.device_sensor_id}}</b></h6>
+                    </div>
+                    <div class="card-body border-0">
+                      <div class="row my-2">
+                        <div class="col-4">
+                          <img src="{{ fl.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
+                        </div>
+                        <div class="col-8 mt-3">
+                          <h6>{{fl.sensor_id.sensor_name}}</h6>
+                          <small>{{fl.device_id.floor_location}}</small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card-overlay" style="background-color:#1E8449;"></div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!--Others Components-->
+            <div class="card">
+              <div id="othersCategory"
+                class="card-header accordion-header btn btn-link icon text-dark text-left float-left"
+                style="text-decoration:none;" data-toggle="collapse" data-target="#collapseOthers" aria-expanded="true"
+                aria-controls="collapseOthers">
+                <h5 class="mt-2">
+                  <div class="row">
+                    <div class="col">
+                      <i class="fas fa-microchip" style="color:#FEC107;"></i>
+                    </div>
+                    <div class="col-11">
+                      <b>Other Components</b>
+                    </div>
+                    <div class="col">
+                      <span id="others-close" class="hidden"> <i class="fas fa-caret-up float-right"></i></span>
+                      <span id="others-open"> <i class="fas fa-caret-down float-right"></i></span>
+                    </div>
+                  </div>
+                </h5>
+              </div>
+
+              <div id="collapseOthers" class="collapse" aria-labelledby="othersHeading"
+                data-parent="#componentAccordion">
+                <div class="card-body d-inline-flex flex-row flex-wrap justify-content-start text-center"
+                  style="padding: 20px 57px 20px 57px;">
+                  {% for ot in other_components %}
+                  <div class="card card-layout border-0 m-2">
+                    <div class="card-header border-0">
+                      <h6><b>{{ot.device_id}}</b></h6>
+                    </div>
+                    <div class="card-body border-0">
+                      <div class="row my-2">
+                        <div class="col-4">
+                          <img src="{{ ot.device_image.url }}" height="90" style="border-radius: 5px;">
+                        </div>
+                        <div class="col-8 mt-3">
+                          <h6>{{ot.device_name}}</h6>
+                          <h6>{{sensor_reading}}</h6>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card-overlay" style="background-color:#1E8449;"></div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <!--Content-->
+  </div>
+  <!--Wrapper-->
+
+  <!--Component Modal-->
+  {% for sensor in all_sensors %}
+  <div class="modal fade" id="componentModal{{sensor.device_sensor_id}}">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="position:relative; background-color:#343A40;">
+          <div class="row">
+            <div id="componentIDForm" class="form-group ml-3 componentIDFormClass">
+              <input type="text" class="form-control" id="inputComponentID" placeholder="{{sensor.device_sensor_id}}">
+            </div>
+            <h5 id="componentID" class="text-light mt-2 ml-3 mr-2"><b>{{sensor.device_sensor_id}}</b></h5>
+            <button id="editComponent" class="btn btn-link text-light icon editComponentClass" title="Edit"><i
+                class="fas fa-edit"></i></button>
+          </div>
+          <button data-dismiss="modal" class="btn btn-link text-light float-right btn-sm mt-2 mr-2 icon"
+            style="position:absolute; right: 2px; top:0;"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" style="border-radius:5px">
+
+          <div class="row m-4">
+            <div class="col mt-2">
+              <center>
+                <h6 id="componentName"><b>{{sensor.sensor_id.sensor_name}}</b></h6>
+              </center>
+              <div id="componentNameForm" class="form-group componentNameFormClass">
+                <select class="form-control" id="selectComponentName" name="selectComponentName">
+                  {% for component in all_components %}
+                  <option>{{component.sensor_name}}</option>
+                  {% endfor %}
+                  <option id="specifyNameFormButton">Others, please specify</option>
+                </select>
+              </div>
+
+              <div class="row mb-3 specifyNameFormClass" id="specifyNameForm">
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Component Name">
+                </div>
+              </div>
+              <br>
+              <center><img src="{{ sensor.sensor_id.sensor_image.url }}" height="150" style="border-radius: 5px;">
+              </center>
+            </div>
+
+            <div class="col mx-3" style="background-color: #EAEDED; border-radius: 5px;">
+              <div class="my-2">
+                <b>Incident Type:</b><br>
+                {% if sensor.sensor_id.sensor_type == 0 %}
+                <small id="componentType">Fire</small>
+                {% elif sensor.sensor_id.sensor_type == 1 %}
+                <small id="componentType">Flood</small>
+                {% elif sensor.sensor_id.sensor_type == 2 %}
+                <small id="componentType">Earthquake</small>
+                {% endif %}
+              </div>
+
+              <div class="my-2">
+                <b>Location:</b>
+                <br>
+                <small id="componentLocation">{{sensor.device_id.floor_location}}</small>
+              </div>
+
+              <div class="my-2">
+                <b>Last Maintained Date:</b>
+                <small>{{sensor.last_maintained_datetime}}</small>
+              </div>
+
+              <div class="my-2">
+                <b>Last Maintained By:</b>
+                <small>{{sensor.last_maintained_by}}</small>
+              </div>
+            </div>
+
+            <div class="col">
+              <div id="status" class="row"
+                style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                <div class="mx-2" style="width:100%;">
+                  <div class="my-2">
+                    <b>Status:</b><br>
+                    <small id="status-active">Active</small>
+                    <small id="status-inactive" class="status-inactive-class">Inactive</small>
+                    <small id="status-needsMaintenance" class="status-needsMaintenance-class">Needs Maintenance</small>
+                    <small id="status-underMaintenance" class="status-underMaintenance-class">Under Maintenance</small>
+                  </div>
+                  <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                    <label class="switch float-right">
+                      <input type="checkbox" id="status-switch" checked>
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div id="maintenance-status" class="maintenance-status-class" style="width:100%; text-align: center;">
+                  <div id="needsMaintenance" class="needsMaintenanceClass">
+                    <input id="maintenance-needsMaintenance" class="maintenance-needsMaintenance-class" type="checkbox"
+                      class="mr-2">
+                    <small>Needs Maintenance</small>
+                  </div>
+                  <div id="underMaintenance" class="underMaintenanceClass">
+                    <input id="maintenance-underMaintenance" class="maintenance-needsMaintenance-class" type="checkbox"
+                      class="mr-2">
+                    <small>Under Maintenance</small>
+                  </div>
+                </div>
+              </div>
+
+              <div id="status" class="row mb-2"
+                style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                <button class="btn btn-link text-dark float-right btn-sm mt-2 mr-2 icon"
+                  style="position:absolute; right: 2px; top:0;"><i class="fas fa-sync-alt"></i></button>
+                <div class="mx-2" style="width:100%;">
+                  <div class="my-2">
+                    <b>Connectivity:</b><br>
+                    <small id="connectivity-connected">Connected</small>
+                    <small id="connectivity-disconnected" class="connectivity-disconnected-class">Disconnected</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-5">
+                <div style="width:100%; position: absolute; bottom: 0;">
+                  <center>
+                    <button type="button" id="deleteComponentButton" class="btn btn-danger btn-sm btn-block"
+                      data-toggle="modal" data-target="confirmationModal">
+                      <i class="fas fa-trash-alt fa-sm mr-2"></i>Delete Component
+                    </button>
+                    <button type="button" id="saveComponentButton" class="btn btn-success btn-sm btn-block">
+                      <i class="fas fa-save fa-sm mr-2"></i>Save Component
+                    </button>
+                    <button type="button" id="cancelEditComponentButton" class="btn btn-dark btn-sm btn-block">
+                      <i class="fas fa-ban fa-sm mr-2"></i>Cancel
+                    </button>
+                  </center>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <!--Device Modal-->
+  {% for sensor in all_sensors %}
+  <div class="modal fade" id="componentModal{{sensor.device_sensor_id}}">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="position:relative; background-color:#343A40;">
+          <div class="row">
+            <div id="componentIDForm" class="form-group ml-3 componentIDFormClass">
+              <input type="text" class="form-control" id="inputComponentID" placeholder="{{sensor.device_sensor_id}}">
+            </div>
+            <h5 id="componentID" class="text-light mt-2 ml-3 mr-2"><b>{{sensor.device_sensor_id}}</b></h5>
+            <button id="editComponent" class="btn btn-link text-light icon editComponentClass" title="Edit"><i
+                class="fas fa-edit"></i></button>
+          </div>
+          <button data-dismiss="modal" class="btn btn-link text-light float-right btn-sm mt-2 mr-2 icon"
+            style="position:absolute; right: 2px; top:0;"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" style="border-radius:5px">
+
+          <div class="row m-4">
+            <div class="col mt-2">
+              <center>
+                <h6 id="componentName"><b>{{sensor.sensor_id.sensor_name}}</b></h6>
+              </center>
+              <div id="componentNameForm" class="form-group componentNameFormClass">
+                <select class="form-control" id="selectComponentName" name="selectComponentName">
+                  {% for component in all_components %}
+                  <option>{{component.sensor_name}}</option>
+                  {% endfor %}
+                  <option id="specifyNameFormButton">Others, please specify</option>
+                </select>
+              </div>
+
+              <div class="row mb-3 specifyNameFormClass" id="specifyNameForm">
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Component Name">
+                </div>
+              </div>
+              <br>
+              <center><img src="{{ sensor.sensor_id.sensor_image.url }}" height="150" style="border-radius: 5px;">
+              </center>
+            </div>
+
+            <div class="col mx-3" style="background-color: #EAEDED; border-radius: 5px;">
+              <div class="my-2">
+                <b>Incident Type:</b><br>
+                {% if sensor.sensor_id.sensor_type == 0 %}
+                <small id="componentType">Fire</small>
+                {% elif sensor.sensor_id.sensor_type == 1 %}
+                <small id="componentType">Flood</small>
+                {% elif sensor.sensor_id.sensor_type == 2 %}
+                <small id="componentType">Earthquake</small>
+                {% endif %}
+              </div>
+
+              <div class="my-2">
+                <b>Location:</b>
+                <br>
+                <small id="componentLocation">{{sensor.device_id.floor_location}}</small>
+              </div>
+
+              <div class="my-2">
+                <b>Last Maintained Date:</b>
+                <small>{{sensor.last_maintained_datetime}}</small>
+              </div>
+
+              <div class="my-2">
+                <b>Last Maintained By:</b>
+                <small>{{sensor.last_maintained_by}}</small>
+              </div>
+            </div>
+
+            <div class="col">
+              <div id="status" class="row"
+                style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                <div class="mx-2" style="width:100%;">
+                  <div class="my-2">
+                    <b>Status:</b><br>
+                    <small id="status-active">Active</small>
+                    <small id="status-inactive" class="status-inactive-class">Inactive</small>
+                    <small id="status-needsMaintenance" class="status-needsMaintenance-class">Needs Maintenance</small>
+                    <small id="status-underMaintenance" class="status-underMaintenance-class">Under Maintenance</small>
+                  </div>
+                  <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                    <label class="switch float-right">
+                      <input type="checkbox" id="status-switch" checked>
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div id="maintenance-status" class="maintenance-status-class" style="width:100%; text-align: center;">
+                  <div id="needsMaintenance" class="needsMaintenanceClass">
+                    <input id="maintenance-needsMaintenance" class="maintenance-needsMaintenance-class" type="checkbox"
+                      class="mr-2">
+                    <small>Needs Maintenance</small>
+                  </div>
+                  <div id="underMaintenance" class="underMaintenanceClass">
+                    <input id="maintenance-underMaintenance" class="maintenance-needsMaintenance-class" type="checkbox"
+                      class="mr-2">
+                    <small>Under Maintenance</small>
+                  </div>
+                </div>
+              </div>
+
+              <div id="status" class="row mb-2"
+                style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                <button class="btn btn-link text-dark float-right btn-sm mt-2 mr-2 icon"
+                  style="position:absolute; right: 2px; top:0;"><i class="fas fa-sync-alt"></i></button>
+                <div class="mx-2" style="width:100%;">
+                  <div class="my-2">
+                    <b>Connectivity:</b><br>
+                    <small id="connectivity-connected">Connected</small>
+                    <small id="connectivity-disconnected" class="connectivity-disconnected-class">Disconnected</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-5">
+                <div style="width:100%; position: absolute; bottom: 0;">
+                  <center>
+                    <button type="button" id="deleteComponentButton" class="btn btn-danger btn-sm btn-block"
+                      data-toggle="modal" data-target="confirmationModal">
+                      <i class="fas fa-trash-alt fa-sm mr-2"></i>Delete Component
+                    </button>
+                    <button type="button" id="saveComponentButton" class="btn btn-success btn-sm btn-block">
+                      <i class="fas fa-save fa-sm mr-2"></i>Save Component
+                    </button>
+                    <button type="button" id="cancelEditComponentButton" class="btn btn-dark btn-sm btn-block">
+                      <i class="fas fa-ban fa-sm mr-2"></i>Cancel
+                    </button>
+                  </center>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- Confirmation Modal -->
+  <div class="modal fade" id="confirmationModal">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="position:relative; background-color:#343A40;">
+          <h5 class="text-light mt-2"><span id="confirmDeleteComponent"><b>Delete Component</b><span
+                id="confirmSaveComponent"><b>Update Component</b><span id="confirmAddComponent"><b>Add
+                    Component</b><span></h5>
+          <button data-dismiss="modal" class="btn btn-link text-light float-right btn-sm mt-2 mr-2 icon"
+            style="position:absolute; right: 2px; top:0;"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" style="border-radius:5px">
+          Are yo sure you want to <span id="deleteComponentText"><b>Delete Component</b></span><span
+            id="saveComponentText"><b>Save Changes</b></span><span id="addComponentText"><b>Add Component</b></span>?
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="saveComponentButton" class="btn btn-dark btn-sm">
+            Save Component
+          </button>
+          <button type="button" id="saveComponentButton" class="btn btn-dark btn-sm">
+            Save Component
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+  <!-- jQuery CDN - Slim version (=without AJAX) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <!-- Popper.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+    integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+    crossorigin="anonymous"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+    integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+    crossorigin="anonymous"></script>
+  <!-- Custom JS -->
+  <script src="{% static 'js/dashboard-js.js' %}"></script>
+</html>

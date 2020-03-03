@@ -7,7 +7,7 @@ from .models import AuditLogs, IncidentReport
 
 def audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all()
+        audit_logs = AuditLogs.objects.all().order_by('-username')
         return render(request, "AEIRBS-Audit.html", {'audit_logs': audit_logs})
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

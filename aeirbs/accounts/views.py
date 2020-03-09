@@ -130,7 +130,6 @@ def edit_user(request):
     else:
         return render(request, 'AEIRBS-Login.html')
 
-
 def profile(request):
     return render(request, 'AEIRBS-Profile.html')
 

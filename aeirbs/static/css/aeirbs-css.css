@@ -112,7 +112,3 @@ body {
 .table-row:hover {
     background-color: #F4F6F6;
 }
-
-.paginate_button {
-    background-color: blue;
-}

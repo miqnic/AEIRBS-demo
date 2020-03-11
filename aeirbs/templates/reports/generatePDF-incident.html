@@ -52,7 +52,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h1>AUDIT LOGS</h1>
+                        <h1>Incident Report</h1>
                     </td>
                     <td></td>
                     <td>Time: {{time}}</td>
@@ -64,9 +64,9 @@
         <table class="table table-bordered mt-4 " style="width:100%; text-align:center; ">
             <thead class="table-header mt-2 ">
                 <tr>
-                    <th>Audit ID</th>
-                    <th>Activity</th>
-                    <th>Accountability</th>
+                    <th>Incident ID</th>
+                    <th>Incident ID</th>
+                    <th>Level</th>
                     <th>Date and Time</th>
                 </tr>
             </thead>
@@ -74,12 +74,12 @@
         <hr>
         <table class="table table-bordered mt-4 " style="width:100%; text-align:center; ">
             <tbody>
-                {% for log in audit_logs %}
-                <tr class="table-row ">
-                    <td>{{log.id}}</td>
-                    <td>{{log.activity}}</td>
-                    <td>{{log.username.first_name}} {{log.username.last_name}}</td>
-                    <td>{{log.date_time}}</td>
+                {% for report in incident_reports %}
+                <tr>
+                    <td>{{report.id}}</td>
+                    <td>{{report.incident_type}}</td>
+                    <td>{{report.incident_level}}</td>
+                    <td>{{report.incident_date_time}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

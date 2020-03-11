@@ -43,7 +43,13 @@
                         <td>{{report.incident_level}}</td>
                         <td>{{report.incident_date_time}}</td>
                         <td>
-                            <button type="submit" class="btn btn-link btn-sm downloadbtn" id="generateReport" style="text-decoration:none;"><i class="fas fa-download fa-sm mr-2"></i>Download</button>
+                            {% if request.user.is_superuser %}
+                            <form action="{% url 'generatePDF_incident' %} " method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{report.id}}" name="download_incident">
+                                <button type="submit" class="btn btn-link btn-sm downloadbtn" id="generateReport" style="text-decoration:none;"><i class="fas fa-download fa-sm mr-2"></i>Download</button>
+                            </form>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

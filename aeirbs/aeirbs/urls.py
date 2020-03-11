@@ -40,6 +40,8 @@ urlpatterns = [
     path('edit-user/', accounts_views.edit_user, name='edit_user'),
 
     path('generate-audit/', reports_views.generatePDF_audit, name='generatePDF_audit'),
+    path('generate-incident/', reports_views.generatePDF_incident, name='generatePDF_incident'),
+
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
     path('add-comp/', components_views.add_comp, name='add_comp'),
     # path('del-comp/', components_views.del_comp, name='del_comp'),

@@ -72,7 +72,8 @@ def generatePDF_incident(request):
         context['date'] = date
         context['time'] = time
 
-        print(incident_id)
+        for report in incident_reports:
+            print(report.incident_type)
         
         pdf = renderPDF('reports/generatePDF-incident.html', context)
         if pdf:

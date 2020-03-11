@@ -77,15 +77,7 @@ $(document).ready(function() {
     $("#userDetails").hide();
 
     $(".table-row").click(function() {
-        /*
-                                if ($(".userDetails").is(':visible')) {
-                                    $(".left-padding").width("100%");
-                                    $(".userContainer").css("padding", "0 25px 25px 25px");
-                                    $(".userDetails").hide();
-                                } else {
-                                    $(".userDetails").show();
-                                }
-*/
+        alert("hello");
     });
 
     //Edit Admin Details

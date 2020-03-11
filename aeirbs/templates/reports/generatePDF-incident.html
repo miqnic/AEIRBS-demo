@@ -6,24 +6,32 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="style2.css">
     <!-- Scrollbar Custom CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
     <!-- Font Awesome JS -->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+        integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+        integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
+        integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
 
     <!--Font-->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
-    <title>Audit Logs</title>
+    <title>Incident Reports</title>
 </head>
 <style>
 
@@ -65,7 +73,7 @@
             <thead class="table-header mt-2 ">
                 <tr>
                     <th>Incident ID</th>
-                    <th>Incident ID</th>
+                    <th>Incident Type</th>
                     <th>Level</th>
                     <th>Date and Time</th>
                 </tr>
@@ -85,16 +93,127 @@
             </tbody>
         </table>
         <hr>
+        <br>
+        <h3>Incident Level Information:</h3>
+        {% for report in incident_reports %}
+        <!--FIRE-->
+        {% if report.incident_level == "FR_FIRST" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: First Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of two (2) to three (3) houses are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto four (4) Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_SECOND" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Second Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of four (4) to five (5) houses are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto eight (8) Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_THIRD" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Third Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of six (6) to seven (7) houses or
+            High Rise Building are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 12 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_FOURTH" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Fourth Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of eight (8) to nine (9) houses or
+            High Rise Building are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 16 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_FIFTH" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Fifth Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of 10 to 11 houses or High Rise
+            Building are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 20 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_TFALPHA" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Alpha</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimated area of 12 by 12 houses are affected
+            by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 24 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_TFBRAVO" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Bravo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimated area of 15 by 15 houses are affected
+            by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 28 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_TFCHARLIE" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Charlie</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting significant parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 32 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_TFDELTA" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Delta</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting significant parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 36 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_GENERAL" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        <!--FLOOD-->
+        {% elif report.incident_level == "FL_FIRST" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_HALFKNEE" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_HALFTIRE" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_KNEE" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_TIRES" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_WAIST" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_CHEST" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>A
+
+
+        {% endif %}
+        {%endfor %}
     </div>
     <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js " integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo " crossorigin="anonymous "></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo "
+        crossorigin="anonymous "></script>
     <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js " integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ " crossorigin="anonymous "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js "
+        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ "
+        crossorigin="anonymous "></script>
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js " integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm " crossorigin="anonymous "></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js "
+        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm "
+        crossorigin="anonymous "></script>
     <link rel="stylesheet " type="text/css " href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css ">
 
-    <script type="text/javascript " charset="utf8 " src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js "></script>
+    <script type="text/javascript " charset="utf8 "
+        src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js "></script>
 
 </body>
 

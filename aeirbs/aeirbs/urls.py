@@ -38,8 +38,7 @@ urlpatterns = [
     path('add-user/', accounts_views.add_user, name='add_user'),
     path('del-user/', accounts_views.del_user, name='del_user'),
     path('edit-user/', accounts_views.edit_user, name='edit_user'),
-    path('view-user/', accounts_views.view_user, name='view_user'),
-
+        
     path('generate-audit/', reports_views.generatePDF_audit, name='generatePDF_audit'),
     path('generate-incident/', reports_views.generatePDF_incident, name='generatePDF_incident'),
 

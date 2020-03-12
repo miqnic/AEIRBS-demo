@@ -8,31 +8,12 @@ $(document).ready(function() {
         $("#masterlistLabel").hide();
         $("#addAdminButton").hide();
         $("#masterlistTable").hide();
-        $("#masterlistAccordion").hide();
-        $("#searchAdmin").hide();
         $("#sortMasterlist").hide();
-        $("#userDetails").hide();
-        $("#masterlistPagination").hide();
         $(".left-padding").width("100%");
         $(".userDetails").hide();
         $("#userContainer").css("padding", "0 25px 25px 25px");
+        
     });
-
-    /*
-  $("#submitAdmin" ).click(function() {
-  $("#addAdminForm").hide();
-  $("#addAdminLabel").hide();
-  $("#masterlistLabel").show();
-  $("#addAdminButton").show();
-  $("#masterlistTable").show();
-  $("#searchAdmin").show();
-  $("#sortMasterlist").show();
-  $("#userDetails").show();
-  $("#users").width("65%");
-  $("#userContainer").css("padding","0 12.5px 25px 25px;");
-});
-
-*/
 
     $("#cancel-addAdmin").click(function() {
         $("#addAdminForm").hide();
@@ -40,11 +21,9 @@ $(document).ready(function() {
         $("#masterlistLabel").show();
         $("#addAdminButton").show();
         $("#masterlistTable").show();
-        $("#masterlistAccordion").show();
         $("#searchAdmin").show();
         $("#sortMasterlist").show();
         $(".userDetails").hide();
-        $("#masterlistPagination").show();
         $(".left-padding").width("100%");
     });
 
@@ -77,7 +56,23 @@ $(document).ready(function() {
     $("#userDetails").hide();
 
     $(".table-row").click(function() {
-        alert("hello");
+
+        if ($(".userDetails").is(':visible')){
+            $(".userDetails").hide();
+
+            var username = $(this).data("username");
+            var id = "#userDetails" + username;
+            $(".left-padding").width("65%");
+            $("#userContainer").css("padding", "0 12.5px 25px 25px");
+            $(id).show();
+        }
+        else{
+            var username = $(this).data("username");
+            var id = "#userDetails" + username;
+            $(".left-padding").width("65%");
+            $("#userContainer").css("padding", "0 12.5px 25px 25px");
+            $(id).show();
+        }
     });
 
     //Edit Admin Details
@@ -108,6 +103,8 @@ $(document).ready(function() {
 
     //Close Admin Details
     $(".closeAdmin").click(function() {
+        var username = $(this).data("username");
+        var id = "#userDetails" + username;
         $(".userHeader").show();
         $(".userActions").show();
         $(".adminForm").hide();
@@ -116,6 +113,6 @@ $(document).ready(function() {
 
         $(".left-padding").width("100%");
         $("#userContainer").css("padding", "0 25px 25px 25px");
-        $(".userDetails").hide();
+        $(id).hide();
     });
 });

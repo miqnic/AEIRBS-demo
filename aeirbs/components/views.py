@@ -15,7 +15,7 @@ def getArduinoData():
     port_stream.close() 
     return float(str(''.join(ard_data[:])))
 
-def home(request):
+def home(request): #earthquake_components
     if request.user.is_authenticated:
         all_sensors = Sensor.objects.all()
         all_components = Device_Sensor.objects.all()
@@ -30,6 +30,69 @@ def home(request):
         return render(request, 'AEIRBS-Dashboard.html', {'sensor_reading': sensor_reading, 'all_components': all_components, 'all_sensors': all_sensors, 'all_devices': all_devices,  'other_components': other_components, 'fire_components': fire_components, 'flood_components': flood_components, 'earthquake_components': earthquake_components})
     else:
         return render(request, 'AEIRBS-Login.html')
+
+def earthquake_components(request):
+    if request.user.is_authenticated:
+        all_sensors = Sensor.objects.all()
+        all_components = Device_Sensor.objects.all()
+        all_devices =  Device.objects.all()
+        fire_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=0, sensor_status=1, device_id__device_status=1)
+        flood_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=1, sensor_status=1, device_id__device_status=1)
+        earthquake_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, sensor_status=1, device_id__device_status=1)
+        other_components = Device.objects.all().filter(device_status=1)
+
+        sensor_reading = " "#getArduinoData()
+
+        return render(request, 'DASHBOARD-EarthquakeComponents.html', {'sensor_reading': sensor_reading, 'all_components': all_components, 'all_sensors': all_sensors, 'all_devices': all_devices,  'other_components': other_components, 'fire_components': fire_components, 'flood_components': flood_components, 'earthquake_components': earthquake_components})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+        
+def fire_components(request):
+    if request.user.is_authenticated:
+        all_sensors = Sensor.objects.all()
+        all_components = Device_Sensor.objects.all()
+        all_devices =  Device.objects.all()
+        fire_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=0, sensor_status=1, device_id__device_status=1)
+        flood_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=1, sensor_status=1, device_id__device_status=1)
+        earthquake_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, sensor_status=1, device_id__device_status=1)
+        other_components = Device.objects.all().filter(device_status=1)
+
+        sensor_reading = " "#getArduinoData()
+
+        return render(request, 'DASHBOARD-FireComponents.html', {'sensor_reading': sensor_reading, 'all_components': all_components, 'all_sensors': all_sensors, 'all_devices': all_devices,  'other_components': other_components, 'fire_components': fire_components, 'flood_components': flood_components, 'earthquake_components': earthquake_components})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+def flood_components(request):
+    if request.user.is_authenticated:
+        all_sensors = Sensor.objects.all()
+        all_components = Device_Sensor.objects.all()
+        all_devices =  Device.objects.all()
+        fire_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=0, sensor_status=1, device_id__device_status=1)
+        flood_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=1, sensor_status=1, device_id__device_status=1)
+        earthquake_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, sensor_status=1, device_id__device_status=1)
+        other_components = Device.objects.all().filter(device_status=1)
+
+        sensor_reading = " "#getArduinoData()
+
+        return render(request, 'DASHBOARD-FloodComponents.html', {'sensor_reading': sensor_reading, 'all_components': all_components, 'all_sensors': all_sensors, 'all_devices': all_devices,  'other_components': other_components, 'fire_components': fire_components, 'flood_components': flood_components, 'earthquake_components': earthquake_components})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+def other_components(request):
+    if request.user.is_authenticated:
+        all_sensors = Sensor.objects.all()
+        all_components = Device_Sensor.objects.all()
+        all_devices =  Device.objects.all()
+        fire_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=0, sensor_status=1, device_id__device_status=1)
+        flood_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=1, sensor_status=1, device_id__device_status=1)
+        earthquake_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, sensor_status=1, device_id__device_status=1)
+        other_components = Device.objects.all().filter(device_status=1)
+
+        sensor_reading = " "#getArduinoData()
+
+        return render(request, 'DASHBOARD-OtherComponents.html', {'sensor_reading': sensor_reading, 'all_components': all_components, 'all_sensors': all_sensors, 'all_devices': all_devices,  'other_components': other_components, 'fire_components': fire_components, 'flood_components': flood_components, 'earthquake_components': earthquake_components})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
 
 def add_comp(request):
     if request.user.is_authenticated:

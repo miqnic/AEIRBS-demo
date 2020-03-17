@@ -53,24 +53,22 @@ $(document).ready(function() {
         });
     });
 
-    $("#userDetails").hide();
 
-    $(".table-row").click(function() {
-
+    $(".table-masterlist").click(function() {
         if ($(".userDetails").is(':visible')){
             $(".userDetails").hide();
 
             var username = $(this).data("username");
             var id = "#userDetails" + username;
             $(".left-padding").width("65%");
-            $("#userContainer").css("padding", "0 12.5px 25px 25px");
+            $(".userContainer").css("padding", "0 12.5px 25px 25px");
             $(id).show();
         }
         else{
             var username = $(this).data("username");
             var id = "#userDetails" + username;
             $(".left-padding").width("65%");
-            $("#userContainer").css("padding", "0 12.5px 25px 25px");
+            $(".userContainer").css("padding", "0 12.5px 25px 25px");
             $(id).show();
         }
     });

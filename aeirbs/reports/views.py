@@ -31,13 +31,13 @@ def audit(request):
 
 def generatePDF_audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all().order_by('id')
+        audit_logs = AuditLogs.objects.all();
         dateTime = datetime.datetime.now()
         date = dateTime.strftime("%x")
         time = dateTime.strftime("%X")
         context = {}
 
-        context['audit_logs'] = audit_logs
+        context['audit_logs'] = audit_logs.reverse()
         context['date'] = date
         context['time'] = time
         

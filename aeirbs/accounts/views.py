@@ -99,6 +99,14 @@ def del_user(request):
 
             users = User.objects.all()
 
+            log = AuditLogs(
+                activity="Delete",
+                username = request.user,
+                details= "User " + str(request.user) + " deleted user " + employee_id + " from the system."  
+            )
+
+            log.save()
+
             for user in users:
                 if user.username == employee_id:
                     user.profile.is_deleted = True

@@ -1,4 +1,6 @@
-{% extends 'AEIRBS-Default.html' %} {% block title %}AEIRBS-Masterlist{% endblock title %} {% load static %}
+{% extends 'AEIRBS-Default.html' %}
+{% block title %}AEIRBS-Masterlist{% endblock title %}
+{% load static %}
 {% block body %}
 
 <body>
@@ -18,10 +20,10 @@
 
                     </div>
 
-                    <!--Add Component Button-->
+                    <!--Add Admin Button-->
                     {% if request.user.is_superuser %}
                     <div class="col-2">
-                        <button type="button" id="addAdminButton" class="btn btn-dark float-right btn-sm mt-1">
+                        <button type="button" id="addAdminButton" class="btn btn-dark float-right  mt-1">
                             <i class="fas fa-user-plus fa-sm mr-2"></i>Add Admin
                         </button>
                     </div>
@@ -186,10 +188,10 @@
     </div>
 
     {% for user in users %}
-    <div class="right-padding collapse userDetails" id="userDetails{{user.username}}">
-        <div class="container-fluid userDetailsContainer" id="userDetailsContainer "
+    <div class="right-padding hidden userDetails" id="userDetails{{user.username}}">
+        <div class="container-fluid userDetailsContainer" id="userDetailsContainer"
             style="padding:0 25px 25px 12.5px; ">
-            <div class="container-fluid "
+            <div class="container-fluid"
                 style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px; ">
                 <div
                     style="background-color:#343A40; min-height: 45vh; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); text-align:center; position:relative; ">
@@ -302,8 +304,7 @@
                     style="background-color:#EAEDED; padding: 15px; min-height: 30vh; height: auto;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
                     <h6><b>Recent Activities:</b></h6>
                     <div style=" max-height: 50vh; overflow-y: scroll; border: 1px solid #343A40">
-                    <table id="" class="table"
-                        style="width:100%; text-align:center;">
+                        <table id="" class="table" style="width:100%; text-align:center;">
 
                             <tr style="font-size: 14px;">
                                 <th>
@@ -312,18 +313,18 @@
                                 <th>Date and Time</th>
                             </tr>
 
-                        <tbody>
-                            {% for log in logs %}
+                            <tbody>
+                                {% for log in logs %}
                                 {% if log.0 == user.username%}
-                                <tr  style="font-size: 12px;">
+                                <tr style="font-size: 12px;">
                                     <td>{{log.1}}</td>
                                     <td>{{log.2}}</td>
-                                </tr>                               
+                                </tr>
                                 {%endif%}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

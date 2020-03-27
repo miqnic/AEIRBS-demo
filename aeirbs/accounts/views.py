@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
-
 from reports.models import AuditLogs
 from .models import Profile
 
@@ -51,7 +50,14 @@ def login_page(request):
 
 def masterlist(request):
     users = User.objects.all().filter(profile__is_deleted=False)
-    return render(request, 'AEIRBS-Masterlist.html', {'users': users})
+    audit_logs = AuditLogs.objects.all()
+    logs = []
+
+    for audit in audit_logs:
+        temp = (str(audit.username), audit.activity, audit.date_time)
+        logs.append(temp)
+
+    return render(request, 'AEIRBS-Masterlist.html', {'users': users, 'logs': logs})
 
 def add_user(request):
     if request.user.is_authenticated:
@@ -89,9 +95,17 @@ def add_user(request):
 def del_user(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            employee_id = request.POST.get("inputEmployeeID")
+            employee_id = request.POST.get("username")
 
             users = User.objects.all()
+
+            log = AuditLogs(
+                activity="Delete",
+                username = request.user,
+                details= "User " + str(request.user) + " deleted user " + employee_id + " from the system."  
+            )
+
+            log.save()
 
             for user in users:
                 if user.username == employee_id:
@@ -101,7 +115,7 @@ def del_user(request):
                     messages.success(request, f'Removed user {user.first_name} {user.last_name} successfully!')
                     return redirect('masterlist')
             
-            messages.error(request, f'Cannot find user.')
+            messages.error(request, f'Cannot find {employee_id}.')
             return redirect('masterlist')
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -109,27 +123,34 @@ def del_user(request):
 def edit_user(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            employee_id = request.POST.get("inputEmployeeID")
-            employee_id = request.POST.get("inputEmployeeID")
-            email = request.POST.get("inputCompanyEmail")
-            first_name = request.POST.get("inputFirstName")
-            middle_name = request.POST.get("inputMiddleName")
-            last_name = request.POST.get("inputLastName")
+            userid = request.POST.get("username")
+            employee_id = request.POST.get("employeeID")
+            first_name = request.POST.get("firstName")
+            middle_name = request.POST.get("middleName")
+            last_name = request.POST.get("lastName")
+            company_email =request.POST.get("companyEmail")
+            job_position =request.POST.get("jobPosition")
+            mobile_number =request.POST.get("mobileNumber")
 
             users = User.objects.all()
 
             for user in users:
-                if user.username == employee_id:
-                    user.profile.is_deleted = True
+                if user.username == userid:
+                    user.username = employee_id
+                    user.first_name = first_name
+                    user.profile.middle_name = middle_name
+                    user.last_name = last_name
+                    user.email = company_email
+                    user.profile.job_title = job_position
+                    user.profile.phone_number = mobile_number
                     user.save()
-                    messages.success(request, f'Removed user {user.first_name} {user.last_name} successfully!')
+                    messages.success(request, f'updated user {user.first_name} {user.last_name} successfully!')
                     return redirect('masterlist')
             
             messages.error(request, f'Cannot find user.')
             return redirect('masterlist')
     else:
         return render(request, 'AEIRBS-Login.html')
-
 
 def profile(request):
     return render(request, 'AEIRBS-Profile.html')

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 
 # Profile is the proxy model that would be in a one-to-one relationship with the User. This will provide the other necessary details that the user might need.

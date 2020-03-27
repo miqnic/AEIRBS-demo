@@ -10,6 +10,7 @@ class AuditLogs(models.Model):
     activity = models.CharField(max_length=100)
     username = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     date_time = models.DateTimeField(auto_now_add=True)
+    details = models.CharField(max_length=100, default='details')
 
     def __str__(self):
         return str(self.id)

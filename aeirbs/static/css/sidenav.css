@@ -52,7 +52,7 @@ a:focus {
 
 #sidebar.active .dropdown-toggle::after {
     top: auto;
-    position: : absolute;
+    position:  absolute; /*position: : absolute*/
     bottom: 10px;
     right: 50%;
     -webkit-transform: translateX(50%);

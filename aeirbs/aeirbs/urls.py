@@ -38,6 +38,16 @@ urlpatterns = [
     path('add-user/', accounts_views.add_user, name='add_user'),
     path('del-user/', accounts_views.del_user, name='del_user'),
     path('edit-user/', accounts_views.edit_user, name='edit_user'),
+        
+    path('generate-audit/', reports_views.generatePDF_audit, name='generatePDF_audit'),
+    path('generate-incident/', reports_views.generatePDF_incident, name='generatePDF_incident'),
+
+    # DASHBOARD Components
+    path('earthquake-components/', components_views.earthquake_components, name='earthquake_components'),
+    path('fire-components/', components_views.fire_components, name='fire_components'),
+    path('flood-components/', components_views.flood_components, name='flood_components'),
+    path('other-components/', components_views.other_components, name='other_components'),
+
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
     path('add-comp/', components_views.add_comp, name='add_comp'),
     path('search-comp/', components_views.search_comp, name='search_comp'),

@@ -1,0 +1,57 @@
+{% extends 'AEIRBS-Dashboard.html' %}
+{% load static %}
+{% block content %}
+
+<body>
+    <ul class="nav justify-content-end">
+        <li class="nav-item mt-1 mr-3">
+            Sort by:
+        </li>
+        <li class="nav-item mr-4">
+            <div class="form-group">
+                <select class="form-control" id="sort">
+                    <option>Component ID</option>
+                </select>
+            </div>
+        </li>
+        <li class="nav-item">
+            <form action="#" method="post">
+                {% csrf_token %}
+                <div class="input-group" id="searchComponent">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input type="text" class="input form-control" placeholder="Search Component">
+                </div>
+            </form>
+        </li>
+    </ul>
+
+    <div class="d-inline-flex flex-row flex-wrap justify-content-start text-center"
+        style="padding: 20px 57px 20px 57px;">
+        {% for fl in flood_components %}
+        <div class="card card-layout border-0 m-2" data-toggle="modal"
+            data-target="#sensorModal{{fl.device_sensor_id}}">
+            <div class="card-header border-0">
+                <b style="font-size: 16px;">{{fl.device_sensor_id}}</b>
+            </div>
+            <div class="card-body border-0">
+                <div class="row my-2">
+                    <div class="col-4">
+                        <img src="{{ fl.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
+                    </div>
+                    <div class="col-8 mt-3" style="font-size: 14px;">
+                        <h6>{{fl.sensor_id.sensor_name}}</h6>
+                        <small>{{fl.device_id.floor_location}}</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-overlay" style="background-color:#1E8449;"></div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+<script>
+</script>
+{% endblock content %}

@@ -48,8 +48,9 @@
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: #EAEDED;
+    
+    overflow-y: auto;
 }
-
 .overflow-css {
     overflow-y: auto;
 }
@@ -89,6 +90,7 @@ body {
 .icon {
     border-radius: 5px;
     color: black;
+    text-decoration: none;
 }
 
 .icon:hover {
@@ -131,14 +133,9 @@ body {
 }
 
 .btn-img {
-    display: block;
-    background-color: #343A40;
-    color: white;
-    margin-top: 3px;
 }
 
 .btn-img:hover {
-    background-color: black;
     cursor: pointer;
 }
 
@@ -157,4 +154,12 @@ body {
 
 .table-row:hover {
     background-color: #F4F6F6;
+}
+
+input{
+    line-height: 1rem;
+}
+
+.center{
+    text-align: center;
 }

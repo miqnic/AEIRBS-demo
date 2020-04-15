@@ -1,10 +1,8 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $('.table').DataTable({
-        "paging": false,
+        "paging":false,
         searching: false
     });
-
-    $(".dataTables_paginate").addClass("btn btn-sm float-right")
     $("label").css("font-size", "14px")
     $(".dataTables_info").css("font-size", "14px")
 
@@ -14,3 +12,4 @@ $(document).ready(function() {
         });
     }, 4000);
 });
+

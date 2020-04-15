@@ -8,7 +8,7 @@
     <div class="left-padding" id="users">
         <div class="container-fluid userContainer" id="userContainer" style="padding:0 25px 25px 25px;">
             <div class="container-fluid"
-                style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
+                style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
 
                 <div class="row">
                     <!--Page Labels-->
@@ -17,7 +17,6 @@
                         </h3>
                         <h3 class="hidden" id="addAdminLabel"><b><b>ADD ADMIN</b></b>
                         </h3>
-
                     </div>
 
                     <!--Add Admin Button-->
@@ -29,7 +28,7 @@
                     </div>
                     {% endif %}
 
-                    <!--Search Component-->
+                    <!--Search Admin-->
                     <div class="col-3 mt-1">
                         <form action="#" method="post">
                             <div class="input-group mb-3" id="searchAdmin">
@@ -46,29 +45,29 @@
                 <div class="container my-3 hidden" id="addAdminForm"
                     style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
 
-                    <button type="submit" id="cancel-addAdmin" class="btn btn-link text-dark float-left my-2 icon"
+                    <a href="{% url 'masterlist' %}" id="" class="btn btn-link text-dark float-left my-2 icon"
                         title="Go Back">
                         <span><i class="fas fa-arrow-left"></i></span>
-                    </button>
+                    </a>
 
                     <div class="row my-5">
                         <!--Upload Admin Image-->
                         <div class="col-2 imgUp mt-4">
                             <div class="imagePreview"></div>
-                            <label class="btn btn-img btn-sm">
+                            <label class="btn btn-dark btn-block btn-sm">
                                 Select Image<input type="file" class="uploadFile img" value="Upload Photo"
                                     style="width: 0px;height: 0px;overflow: hidden;">
                             </label>
                         </div>
 
-                        <div class="col-10" style="border-left: 1px solid #343A40;">
+                        <div class="col-10" style="border-left: 3px solid #343A40;">
                             <form action="{% url 'add_user' %}" method="post">
                                 {% csrf_token %}
                                 <div class="row">
                                     <!--Dropdown Access Role-->
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="accessRole">Access Role</label>
+                                            <small for="accessRole">Access Role</small>
                                             <select class="form-control" name="accessRole">
                                                 <option></option>
                                                 <option id="adminRole" value="adminRole">Admin</option>
@@ -80,7 +79,7 @@
                                     <!--Input Employee ID-->
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="employeeID">Employee ID</label>
+                                            <small for="employeeID">Employee ID</small>
                                             <input type="text" class="form-control" id="inputEmployeeID"
                                                 name="inputEmployeeID" placeholder="Employee ID">
                                         </div>
@@ -94,7 +93,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="firstName">First Name</label>
+                                            <small for="firstName">First Name</small>
                                             <input type="text" class="form-control" id="inputFirstName"
                                                 name="inputFirstName" placeholder="First Name">
                                         </div>
@@ -103,7 +102,7 @@
                                     <!--Input Middle Name-->
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="middleName">Middle Name</label>
+                                            <small for="middleName">Middle Name</small>
                                             <input type="text" class="form-control" id="inputMiddleName"
                                                 name="inputMiddleName" placeholder="Middle Name">
                                         </div>
@@ -112,7 +111,7 @@
                                     <!--Input last Name-->
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="lastName">Last Name</label>
+                                            <small for="lastName">Last Name</small>
                                             <input type="text" class="form-control" id="inputLastName"
                                                 name="inputLastName" placeholder="Last Name">
                                         </div>
@@ -123,7 +122,7 @@
                                     <!--Input Job Position-->
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="jobPosition">Company Email</label>
+                                            <small for="jobPosition">Job Position</small>
                                             <input type="text" class="form-control" id="inputJobPosition"
                                                 name="inputJobPosition" placeholder="Job Position">
                                         </div>
@@ -132,7 +131,7 @@
                                     <!--Input Company Email-->
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="companyEmail">Company Email</label>
+                                            <small for="companyEmail">Company Email</small>
                                             <input type="email" class="form-control" id="inputCompanyEmail"
                                                 name="inputCompanyEmail" placeholder="Company Email">
                                         </div>
@@ -141,7 +140,7 @@
                                     <!--Input Phone Number-->
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="mobileNumber">Company Email</label>
+                                            <small for="mobileNumber">Mobile Number</small>
                                             <input type="text" class="form-control" id="inputMobileNumber"
                                                 name="inputMobileNumber" placeholder="Mobile Number">
                                         </div>
@@ -171,7 +170,8 @@
                     </thead>
                     <tbody>
                         {% for user in users %}
-                        <tr class="table-row table-masterlist" data-username='{{user.username}}'>
+                        <tr class="table-row table-masterlist hello" onclick="hello()"
+                            data-username='{{user.username}}'>
                             <td>
                                 <input type="checkbox">
                             </td>
@@ -192,9 +192,9 @@
         <div class="container-fluid userDetailsContainer" id="userDetailsContainer"
             style="padding:0 25px 25px 12.5px; ">
             <div class="container-fluid"
-                style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px; ">
+                style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px; ">
                 <div
-                    style="background-color:#343A40; min-height: 45vh; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); text-align:center; position:relative; ">
+                    style="background-color:#343A40; min-height: 45vh; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); text-align:center; position:relative;  border-radius: 5px;">
                     <button type="submit " class="btn btn-link icon mt-2 mr-2 closeAdmin"
                         data-username='{{user.username}}' id="closeAdmin "
                         style="color:white; position:absolute; right: 0; "><i class="fas fa-times fa-sm "></i></button>
@@ -223,11 +223,11 @@
                     <div class="userHeader mb-2" style="padding-top: 6vh;">
                         <div class="mb-3">
                             <img src="{{ user.profile.user_image.url }}"
-                                style="border-radius: 50%; height:20vh; border: 8px solid white;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3) ">
+                                style="border-radius: 50%; height:23vh; border: 8px solid white;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3) ">
                         </div>
 
                         <div id="adminDetails " class="" style="color: white; ">
-                            <h3><b>{{user.first_name}} {{user.profile.middle_name}} {{user.last_name}}</b></h3>
+                            <h3><b>{{user.get_full_name}}</b></h3>
                             <div class="mt-2 ">
                                 <h6><i class="fas fa-user fa-sm mr-2 "></i>{% if user.is_superuser%} Super- Admin
                                     {% else %} Admin {% endif %}</h6>
@@ -241,84 +241,120 @@
                     <form action="{% url 'edit_user' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="username" value="{{ user.username }}">
-                        <div id="adminForm " class="mr-4 ml-4 mb-4 adminForm hidden"
+                        <div id="adminForm " class="mr-4 ml-4 mb-4 adminForm hidden center"
                             style="color: white; text-align: left; padding-top: 8vh;">
-                            <div class="form-group ">
-                                <label for="employeeID ">Employee ID</label>
-                                <input type="text" class="form-control " name="employeeID " value="{{user.username}}"
-                                    placeholder=" ">
+
+                            <!--Upload Admin Image-->
+                            <div class="imgUp mt-4 center">
+                                <div class="imagePreview"></div>
+                                <label class="btn btn-block btn-outline-light btn-sm">
+                                    Select Image<input type="file" class="uploadFile img" value="Upload Photo"
+                                        style="width: 0px;height: 0px;overflow: hidden;">
+                                </label>
                             </div>
+
                             <div class="form-group ">
-                                <label for="accessRole ">Access Role</label>
-                                <select class="form-control " name="accessRole">
+                                <small for="accessRole ">Access Role</small>
+                                <select class="form-control form-control-sm" name="accessRole">
                                     {% if user.is_superuser %}
-                                    <option></option>
                                     <option id=" adminRole " value="adminRole">Admin</option>
                                     <option id="superRole " value="superRole" selected>Super Admin</option>
                                     {% else %}
-                                    <option></option>
                                     <option id="adminRole" value="adminRole" selected>Admin</option>
                                     <option id="superRole" value="superRole">Super Admin</option>
                                     {% endif %}
                                 </select>
                             </div>
-                            <div class="form-group ">
-                                <label for="firstName ">First Name</label>
-                                <input type="text " class="form-control " name="firstName" value="{{user.first_name}}"
-                                    placeholder=" ">
+
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="form-group ">
+                                        <small for="jobPosition ">Job Position</small>
+                                        <input type="text " class="form-control form-control-sm" name="jobPosition"
+                                            value="{{user.profile.job_title}}" placeholder="Job Position">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group ">
+                                        <small for="employeeID ">Employee ID</small>
+                                        <input type="text" class="form-control form-control-sm" name="employeeID"
+                                            value="{{user.username}}" placeholder="Employee ID">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group ">
-                                <label for="middleName ">Middle Name</label>
-                                <input type="text " class="form-control " name="middleName"
-                                    value="{{user.profile.middle_name}}" placeholder=" ">
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group ">
+                                        <small for="firstName ">First Name</small>
+                                        <input type="text " class="form-control form-control-sm" name="firstName"
+                                            value="{{user.first_name}}" placeholder="First Name">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group ">
+                                        <small for="middleName ">Middle Name</small>
+                                        <input type="text " class="form-control form-control-sm" name="middleName"
+                                            value="{{user.profile.middle_name}}" placeholder="Middle Name">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group ">
+                                        <small for="lastName ">Last Name</small>
+                                        <input type="text " class="form-control form-control-sm" name="lastName"
+                                            value="{{user.last_name}}" placeholder="Last Name">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group ">
-                                <label for="lastName ">Last Name</label>
-                                <input type="text " class="form-control " name="lastName" value="{{user.last_name}}"
-                                    placeholder=" ">
+
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="form-group ">
+                                        <small for="companyEmail ">Company Email</small>
+                                        <input type="email " class="form-control form-control-sm" name="companyEmail"
+                                            value="{{user.email}}" placeholder="Company Email">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group ">
+                                        <small for="mobileNumber ">Mobile Number</small>
+                                        <input type="number " class="form-control form-control-sm" name="mobileNumber"
+                                            value="{{user.profile.phone_number}}" placeholder="Mobile Number">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group ">
-                                <label for="companyEmail ">Company Email</label>
-                                <input type="email " class="form-control " name="companyEmail" value="{{user.email}}"
-                                    placeholder=" ">
-                            </div>
-                            <div class="form-group ">
-                                <label for="jobPosition ">Job Position</label>
-                                <input type="text " class="form-control " name="jobPosition"
-                                    value="{{user.profile.job_title}}" placeholder=" ">
-                            </div>
-                            <div class="form-group ">
-                                <label for="mobileNumber ">Mobile Number</label>
-                                <input type="number " class="form-control " name="mobileNumber"
-                                    value="{{user.profile.phone_number}}" placeholder=" ">
-                            </div>
-                            <button type="submit" class="btn btn-success btn-sm mr-3 saveAdmin hidden" id="saveAdmin"
-                                style="position:absolute; right: 0; "><i
+
+                            <button type="submit" class="float-right btn btn-success btn-sm" id=""><i
                                     class="fas fa-save fa-sm mr-2 "></i>Save</button>
                             <br><br>
                         </div>
                     </form>
                     {% endif %}
                 </div>
-                <div class=" mt-3 "
-                    style="background-color:#EAEDED; padding: 15px; min-height: 30vh; height: auto;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
+                <div class="mt-3 "
+                    style="background-color:#EAEDED; padding: 15px; min-height: 30vh; height: auto;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
                     <h6><b>Recent Activities:</b></h6>
-                    <div style=" max-height: 50vh; overflow-y: scroll; border: 1px solid #343A40">
-                        <table id="" class="table" style="width:100%; text-align:center;">
-
-                            <tr style="font-size: 14px;">
-                                <th>
-                                    Activity
-                                </th>
-                                <th>Date and Time</th>
-                            </tr>
-
+                    <div style=" max-height: 50vh; overflow-y: scroll; overflow-x: hidden;">
+                        <table id="" class="table" style="width:100%;">
                             <tbody>
                                 {% for log in logs %}
                                 {% if log.0 == user.username%}
                                 <tr style="font-size: 12px;">
-                                    <td>{{log.1}}</td>
-                                    <td>{{log.2}}</td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col">
+                                                <b>{{log.1}}</b>
+                                            </div>
+                                            <div class="col">
+                                                <small class="float-right">{{log.2}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col ml-3">
+                                                {{log.3}}
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                                 {%endif%}
                                 {% endfor %}
@@ -331,8 +367,4 @@
     </div>
     {% endfor %}
 </body>
-<script>
-
-</script>
-
 {% endblock body %}

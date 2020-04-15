@@ -1,132 +1,130 @@
-{% extends 'AEIRBS-Default.html' %}
+  {% extends 'AEIRBS-Default.html' %}
 
-{% block title %}AEIRBS-Summary Reports{% endblock title %}
+  {% block title %}AEIRBS-Summary Reports{% endblock title %}
 
-{% load static %}
-{% block body %}
+  {% load static %}
+  {% block body %}
 
-<body>
-  <div class="container-fluid" style="padding:0 25px 25px 25px;">
-    <div class="container-fluid"
-      style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
+  <!--Date Picker-->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
 
-      <div class="row">
-        <!--Page Labels-->
-        <div class="col">
-          <h3 id="dashboardLabel"><b><b>SUMMARY REPORT</b></b></h3>
-        </div>
+  <body>
+    <div class="container-fluid" style="padding:0 25px 25px 25px;">
+      <div class="container-fluid"
+        style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
 
-        <!--
-              <div class="col-2">
-              <form  action="#" method="post">
-              <div class="input-group" id="searchAdmin">
-              <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-            </div>
-            <input type="text" class="form-control" name="date" placeholder="Start Date">
-          </div>
-        </form>
-      </div>
-
-      <div class="col-2">
-      <form  action="#" method="post">
-      <div class="input-group" id="searchAdmin">
-      <div class="input-group-prepend">
-      <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-    </div>
-    <input type="text" class="form-control" name="date" placeholder="End Date">
-  </div>
-</form>
-</div>
--->
-        <!--Generate Report Button-->
-        <div class="col-2">
-          <button type="button" class="btn btn-dark btn-sm mt-1 mr-3 float-right" id="generatePDFButton"><i
-              class="fas fa-download fa-sm mr-2"></i>Download</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="container-fluid" style="padding:0px 25px 25px 25px;">
-    <div class="container-fluid"
-      style=" background-color: rgba(0,0,0,.1); padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
-
-      <div class="row" style="padding-left:25px;">
-        <div class="col-2 mt-1">
-          <form action="#" method="post">
-            <div class="input-group" id="searchAdmin">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-              <input type="text" class="input form-control" name="date" placeholder="Start Date">
-            </div>
-          </form>
-        </div>
-
-        <div class="col-2 mt-1">
-          <form action="#" method="post">
-            <div class="input-group" id="searchAdmin">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-              <input type="text" class="input form-control" name="date" placeholder="End Date">
-            </div>
-          </form>
-        </div>
-
-        <div class="col-2" style="padding-top: 5.5px;">
-          <button type="button" class="btn btn-dark btn-sm mr-3 float-left" id="generateReportButton"><i
-              class="fas fa-sync-alt fa-sm mr-2"></i>Generate</button>
-        </div>
-      </div>
-
-      <div class="container-fluid mt-4" style="padding:0 25px 25px 25px;">
-        <div class="container-fluid"
-          style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
-          <center><canvas id="myChart" width="100%"></canvas></center>
-        </div>
-      </div>
-
-      <div class="container-fluid" style="padding:0 25px 25px 25px;">
         <div class="row">
-          <div class="col-4">
-            <div class="container-fluid"
-              style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
-              <center><canvas id="myChart1" width="100%" height="70%"></canvas></center>
-            </div>
+          <!--Page Labels-->
+          <div class="col">
+            <h3 id="dashboardLabel"><b><b>SUMMARY REPORT</b></b></h3>
           </div>
-          <div class="col-4">
-            <div class="container-fluid"
-              style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
-              <center><canvas id="myChart2" width="100%" height="70%"></canvas></center>
+
+          <!--
+                <div class="col-2">
+                <form  action="#" method="post">
+                <div class="input-group" id="searchAdmin">
+                <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+              <input type="text" class="form-control" name="date" placeholder="Start Date">
             </div>
+          </form>
+        </div>
+
+        <div class="col-2">
+        <form  action="#" method="post">
+        <div class="input-group" id="searchAdmin">
+        <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+      </div>
+      <input type="text" class="form-control" name="date" placeholder="End Date">
+    </div>
+  </form>
+  </div>
+  -->
+          <!--Generate Report Button-->
+          <div class="col-2">
+            <button type="button" class="btn btn-dark btn mr-3 float-right" id="downloadPDFButton"><i
+                class="fas fa-download fa-sm mr-2"></i>Download</button>
           </div>
-          <div class="col-4">
-            <div class="container-fluid"
-              style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 0px;">
-              <center><canvas id="myChart3" width="100%" height="70%"></canvas></center>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container-fluid" style="padding:0px 25px 25px 25px;">
+      <div class="container-fluid"
+        style=" background-color: rgba(52, 58, 64,.1); padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+
+        <div class="row" style="padding-left:25px;">
+          <div class="col-2">
+            <form action="#" method="post">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+                <input type="text" class="input form-control datepicker" name="startDate" placeholder="Start Date">
+              </div>
+            </form>
+          </div>
+
+          <div class="col-2">
+            <form action="#" method="post">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+                <input type="text" id="datepicker" class="input form-control datepicker" name="endDate"
+                  placeholder="End Date">
+              </div>
+            </form>
+          </div>
+
+          <div class="col-2">
+            <button type="button" class="btn btn-dark btn mr-3 float-left" id="generateReportButton"><i
+                class="fas fa-sync-alt fa-sm mr-2"></i>Generate</button>
+          </div>
+        </div>
+
+        <div class="container-fluid mt-4" style="padding:0 25px 25px 25px;">
+          <div class="container-fluid"
+            style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+            <center><canvas id="myChart" width="100%"></canvas></center>
+          </div>
+        </div>
+
+        <div class="container-fluid" style="padding:0 25px 25px 25px;">
+          <div class="row">
+            <div class="col-4">
+              <div class="container-fluid"
+                style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+                <center><canvas id="myChart1" width="100%" height="70%"></canvas></center>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="container-fluid"
+                style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+                <center><canvas id="myChart2" width="100%" height="70%"></canvas></center>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="container-fluid"
+                style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+                <center><canvas id="myChart3" width="100%" height="70%"></canvas></center>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-  </div>
-</body>
-<script>
-  
-  $(document).ready(function () {
-    var date_input = $('input[name="date"]'); //our date input has the name "date"
-    var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
-    var options = {
-      format: 'mm/dd/yyyy',
-      container: container,
-      todayHighlight: true,
-      autoclose: true,
-    };
-    date_input.datepicker(options);
-  });
-</script>
-{% endblock body %}
+    </div>
+    <!--Date Picker-->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $('.datepicker').datepicker();
+    </script>
+  </body>
+  {% endblock body %}

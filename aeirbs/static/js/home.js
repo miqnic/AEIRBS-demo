@@ -80,7 +80,7 @@ $(document).ready(function () {
     $("#addComponentLabel").show();
     $("#dashboardLabel").hide();
     $("#addComponentButton").hide();
-    $("#componentAccordion").hide();
+    $("#componentContainer").hide();
     $("#searchComponent").hide();
     $("#dashboardHeader").hide();
   });

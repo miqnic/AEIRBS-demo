@@ -12,8 +12,8 @@
 
       <div class="sidebar-body">
         <ul class="list-unstyled components border-0">
-          <li>
-            <a id="dashboard" class="dashboard" href="{% url 'home' %}">
+          <li class="mx-2 my-1">
+            <a id="dashboard" class="dashboard" href="{% url 'earthquake_components' %}" style="border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-cogs mx-3"></i>
@@ -23,13 +23,14 @@
                 </div>
               </div>
             </a>
-            <a id="dashboard-logo" class="" style="display:none;" href="{% url 'home' %}" title="Dashboard">
-              <i class="fas fa-cogs fa-lg"></i></h6>
+            <a id="dashboard-logo" class="" style="display:none; border-radius: 5px;"
+              href="{% url 'earthquake_components' %}" title="Dashboard">
+              <i class="fas fa-cogs fa-lg" style="border-radius: 5px;"></i></h6>
             </a>
           </li>
 
-          <li>
-            <a id="masterlist" class="" href="{% url 'masterlist' %}">
+          <li class="mx-2 my-1">
+            <a id="masterlist" class="" href="{% url 'masterlist' %}" style="border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-users mx-3"></i>
@@ -39,29 +40,33 @@
                 </div>
               </div>
             </a>
-            <a id="masterlist-logo" class="" style="display:none;" href="{% url 'masterlist' %}" title="Masterlist">
+            <a id="masterlist-logo" class="" style="display:none;  border-radius: 5px;" href="{% url 'masterlist' %}"
+              title="Masterlist">
               <i class="fas fa-users fa-lg"></i>
             </a>
           </li>
-          <li>
-            <a id="reports" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown">
+
+          <li class="mx-2 my-1">
+            <a id="reports" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class=""
+              style="border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-folder-open mx-3"></i>
                 </div>
-                <div class="col ml-1">
+                <div class="col-6 ml-1">
                   Reports
                 </div>
+                <div class="col dropdown-toggle"></div>
               </div>
             </a>
-            <a id="reports-logo" class="" style="display:none;" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
-              class="dropdown" title="Reports">
+            <a id="reports-logo" style="display:none;  border-radius: 5px;" href="#pageSubmenu" data-toggle="collapse"
+              aria-expanded="false" class="btn dropdown-toggle" title="Reports">
               <i class="fas fa-folder-open fa-lg ml-2"></i>
             </a>
 
             <ul class="collapse list-unstyled" id="pageSubmenu">
-              <li>
-                <a id="audit" class="" href="{% url 'audit' %}">
+              <li class="my-2">
+                <a id="audit" class="" href="{% url 'audit' %}" style="border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
                       <i class="fas fa-file-alt mx-3"></i>
@@ -71,12 +76,14 @@
                     </div>
                   </div>
                 </a>
-                <a id="audit-logo" class="" style="display:none;" href="{% url 'audit' %}" title="Audit Logs">
-                  <i class="fas fa-file-alt fa-sm ml-2"></i>
+                <a id="audit-logo" class="" style="display:none;  border-radius: 5px;" href="{% url 'audit' %}"
+                  title="Audit Logs">
+                  <i class="fas fa-file-alt fa-sm"></i>
                 </a>
               </li>
-              <li>
-                <a id="incident" class="" href="{% url 'incident' %}">
+
+              <li class="my-2">
+                <a id="incident" class="" href="{% url 'incident' %}" style="border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
                       <i class="fas fa-clipboard mx-3"></i>
@@ -86,12 +93,14 @@
                     </div>
                   </div>
                 </a>
-                <a id="incident-logo" class="" style="display:none;" href="{% url 'incident' %}" title="Incident Reports">
-                  <i class="fas fa-clipboard fa-sm ml-2"></i>
+                <a id="incident-logo" class="" style="display:none;  border-radius: 5px;" href="{% url 'incident' %}"
+                  title="Incident Reports">
+                  <i class="fas fa-clipboard fa-sm"></i>
                 </a>
               </li>
-              <li>
-                <a id="summary" class="" href="{% url 'summary' %}">
+
+              <li class="my-2">
+                <a id="summary" class="" href="{% url 'summary' %}" style="border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
                       <i class="fas fa-chart-bar mx-3"></i>
@@ -101,8 +110,9 @@
                     </div>
                   </div>
                 </a>
-                <a id="summary-logo" class="" style="display:none;" href="{% url 'summary' %}" title="Summary Reports">
-                  <i class="fas fa-chart-bar fa-sm ml-2"></i>
+                <a id="summary-logo" class="" style="display:none;" href="{% url 'summary' %}" title="Summary Reports"
+                  style="border-radius: 5px;">
+                  <i class="fas fa-chart-bar fa-sm"></i>
                 </a>
               </li>
             </ul>

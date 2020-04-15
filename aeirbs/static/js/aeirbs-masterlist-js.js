@@ -8,6 +8,7 @@ $(document).ready(function() {
         $("#masterlistLabel").hide();
         $("#addAdminButton").hide();
         $("#masterlistTable").hide();
+        $("#searchAdmin").hide();
         $("#sortMasterlist").hide();
         $(".left-padding").width("100%");
         $(".userDetails").hide();

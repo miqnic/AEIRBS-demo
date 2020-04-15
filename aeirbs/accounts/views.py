@@ -26,7 +26,7 @@ def login_action(request):
             log.save()
 
             messages.success(request, f'Login is successful!')
-            return redirect('home')
+            return redirect('earthquake_components')
         else:
             messages.error(request, f'Invalid credentials.')
             return redirect('login_page')
@@ -44,7 +44,7 @@ def logout_action(request):
 
 def login_page(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('earthquake_components')
     else:
         return render(request, 'AEIRBS-Login.html')
 
@@ -54,7 +54,7 @@ def masterlist(request):
     logs = []
 
     for audit in audit_logs:
-        temp = (str(audit.username), audit.activity, audit.date_time)
+        temp = (str(audit.username), audit.activity, audit.date_time,  audit.details)
         logs.append(temp)
 
     return render(request, 'AEIRBS-Masterlist.html', {'users': users, 'logs': logs})
@@ -153,6 +153,13 @@ def edit_user(request):
         return render(request, 'AEIRBS-Login.html')
 
 def profile(request):
-    return render(request, 'AEIRBS-Profile.html')
+    audit_logs = AuditLogs.objects.all()
+    logs = []
+
+    for audit in audit_logs:
+        temp = (str(audit.username), audit.activity, audit.date_time, audit.details)
+        logs.append(temp)
+
+    return render(request, 'AEIRBS-Profile.html', {'logs': logs})
 
 

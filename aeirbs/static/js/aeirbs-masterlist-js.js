@@ -1,34 +1,5 @@
-$(document).ready(function() {
-    $("#addAdminForm").hide();
-    $("#addAdminLabel").hide();
 
-    $("#addAdminButton").click(function() {
-        $("#addAdminForm").show();
-        $("#addAdminLabel").show();
-        $("#masterlistLabel").hide();
-        $("#addAdminButton").hide();
-        $("#masterlistTable").hide();
-        $("#searchAdmin").hide();
-        $("#sortMasterlist").hide();
-        $(".left-padding").width("100%");
-        $(".userDetails").hide();
-        $("#userContainer").css("padding", "0 25px 25px 25px");
-        
-    });
-
-    $("#cancel-addAdmin").click(function() {
-        $("#addAdminForm").hide();
-        $("#addAdminLabel").hide();
-        $("#masterlistLabel").show();
-        $("#addAdminButton").show();
-        $("#masterlistTable").show();
-        $("#searchAdmin").show();
-        $("#sortMasterlist").show();
-        $(".userDetails").hide();
-        $(".left-padding").width("100%");
-    });
-
-
+$(document).ready(function () {
     //Add Image
     $(".imgAdd").click(function() {
         $(this).closest(".row").find('.imgAdd').before('<div class="col-sm-2 imgUp"><div class="imagePreview"></div><label class="btn btn-primary">Upload<input type="file" class="uploadFile img" value="Upload Photo" style="width:0px;height:0px;overflow:hidden;"></label><i class="fa fa-times del"></i></div>');
@@ -62,6 +33,7 @@ $(document).ready(function() {
             var username = $(this).data("username");
             var id = "#userDetails" + username;
             $(".left-padding").width("65%");
+            $(".user").css("padding", "0 25px 25px 25px");
             $(".userContainer").css("padding", "0 12.5px 25px 25px");
             $(id).show();
         }
@@ -69,6 +41,7 @@ $(document).ready(function() {
             var username = $(this).data("username");
             var id = "#userDetails" + username;
             $(".left-padding").width("65%");
+            $(".user").css("padding", "0 25px 25px 25px");
             $(".userContainer").css("padding", "0 12.5px 25px 25px");
             $(id).show();
         }
@@ -76,26 +49,21 @@ $(document).ready(function() {
 
     //Edit Admin Details
     $(".editAdmin").click(function() {
-        $(".userHeader").hide()
-        $(".userActions").hide();
-        $(".adminForm").show();
-        $(".saveAdmin").show();
-        $(".cancelEditAdmin").show();
+        $(".adminDetails").hide();
+        $(".editAdminForm").show();
     });
 
     //Cancel Edit Admin Details
     $(".cancelEditAdmin").click(function() {
-        $(".userHeader").show();
-        $(".userActions").show();
-        $(".adminForm").hide();
-        $(".saveAdmin").hide();
-        $(".cancelEditAdmin").hide();
+        $(".adminDetails").show();
+        $(".editAdminForm").hide();
     });
 
     //Save Admin Details
     $(".saveAdmin").click(function() {
         $(".adminDetails").show();
         $(".editAdmin").show();
+        $(".closeAdmin").show();
         $(".adminForm").hide();
         $(".saveAdmin").hide();
     });
@@ -104,14 +72,9 @@ $(document).ready(function() {
     $(".closeAdmin").click(function() {
         var username = $(this).data("username");
         var id = "#userDetails" + username;
-        $(".userHeader").show();
-        $(".userActions").show();
-        $(".adminForm").hide();
-        $(".saveAdmin").hide();
-        $(".cancelEditAdmin").hide();
 
         $(".left-padding").width("100%");
-        $("#userContainer").css("padding", "0 25px 25px 25px");
+        $(".userContainer").css("padding", "0 25px 25px 25px");
         $(id).hide();
     });
 });

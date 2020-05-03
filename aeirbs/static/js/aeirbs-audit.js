@@ -19,9 +19,12 @@ $(document).ready(function() {
     });
 
     //Close Audit Details
-    $("#close-auditDetails").click(function() {
+    $(".closeAudit").click(function() {
+        var auditID = $(this).data("auditID");
+        var id = "#auditDetails" + auditID;
+
         $(".left-padding").width("100%");
-        $("#audits").css("padding", "0 25px 25px 25px");
-        $("#auditDetails").hide();
+        $("#userContainer").css("padding", "0 25px 25px 25px");
+        $(id).hide();
     });
 });

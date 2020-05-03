@@ -3,17 +3,17 @@
 {%block body%}
 
 <body>
-  <nav id="sidebar">
+  <nav id="sidebar" class="active" style="position: relative;">
     <div class="sticky-top">
       <div class="sidebar-header">
-        <img id="logo-AEIRBS" src="{% static 'icons/AEIRBS.png' %}" height="45">
-        <img id="logo" class="hidden" src="{% static 'icons/logo.png' %}" height="45">
+        <img id="logo-AEIRBS"  class="hidden" src="{% static 'icons/AEIRBS.png' %}" height="45">
+        <img id="logo" src="{% static 'icons/aeirbs-logo.png' %}" height="45">
       </div>
 
-      <div class="sidebar-body">
+      <div class="sidebar-body" style="height: 100%;">
         <ul class="list-unstyled components border-0">
           <li class="mx-2 my-1">
-            <a id="dashboard" class="dashboard" href="{% url 'earthquake_components' %}" style="border-radius: 5px;">
+            <a id="dashboard" class="dashboard" href="{% url 'earthquake_components' %}" style="display:none; border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-cogs mx-3"></i>
@@ -23,14 +23,14 @@
                 </div>
               </div>
             </a>
-            <a id="dashboard-logo" class="" style="display:none; border-radius: 5px;"
+            <a id="dashboard-logo" class="dashboard" style="border-radius: 5px;"
               href="{% url 'earthquake_components' %}" title="Dashboard">
               <i class="fas fa-cogs fa-lg" style="border-radius: 5px;"></i></h6>
             </a>
           </li>
 
           <li class="mx-2 my-1">
-            <a id="masterlist" class="" href="{% url 'masterlist' %}" style="border-radius: 5px;">
+            <a id="masterlist" class="masterlist" href="{% url 'masterlist' %}" style="display:none;border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-users mx-3"></i>
@@ -40,15 +40,14 @@
                 </div>
               </div>
             </a>
-            <a id="masterlist-logo" class="" style="display:none;  border-radius: 5px;" href="{% url 'masterlist' %}"
+            <a id="masterlist-logo" class="masterlist" style="border-radius: 5px;" href="{% url 'masterlist' %}"
               title="Masterlist">
               <i class="fas fa-users fa-lg"></i>
             </a>
           </li>
 
-          <li class="mx-2 my-1">
-            <a id="reports" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class=""
-              style="border-radius: 5px;">
+          <li class="mx-2 my-1" >
+            <a id="reports" class="reports" style="display:none;border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-folder-open mx-3"></i>
@@ -59,14 +58,13 @@
                 <div class="col dropdown-toggle"></div>
               </div>
             </a>
-            <a id="reports-logo" style="display:none;  border-radius: 5px;" href="#pageSubmenu" data-toggle="collapse"
-              aria-expanded="false" class="btn dropdown-toggle" title="Reports">
+            <a id="reports-logo" style="border-radius: 5px;" class="reports" title="Reports">
               <i class="fas fa-folder-open fa-lg ml-2"></i>
             </a>
 
-            <ul class="collapse list-unstyled" id="pageSubmenu">
-              <li class="my-2">
-                <a id="audit" class="" href="{% url 'audit' %}" style="border-radius: 5px;">
+            <ul class="list-unstyled hidden" id="pageSubmenu">
+              <li class="m-2">
+                <a id="audit" class="audit" href="{% url 'audit' %}" style="display:none;border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
                       <i class="fas fa-file-alt mx-3"></i>
@@ -76,14 +74,14 @@
                     </div>
                   </div>
                 </a>
-                <a id="audit-logo" class="" style="display:none;  border-radius: 5px;" href="{% url 'audit' %}"
+                <a id="audit-logo" class="audit" style="border-radius: 5px;" href="{% url 'audit' %}"
                   title="Audit Logs">
                   <i class="fas fa-file-alt fa-sm"></i>
                 </a>
               </li>
 
-              <li class="my-2">
-                <a id="incident" class="" href="{% url 'incident' %}" style="border-radius: 5px;">
+              <li class="m-2">
+                <a id="incident" class="incident" href="{% url 'incident' %}" style="display:none;border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
                       <i class="fas fa-clipboard mx-3"></i>
@@ -93,14 +91,14 @@
                     </div>
                   </div>
                 </a>
-                <a id="incident-logo" class="" style="display:none;  border-radius: 5px;" href="{% url 'incident' %}"
+                <a id="incident-logo" class="incident" style="border-radius: 5px;" href="{% url 'incident' %}"
                   title="Incident Reports">
                   <i class="fas fa-clipboard fa-sm"></i>
                 </a>
               </li>
 
-              <li class="my-2">
-                <a id="summary" class="" href="{% url 'summary' %}" style="border-radius: 5px;">
+              <li class="m-2">
+                <a id="summary" class="summary" href="{% url 'summary' %}" style="display:none; border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
                       <i class="fas fa-chart-bar mx-3"></i>
@@ -110,7 +108,7 @@
                     </div>
                   </div>
                 </a>
-                <a id="summary-logo" class="" style="display:none;" href="{% url 'summary' %}" title="Summary Reports"
+                <a id="summary-logo" class="summary " style="border-radius: 5px;" href="{% url 'summary' %}" title="Summary Reports"
                   style="border-radius: 5px;">
                   <i class="fas fa-chart-bar fa-sm"></i>
                 </a>
@@ -119,6 +117,7 @@
           </li>
         </ul>
       </div>
+     
     </div>
   </nav>
 </body>

@@ -16,11 +16,11 @@
 
                     <!--Add Component Button-->
                     <div class="col">
-                        <button type="button" class="btn btn-danger btn float-right" id="clearLogsButton"><i
+                        <button type="button" class="btn btn-danger btn btn-sm float-right" id="clearLogsButton"><i
                                 class="fas fa-trash-alt fa-sm mr-2"></i>Clear Logs</button>
                         {% if request.user.is_superuser %}
                         <form action="{% url 'generatePDF_audit' %} " method="post ">
-                            <button type="submit" class="btn btn-dark btn mr-3 float-right"
+                            <button type="submit" class="btn btn-dark btn mr-3 float-right btn-sm"
                                 id="generatePDFButton"><i class="fas fa-download fa-sm mr-2"></i>Download</button>
                         </form>
                         {% endif %}
@@ -33,7 +33,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 </div>
-                                <input type="text" class="input form-control" placeholder="Search Audit">
+                                <input type="text" class="input form-control form-control-sm" placeholder="Search Audit">
                             </div>
                         </form>
                     </div>
@@ -74,17 +74,18 @@
                 style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px; ">
                 <div
                     style="background-color:#343A40; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); text-align:center; position:relative; border-radius: 5px;">
-                    <div>
-                        <button class="btn btn-link text-light float-right btn-sm mt-2 mr-2 icon"
-                            style="position:absolute; right: 2px;"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="row" style="color: white; padding: 2vh;">
-                        <div class="col-3" style="border-right: 2px solid white; text-align: center;">
+                    
+                        <button type="button" class="btn btn-link icon mt-2 mr-2 closeAdmin"
+                        data-auditID='{{log.id}}'
+                        style="color:white; position:absolute; right: 0; "><i class="fas fa-times fa-sm "></i></button>
+                    
+                    <div class="row" style="color: white; padding: 2vh; padding-top: 4vh;">
+                        <div class="col-4" style="border-right: 2px solid white; text-align: center;">
                             <h1><b>{{log.id}}</b></h1>
                         </div>
                         <div class="col ml-3">
                             <div class="row">
-                                <h6><b><i class="fas fa-question-circle fa-sm mr-2"></i>{{log.activity}}</b></h6>
+                                <h5><b><i class="fas fa-info-circle mr-2"></i>{{log.activity}}</b></h5>
                             </div>
                             <div class="row">
                                 <h6><small><i class="fas fa-calendar-alt fa-sm mr-2"></i>{{log.date_time}}</small></h6>
@@ -94,17 +95,17 @@
                 </div>
 
                 <div class="mt-3" style="background-color:#EAEDED; padding: 20px; min-height: 20vh; height: auto;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
-                    <h6><b>Audit Details:</b></h6>
+                    <h6><b><i class="fas fa-file-alt fa-sm mr-2"></i>Audit Details:</b></h6>
                     <div  class="ml-4">
                         <small style="text-align: justify">&nbsp;&nbsp;&nbsp;{{log.details}}</small>
                     </div>
                     <div class="ml-4 mt-2">
-                        <small><b><i class="fas fa-user fa-sm mr-2"></i>Accountability</b></small>
+                        <b><i class="fas fa-user fa-sm mr-2"></i>Accountability</b>
                         <div class="ml-4">
                             <small>
                             <div class="row">
                                 <div class="col">
-                                    Employee ID:
+                                    <b>Employee ID:</b>
                                 </div>
                                 <div class="col">
                                    {{log.username.username}}
@@ -112,7 +113,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    Employee:
+                                    <b>Employee Name:</b>
                                 </div>
                                 <div class="col">
                                    {{log.username.first_name}} {{log.username.last_name}}
@@ -162,4 +163,12 @@
     {% endfor %}
     -->
 </body>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $('#pageSubmenu').show();
+    $('.reports').toggleClass("dropdownActive");
+    $('.audit').toggleClass("active");
+    
+</script>
 {% endblock body %}

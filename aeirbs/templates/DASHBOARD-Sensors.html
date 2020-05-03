@@ -1,0 +1,70 @@
+{% extends 'AEIRBS-Dashboard.html' %}
+{% load static %}
+{% block content %}
+
+<body>
+    <ul class="nav justify-content-end">
+        <li class="nav-item mt-1 mr-3">
+            Sort by:
+        </li>
+        <li class="nav-item mr-4">
+            <div class="form-group">
+                <select class="form-control form-control-sm" id="sort">
+                    <option>Component ID</option>
+                </select>
+            </div>
+        </li>
+        <li class="nav-item">
+            <form action="#" method="post">
+                {% csrf_token %}
+                <div class="input-group" id="searchComponent">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input type="text" class="input form-control form-control-sm" placeholder="Search Component">
+                </div>
+            </form>
+        </li>
+    </ul>
+
+    <div class="container-fluid mt-4">
+        <div class="text-center" style="margin-left: auto; margin-right: auto;">
+            {% for sensor in all_sensors %}
+            <div class="card card-layout border-0 m-2" data-toggle="modal"
+                data-target="#sensorModal{{sensor.sensor_id}}" style="display: inline-block;">
+                <div class="card-header border-0">
+                    <b style="font-size: 16px;">{{sensor.sensor_id}}</b>
+                </div>
+                <div class="card-body border-0">
+                    <div class="row my-2">
+                        <div class="col-4">
+                            <center>
+                                <div class="cardImage" style="background-image: url('{{ sensor.sensor_image.url }}');">
+                                </div>
+                            </center>
+                        </div>
+                        <div class="col-8 mt-3" style="font-size: 14px;">
+                            <h6>{{sensor.sensor_name}}</h6>
+                            {% if sensor.sensor_type == 0 %}
+                            <small>Fire</small>
+                            {% elif sensor.sensor_type == 1 %}
+                            <small>Flood</small>
+                            {% elif sensor.sensor_type == 2 %}
+                            <small>Earthquake</small> {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'AEIRBS-ComponentModals.html' %}
+    {% include 'COMPONENTS-ConfirmationModals.html' %}
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(".dashboard").toggleClass("active");
+        $("#sensorsLink").toggleClass("active");
+    </script>
+</body>
+{% endblock content %}

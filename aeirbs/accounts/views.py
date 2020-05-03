@@ -5,7 +5,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from reports.models import AuditLogs
-from .models import Profile
+from .models import Profile, DEFAULT_IMAGE
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -62,33 +63,62 @@ def masterlist(request):
 def add_user(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            employee_id = request.POST.get("inputEmployeeID")
-            email = request.POST.get("inputCompanyEmail")
-            first_name = request.POST.get("inputFirstName")
-            middle_name = request.POST.get("inputMiddleName")
-            last_name = request.POST.get("inputLastName")
+            context = {}
+            add_employeeID = request.POST.get("addAdminEmployeeID")
+            add_firstName = request.POST.get("addAdminFirstName")
+            add_middleName = request.POST.get("addAdminMiddleName")
+            add_lastName = request.POST.get("addAdminLastName")
+            add_jobPosition = request.POST.get("addAdminJobPosition")
+            add_companyEmail = request.POST.get("addAdminCompanyEmail")
+            add_mobileNumber = request.POST.get("addAdminMobileNumber")
+            add_userImage = request.FILES.get("addAdminImage")
 
-            if request.POST.get("accessRole") == "adminRole":
+            if request.POST.get("addAdminAccessRole") == "adminRole":
                 is_super = False
             else:
                 is_super = True
 
-            user = User.objects.create_user(
-                username=employee_id,
-                password="default123",
-                email=email,
-                first_name=first_name,
-                last_name=last_name,
-                is_superuser=is_super,
-                is_staff=is_super
-            )
-            user.save()
-            user.refresh_from_db()
-            user.profile.middle_name = middle_name
-            user.save()
+            context["inputAccessRole"] = is_super
+            context["inputEmployeeID"] = add_employeeID
+            context["inputFirstName"] = add_firstName
+            context["inputMiddleName"] = add_middleName
+            context["inputLastName"] = add_lastName
+            context["inputJobPosition"] = add_jobPosition
+            context["inputMobileNumber"] = add_mobileNumber
+            context["inputCompanyEmail"] = add_companyEmail
 
-            messages.success(request, f'Added user {first_name} {last_name} successfully!')
-            return redirect('masterlist')
+            if add_userImage == None:
+                add_userImage = DEFAULT_IMAGE
+
+            all_users = User.objects.all()
+            isExisting = False
+            for user in all_users:
+                if user.username == add_employeeID:
+                    isExisting = True
+            
+            if isExisting:
+                messages.error(request, f'{add_employeeID} is already registered in the system!')  
+                return render(request, 'MASTERLIST-AddAdmin.html', context = context)
+            else:
+                add_admin = User.objects.create_user(
+                    username = add_employeeID,
+                    password= add_employeeID,
+                    email = add_companyEmail,
+                    first_name = add_firstName,
+                    last_name = add_lastName,
+                    is_superuser = is_super,
+                    is_staff = is_super,
+                )
+                add_admin.save()
+                add_admin.refresh_from_db()
+                add_admin.profile.user_image = add_userImage
+                add_admin.profile.middle_name = add_middleName
+                add_admin.profile.job_position = add_jobPosition
+                add_admin.profile.mobile_number = add_mobileNumber
+                add_admin.save()
+
+                messages.success(request, f'Added user {add_employeeID} successfully!')
+                return redirect('masterlist')
     else:
         return render(request, 'AEIRBS-Login.html')
     
@@ -123,28 +153,35 @@ def del_user(request):
 def edit_user(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            userid = request.POST.get("username")
-            employee_id = request.POST.get("employeeID")
-            first_name = request.POST.get("firstName")
-            middle_name = request.POST.get("middleName")
-            last_name = request.POST.get("lastName")
-            company_email =request.POST.get("companyEmail")
-            job_position =request.POST.get("jobPosition")
-            mobile_number =request.POST.get("mobileNumber")
+            employeeID = request.POST.get("username")
+            edit_accessRole = request.POST.get("editAdminAccessRole")
+            edit_employeeID = request.POST.get("editAdminEmployeeID")
+            edit_firstName = request.POST.get("editAdminFirstName")
+            edit_middleName = request.POST.get("editAdminMiddleName")
+            edit_lastName = request.POST.get("editAdminLastName")
+            edit_jobPosition = request.POST.get("editAdminJobPosition")
+            edit_companyEmail = request.POST.get("editAdminCompanyEmail")
+            edit_mobileNumber = request.POST.get("editAdminMobileNumber")
+            edit_userImage = request.FILES.get("editAdminImage")
 
-            users = User.objects.all()
 
-            for user in users:
-                if user.username == userid:
-                    user.username = employee_id
-                    user.first_name = first_name
-                    user.profile.middle_name = middle_name
-                    user.last_name = last_name
-                    user.email = company_email
-                    user.profile.job_title = job_position
-                    user.profile.phone_number = mobile_number
+
+            all_users = User.objects.all()
+
+            for user in all_users:
+                if user.username == employeeID:
+                    if edit_userImage == None:
+                        edit_userImage = user.profile.user_image
+                    user.username = edit_employeeID
+                    user.first_name = edit_firstName
+                    user.profile.middle_name = edit_middleName
+                    user.last_name = edit_lastName
+                    user.email = edit_companyEmail
+                    user.profile.job_position = edit_jobPosition
+                    user.profile.mobile_number = edit_mobileNumber
+                    user.profile.user_image = edit_userImage
                     user.save()
-                    messages.success(request, f'updated user {user.first_name} {user.last_name} successfully!')
+                    messages.success(request, f'updated user {employeeID} successfully!')
                     return redirect('masterlist')
             
             messages.error(request, f'Cannot find user.')
@@ -152,14 +189,26 @@ def edit_user(request):
     else:
         return render(request, 'AEIRBS-Login.html')
 
-def profile(request):
-    audit_logs = AuditLogs.objects.all()
-    logs = []
+def edit_admin(request):
+    if request.user.is_authenticated:
+        audit_logs = AuditLogs.objects.all()
+        logs = []
 
-    for audit in audit_logs:
-        temp = (str(audit.username), audit.activity, audit.date_time, audit.details)
-        logs.append(temp)
+        for audit in audit_logs:
+            temp = (str(audit.username), audit.activity, audit.date_time, audit.details)
+            logs.append(temp)
 
-    return render(request, 'AEIRBS-Profile.html', {'logs': logs})
+        return render(request, 'MASTERLIST-EditAdmin.html', {'logs': logs})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+   
 
+def add_admin(request):
+    if request.user.is_authenticated:
+        context = {}
+ 
+
+        return render(request, 'MASTERLIST-AddAdmin.html', context = context)
+    else:
+        return render(request, 'AEIRBS-Login.html')
 

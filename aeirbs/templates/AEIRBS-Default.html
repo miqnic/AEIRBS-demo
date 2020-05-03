@@ -4,13 +4,14 @@
 
 <head>
     <!--Favicon-->
-    <link rel="icon" href="{% static 'icons/logo.png' %}">
+    <link rel="icon" href="{% static 'icons/aeirbs-logo.png' %}">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
         integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
 
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet"
@@ -30,7 +31,6 @@
 
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/aeirbs-default.css'%}">
-    <link rel="stylesheet" href="{% static 'css/topnav-css.css' %}">
     <link rel="stylesheet" href="{% static 'css/sidenav.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/masterlist.css' %}">
@@ -42,6 +42,37 @@
     <title>{% block title %}{% endblock title %}</title>
 </head>
 <style>
+    .success-lenear-loader {
+        height: 0px;
+        width: 1px;
+        border-bottom: 5px solid #1E8449;
+        ;
+
+        -webkit-animation: increase 4s;
+        -moz-animation: increase 4s;
+        -o-animation: increase 4s;
+        animation: increase 4s;
+        animation-fill-mode: forwards;
+    }
+
+    .fail-lenear-loader {
+        height: 0px;
+        width: 1px;
+        border-bottom: 5px solid #922B21;
+        ;
+
+        -webkit-animation: increase 4s;
+        -moz-animation: increase 4s;
+        -o-animation: increase 4s;
+        animation: increase 4s;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes increase {
+        100% {
+            width: 100%;
+        }
+    }
 </style>
 
 <body>
@@ -61,45 +92,34 @@
             {% if messages %} {% for message in messages %} {% if message.tags == "error" %}
             <div class="alert alert-danger" role="alert" aria-live="assertive" aria-atomic="true"
                 style="width: 20rem; position: fixed; bottom: 1rem; right: 1rem; z-index: 100;">
-                <div class="row">
-                    <div class="col-1">
-                        <div class="mt-1 fail-loader"></div>
-                        <!--<img class="loading" src="icons/favicon.png" height="25">-->
-                    </div>
-                    <div class="col">
-                        <div class="toast-header">
-                            <strong class="mr-auto">AEIRBS</strong>
-                        </div>
-                        <button type="button" class="mr-2 close" style="position: absolute; top: 0; right: 0;"
-                            data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <div class="toast-body">
-                            {{message}}
-                        </div>
-                    </div>
+
+                <div class="toast-header">
+                    <strong class="mr-auto">AEIRBS</strong>
+                </div>
+                <button type="button" class="mr-2 close" style="position: absolute; top: 0; right: 0;"
+                    data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="toast-body">
+                    <small>{{message}}</small>
+                    <div class="fail-lenear-loader"></div>
                 </div>
             </div>
             {% endif %} {% if message.tags == "success" %}
-            <div class="alert alert-success" role="alert" aria-live="assertive" aria-atomic="true"
+            <div class="alert alert-success " role="alert" aria-live="assertive" aria-atomic="true"
                 style="width: 20rem; position: fixed; bottom: 1rem; right: 1rem; z-index: 100;">
-                <div class="row">
-                    <div class="col-1">
-                        <div class="mt-1 success-loader"></div>
-                    </div>
-                    <div class="col">
-                        <div class="toast-header">
-                            <strong class="mr-auto">AEIRBS</strong>
-                        </div>
-                        <button type="button" class="mr-2 close" style="position: absolute; top: 0; right: 0;"
-                            data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <div class="toast-body">
-                            {{message}}
-                        </div>
-                    </div>
+
+                <div class="toast-header">
+                    <strong class="mr-auto">AEIRBS</strong>
                 </div>
+                <button type="button" class="mr-2 close" style="position: absolute; top: 0; right: 0;"
+                    data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="toast-body">
+                    <small>{{message}}</small>
+                </div>
+                <div class="success-lenear-loader"></div>
             </div>
             {% endif %} {% endfor %} {% endif %}
         </div>
@@ -108,14 +128,6 @@
     </div>
 
 </body>
-
-<!-- Font Awesome JS -->
-<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
-    integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
-    crossorigin="anonymous"></script>
-<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
-    integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
-    crossorigin="anonymous"></script>
 <!-- jQuery CDN - Slim version (=without AJAX) -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -127,6 +139,13 @@
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
     integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+    crossorigin="anonymous"></script>
+<!-- Font Awesome JS -->
+<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+    integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+    crossorigin="anonymous"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+    integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
     crossorigin="anonymous"></script>
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>

@@ -4,6 +4,41 @@
 {% block body %}
 
 <body>
+    <div class="container-fluid user" id="" style="padding:0 25px 25px 25px;">
+        <div class="container-fluid"
+            style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+            
+            <div class="row"></div>
+            <div
+                style="background-color:#343A40; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);  border-radius: 5px; padding: 25px;">
+
+                <div class="row">
+                    <div class="col-2">
+                        <div class="imagePreview"
+                            style="background-image: url('{{user.profile.user_image.url}}'); background-size: contain; background-position: center; border: 5px solid white;">
+                        </div>
+                    </div>
+
+                    <div class="col text-light" style="position: relative;">
+                        <a href="{% url 'edit_admin' %}"  class="btn btn-outline-light btn-sm float-right"
+                            title="Edit Profile">
+                            <i class="fas fa-user-edit fa-sm mr-2"></i>Edit Profile
+                    </a>
+
+                        <div class="mb-3" style="position: absolute; bottom: 0;">
+                            <h3><b>{{user.get_full_name}}</b></h3>
+                            <div class="mt-2">
+                                <h6><i class="fas fa-user fa-sm mr-2 "></i>{% if user.is_superuser%} Super- Admin
+                                    {% else %} Admin {% endif %}</h6>
+                                <h6><i class="fas fa-envelope fa-sm mr-2 "></i>{{user.email}}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <div class="left-padding" id="users">
         <div class="container-fluid userContainer" id="userContainer" style="padding:0 25px 25px 25px;">
@@ -15,16 +50,14 @@
                     <div class="col-7">
                         <h3 id="masterlistLabel"><b><b>ADMIN MASTERLIST</b></b>
                         </h3>
-                        <h3 class="hidden" id="addAdminLabel"><b><b>ADD ADMIN</b></b>
-                        </h3>
                     </div>
 
                     <!--Add Admin Button-->
                     {% if request.user.is_superuser %}
                     <div class="col-2">
-                        <button type="button" id="addAdminButton" class="btn btn-dark float-right  mt-1">
+                        <a href="{% url 'add_admin' %}" class="btn btn-dark float-right btn-sm mt-1">
                             <i class="fas fa-user-plus fa-sm mr-2"></i>Add Admin
-                        </button>
+                        </a>
                     </div>
                     {% endif %}
 
@@ -35,125 +68,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 </div>
-                                <input type="text" class="input form-control" placeholder="Search Admin">
+                                <input type="text" class="input form-control form-control-sm"
+                                    placeholder="Search Admin">
                             </div>
                         </form>
                     </div>
-                </div>
-
-                <!--Add Admin Form-->
-                <div class="container my-3 hidden" id="addAdminForm"
-                    style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
-
-                    <a href="{% url 'masterlist' %}" id="" class="btn btn-link text-dark float-left my-2 icon"
-                        title="Go Back">
-                        <span><i class="fas fa-arrow-left"></i></span>
-                    </a>
-
-                    <div class="row my-5">
-                        <!--Upload Admin Image-->
-                        <div class="col-2 imgUp mt-4">
-                            <div class="imagePreview"></div>
-                            <label class="btn btn-dark btn-block btn-sm">
-                                Select Image<input type="file" class="uploadFile img" value="Upload Photo"
-                                    style="width: 0px;height: 0px;overflow: hidden;">
-                            </label>
-                        </div>
-
-                        <div class="col-10" style="border-left: 3px solid #343A40;">
-                            <form action="{% url 'add_user' %}" method="post">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <!--Dropdown Access Role-->
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <small for="accessRole">Access Role</small>
-                                            <select class="form-control" name="accessRole">
-                                                <option></option>
-                                                <option id="adminRole" value="adminRole">Admin</option>
-                                                <option id="superRole" value="superRole">Super Admin</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <!--Input Employee ID-->
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <small for="employeeID">Employee ID</small>
-                                            <input type="text" class="form-control" id="inputEmployeeID"
-                                                name="inputEmployeeID" placeholder="Employee ID">
-                                        </div>
-                                    </div>
-
-                                    <div class="col">
-                                    </div>
-                                </div>
-
-                                <!--Input First Name-->
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <small for="firstName">First Name</small>
-                                            <input type="text" class="form-control" id="inputFirstName"
-                                                name="inputFirstName" placeholder="First Name">
-                                        </div>
-                                    </div>
-
-                                    <!--Input Middle Name-->
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <small for="middleName">Middle Name</small>
-                                            <input type="text" class="form-control" id="inputMiddleName"
-                                                name="inputMiddleName" placeholder="Middle Name">
-                                        </div>
-                                    </div>
-
-                                    <!--Input last Name-->
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <small for="lastName">Last Name</small>
-                                            <input type="text" class="form-control" id="inputLastName"
-                                                name="inputLastName" placeholder="Last Name">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <!--Input Job Position-->
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <small for="jobPosition">Job Position</small>
-                                            <input type="text" class="form-control" id="inputJobPosition"
-                                                name="inputJobPosition" placeholder="Job Position">
-                                        </div>
-                                    </div>
-
-                                    <!--Input Company Email-->
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <small for="companyEmail">Company Email</small>
-                                            <input type="email" class="form-control" id="inputCompanyEmail"
-                                                name="inputCompanyEmail" placeholder="Company Email">
-                                        </div>
-                                    </div>
-
-                                    <!--Input Phone Number-->
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <small for="mobileNumber">Mobile Number</small>
-                                            <input type="text" class="form-control" id="inputMobileNumber"
-                                                name="inputMobileNumber" placeholder="Mobile Number">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn btn-dark float-right btn-sm"
-                                    id="submitComponent">Submit</button>
-                        </div>
-
-                        </form>
-                    </div>
-
                 </div>
 
                 <!--Masterlist Table-->
@@ -170,8 +89,8 @@
                     </thead>
                     <tbody>
                         {% for user in users %}
-                        <tr class="table-row table-masterlist hello" onclick="hello()"
-                            data-username='{{user.username}}'>
+                        {% if user.username != request.user.username %}
+                        <tr class="table-row table-masterlist" data-username='{{user.username}}'>
                             <td>
                                 <input type="checkbox">
                             </td>
@@ -180,6 +99,7 @@
                             <td>{{user.profile.middle_name}}</td>
                             <td>{{user.last_name}}</td>
                         </tr>
+                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -190,43 +110,43 @@
     {% for user in users %}
     <div class="right-padding hidden userDetails" id="userDetails{{user.username}}">
         <div class="container-fluid userDetailsContainer" id="userDetailsContainer"
-            style="padding:0 25px 25px 12.5px; ">
+            style="padding:0 25px 25px 12.5px;">
             <div class="container-fluid"
                 style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px; ">
-                <div
+                <div class="adminDetails"
                     style="background-color:#343A40; min-height: 45vh; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); text-align:center; position:relative;  border-radius: 5px;">
-                    <button type="submit " class="btn btn-link icon mt-2 mr-2 closeAdmin"
-                        data-username='{{user.username}}' id="closeAdmin "
-                        style="color:white; position:absolute; right: 0; "><i class="fas fa-times fa-sm "></i></button>
-                    <button type="submit" class="btn btn-link icon mt-2 ml-2 hidden cancelEditAdmin" id=" "
-                        style="color:white; position:absolute; left: 0;"><i
-                            class="fas fa-arrow-left fa-sm"></i></button>
+                    <button type="button " class="btn btn-link icon mt-2 mr-2 closeAdmin"
+                        data-username='{{user.username}}' style="color:white; position:absolute; right: 0; "><i
+                            class="fas fa-times fa-sm "></i></button>
+
 
                     <div class="dropdown">
                         <button type="submit " class="btn btn-link icon mt-2 ml-2 userActions" id=" "
                             style="color:white; position:absolute; left: 0;" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false"><i class="fas fa-ellipsis-v fa-sm"></i></button>
                         <div class="dropdown-menu" style="min-width: 5px;" aria-labelledby="userActions">
-                            <button class="dropdown-item editAdmin" type="button"><i
-                                    class="fas fa-user-edit fa-sm mr-2 "></i>Edit</button>
+                            <button class="dropdown-item editAdmin icon" type="button"
+                                style="border-radius: 0px; font-size: small;"><i
+                                    class="fas fa-user-edit fa-sm mr-2 "></i>Edit Admin</button>
                             {% if request.user.is_superuser %}
                             <form action="{% url 'del_user' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" class="" name="username" value="{{user.username}}"></input>
-                                <button class="dropdown-item" type="submit"><i
-                                        class="fas fa-user-times fa-sm mr-2 "></i>Delete</button>
+                                <button class="dropdown-item icon" type="submit"
+                                    style="border-radius: 0px; font-size: small;"><i
+                                        class="fas fa-user-times fa-sm mr-2 "></i>Delete Admin</button>
                             </form>
                             {% endif %}
                         </div>
 
                     </div>
-                    <div class="userHeader mb-2" style="padding-top: 6vh;">
+                    <div class=" mb-2" style="padding-top: 6vh;">
                         <div class="mb-3">
                             <img src="{{ user.profile.user_image.url }}"
                                 style="border-radius: 50%; height:23vh; border: 8px solid white;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3) ">
                         </div>
 
-                        <div id="adminDetails " class="" style="color: white; ">
+                        <div class="text-light">
                             <h3><b>{{user.get_full_name}}</b></h3>
                             <div class="mt-2 ">
                                 <h6><i class="fas fa-user fa-sm mr-2 "></i>{% if user.is_superuser%} Super- Admin
@@ -235,33 +155,49 @@
                             </div>
                         </div>
                     </div>
-
+                </div>
+                <div class="editAdminForm hidden"
+                    style="padding: 8px;min-height: 45vh; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); position:relative;  border-radius: 5px;"> 
+                    <div class="row">
+                        <div class="col-1">
+                           <button type="button" class="btn btn-link text-dark icon cancelEditAdmin" title="Go Back">
+                                <span><i class="fas fa-arrow-left"></i></span>
+                           </button>
+                        </div>
+                        <div class="col ml-3 mt-1">
+                            <h4><b><b>{{user.username}}</b></b></h4>
+                        </div>
+                    </div>
+                    <hr class="mx-3">
+                    <div class="m-3">
                     <!-- Form for Updating user -->
                     {% if request.user.is_superuser %}
-                    <form action="{% url 'edit_user' %}" method="post">
+                    <form action="{% url 'edit_user' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="hidden" name="username" value="{{ user.username }}">
-                        <div id="adminForm " class="mr-4 ml-4 mb-4 adminForm hidden center"
-                            style="color: white; text-align: left; padding-top: 8vh;">
 
                             <!--Upload Admin Image-->
-                            <div class="imgUp mt-4 center">
-                                <div class="imagePreview"></div>
-                                <label class="btn btn-block btn-outline-light btn-sm">
-                                    Select Image<input type="file" class="uploadFile img" value="Upload Photo"
-                                        style="width: 0px;height: 0px;overflow: hidden;">
-                                </label>
-                            </div>
+                            <center>
+                                <div class="imgUp mb-5 mt-4">
+                                    <div class="imagePreview"
+                                        style="background-image: url('{{user.profile.user_image.url}}'); background-size: contain; background-position: center;">
+                                    </div>
+                                    <label class="btn btn-block btn-dark btn-sm">
+                                        Select Image<input type="file" class="uploadFile img" value="Upload Photo"
+                                            style="width: 0px;height: 0px;overflow: hidden;" name="editAdminImage">
+                                    </label>
+                                </div>
+                            </center>
 
-                            <div class="form-group ">
+                            <div class="form-group">
                                 <small for="accessRole ">Access Role</small>
-                                <select class="form-control form-control-sm" name="accessRole">
+                                <select class="form-control form-control-sm" name="editAdminAccessRole">
                                     {% if user.is_superuser %}
-                                    <option id=" adminRole " value="adminRole">Admin</option>
-                                    <option id="superRole " value="superRole" selected>Super Admin</option>
+                                    <option value="adminRole">Admin</option>
+                                    <option value="superRole" selected>Super Admin</option>
                                     {% else %}
-                                    <option id="adminRole" value="adminRole" selected>Admin</option>
-                                    <option id="superRole" value="superRole">Super Admin</option>
+                                    <option value="adminRole" selected>Admin</option>
+                                    <option value="superRole">Super Admin</option>
                                     {% endif %}
                                 </select>
                             </div>
@@ -270,15 +206,17 @@
                                 <div class="col-7">
                                     <div class="form-group ">
                                         <small for="jobPosition ">Job Position</small>
-                                        <input type="text " class="form-control form-control-sm" name="jobPosition"
-                                            value="{{user.profile.job_title}}" placeholder="Job Position">
+                                        <input type="text " class="form-control form-control-sm"
+                                            name="editAdminJobPosition" value="{{user.profile.job_position}}"
+                                            placeholder="Job Position">
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-group ">
                                         <small for="employeeID ">Employee ID</small>
-                                        <input type="text" class="form-control form-control-sm" name="employeeID"
-                                            value="{{user.username}}" placeholder="Employee ID">
+                                        <input type="text" class="form-control form-control-sm"
+                                            name="editAdminEmployeeID" value="{{user.username}}"
+                                            placeholder="Employee ID">
                                     </div>
                                 </div>
                             </div>
@@ -287,22 +225,24 @@
                                 <div class="col-6">
                                     <div class="form-group ">
                                         <small for="firstName ">First Name</small>
-                                        <input type="text " class="form-control form-control-sm" name="firstName"
-                                            value="{{user.first_name}}" placeholder="First Name">
+                                        <input type="text " class="form-control form-control-sm"
+                                            name="editAdminFirstName" value="{{user.first_name}}"
+                                            placeholder="First Name">
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group ">
                                         <small for="middleName ">Middle Name</small>
-                                        <input type="text " class="form-control form-control-sm" name="middleName"
-                                            value="{{user.profile.middle_name}}" placeholder="Middle Name">
+                                        <input type="text " class="form-control form-control-sm"
+                                            name="editAdminMiddleName" value="{{user.profile.middle_name}}"
+                                            placeholder="Middle Name">
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group ">
                                         <small for="lastName ">Last Name</small>
-                                        <input type="text " class="form-control form-control-sm" name="lastName"
-                                            value="{{user.last_name}}" placeholder="Last Name">
+                                        <input type="text " class="form-control form-control-sm"
+                                            name="editAdminLastName" value="{{user.last_name}}" placeholder="Last Name">
                                     </div>
                                 </div>
                             </div>
@@ -311,24 +251,26 @@
                                 <div class="col-7">
                                     <div class="form-group ">
                                         <small for="companyEmail ">Company Email</small>
-                                        <input type="email " class="form-control form-control-sm" name="companyEmail"
-                                            value="{{user.email}}" placeholder="Company Email">
+                                        <input type="email " class="form-control form-control-sm"
+                                            name="editAdminCompanyEmail" value="{{user.email}}"
+                                            placeholder="Company Email">
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-group ">
                                         <small for="mobileNumber ">Mobile Number</small>
-                                        <input type="number " class="form-control form-control-sm" name="mobileNumber"
-                                            value="{{user.profile.phone_number}}" placeholder="Mobile Number">
+                                        <input type="number " class="form-control form-control-sm"
+                                            name="editAdminMobileNumber" value="{{user.profile.mobile_number}}"
+                                            placeholder="Mobile Number">
                                     </div>
                                 </div>
                             </div>
 
-                            <button type="submit" class="float-right btn btn-success btn-sm" id=""><i
+                            <button type="submit" class="float-right btn btn-dark btn-sm"><i
                                     class="fas fa-save fa-sm mr-2 "></i>Save</button>
                             <br><br>
-                        </div>
                     </form>
+                    </div>
                     {% endif %}
                 </div>
                 <div class="mt-3 "
@@ -367,4 +309,9 @@
     </div>
     {% endfor %}
 </body>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(".masterlist").toggleClass("active");
+</script>
 {% endblock body %}

@@ -6,11 +6,18 @@ from .utils import IncidentCombinations, IncidentLevels
 
 # Create your models here.
 
+AUDIT_TYPE = [
+    (0, 'Component Logs'),
+    (1, 'User Logs'),
+    (2, 'Maintenance Logs')
+]
+
 class AuditLogs(models.Model):
     activity = models.CharField(max_length=100)
     username = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     date_time = models.DateTimeField(auto_now_add=True)
-    details = models.CharField(max_length=100, default='details')
+    audit_details = models.CharField(max_length=100, default='details')
+    audit_type = models.IntegerField(default=0, choices=AUDIT_TYPE)
 
     def __str__(self):
         return str(self.id)

@@ -24,14 +24,35 @@ def renderPDF(template_src, context_dict={}):
 
 def audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all().order_by('-username')
+        audit_logs = AuditLogs.objects.all().order_by('-date_time')
         return render(request, "AEIRBS-Audit.html", {'audit_logs': audit_logs})
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def component_logs(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        audit_logs = AuditLogs.objects.all().order_by('-date_time')
+        return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def user_logs(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        audit_logs = AuditLogs.objects.all().order_by('-date_time')
+        return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def maintenance_logs(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        audit_logs = AuditLogs.objects.all().order_by('-date_time')
+        return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def generatePDF_audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all();
+        audit_logs = AuditLogs.objects.all()
         dateTime = datetime.datetime.now()
         date = dateTime.strftime("%x")
         time = dateTime.strftime("%X")

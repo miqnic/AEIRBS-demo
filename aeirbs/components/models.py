@@ -57,7 +57,7 @@ class Device(models.Model):
 
 # Device-Sensor is the specific sensor that is mounted on a specific device.
 class Device_Sensor(models.Model):
-    device_sensor_id = models.CharField(max_length=10)
+    device_sensor_id = models.CharField(max_length=10, unique=True)
     device_id = models.ForeignKey(Device, on_delete=models.DO_NOTHING)
     sensor_id = models.ForeignKey(Sensor, on_delete=models.DO_NOTHING)
     sensor_status = models.IntegerField(choices=STATUS, default=0)

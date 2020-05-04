@@ -11,7 +11,7 @@ $(document).ready(function() {
         }
         else{
             var auditid = $(this).data("auditid");
-            var id = "#auditDetails" + auditid;
+            var id = "#auditDetails" + auditid; 
             $(".left-padding").width("65%");
             $(".auditContainer").css("padding", "0 12.5px 25px 25px");
             $(id).show();
@@ -20,11 +20,11 @@ $(document).ready(function() {
 
     //Close Audit Details
     $(".closeAudit").click(function() {
-        var auditID = $(this).data("auditID");
-        var id = "#auditDetails" + auditID;
+        var auditid = $(this).data("auditid");
+        var id = "#auditDetails" + auditid;
 
         $(".left-padding").width("100%");
-        $("#userContainer").css("padding", "0 25px 25px 25px");
+        $(".auditContainer").css("padding", "0 25px 25px 25px");
         $(id).hide();
     });
 });

@@ -68,11 +68,16 @@ urlpatterns = [
     path('logout/', accounts_views.logout_action, name='logout_action'),
 
     # DASHBOARD Components
-    path('earthquake-components/', components_views.earthquake_components, name='earthquake_components'),
-    path('fire-components/', components_views.fire_components, name='fire_components'),
-    path('flood-components/', components_views.flood_components, name='flood_components'),
-    path('devices/', components_views.devices, name='devices'),
-    path('sensors/', components_views.sensors, name='sensors'),
+    path('dashboard/earthquake-components/', components_views.earthquake_components, name='earthquake_components'),
+    path('dashboard/fire-components/', components_views.fire_components, name='fire_components'),
+    path('dashboard/flood-components/', components_views.flood_components, name='flood_components'),
+    path('dashboard/devices/', components_views.devices, name='devices'),
+    path('dashboard/sensors/', components_views.sensors, name='sensors'),
+
+    # AUDIT Logs
+    path('audit/component-logs/', reports_views.component_logs, name='component_logs'),
+    path('audit/user-logs/', reports_views.user_logs, name='user_logs'),
+    path('audit/maintenance-logs/', reports_views.maintenance_logs, name='maintenance_logs'),
 
 ] 
 

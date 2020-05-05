@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
+from reports.models import AuditLogs
 
 import serial 
 import json
@@ -136,6 +137,8 @@ def add_device(request):
             count = (Device.objects.filter(device_name__contains=id.upper())).count()
             add_deviceID = "DEV-" + id.upper() + "0" + str(count + 1)
 
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+
             add_device = Device.objects.create(
                 device_id = add_deviceID,
                 device_productID = add_deviceProductID,
@@ -146,6 +149,15 @@ def add_device(request):
                 device_image = add_deviceImage,
             )
             add_device.save()
+
+            add_log = AuditLogs.objects.create(
+                log_id = "CL0" + str(all_userLogs + 1),
+                activity = "Add Device",
+                username = request.user,
+                audit_details = str(request.user) + " added component " + str(add_deviceID) + " to the system.",
+                audit_type = 0
+            )
+            add_log.save()
             
             messages.success(request, f'Added component {add_deviceID} successfully!')
             return redirect('earthquake_components')
@@ -180,6 +192,8 @@ def add_sensor(request):
             add_sensorID = type + "SEN-"  + id.upper() + "-0" + str(count + 1)
 
             all_sensors = Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+
             isExisting = False
             for sensor in all_sensors:
                 if sensor.sensor_name.upper() == add_sensorName.upper():
@@ -200,6 +214,15 @@ def add_sensor(request):
                     sensor_image = add_sensorImage,
                 )
                 add_sensor.save()
+                
+                add_log = AuditLogs.objects.create(
+                    log_id = "CL0" + str(all_userLogs + 1),
+                    activity = "Add Sensor",
+                    username = request.user,
+                    audit_details = str(request.user) + " added sensor " + str(add_sensorID) + " to the system.",
+                    audit_type = 0
+                )
+                add_log.save()
 
                 messages.success(request, f'Added sensor {add_sensorID} successfully!')      
             return redirect('earthquake_components')    
@@ -217,6 +240,7 @@ def add_comp(request):
 
             deviceID = Device.objects.filter(device_id = add_deviceID).first()
             sensorID = Sensor.objects.filter(sensor_id = add_sensorID).first()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
             for device in all_devices:
                 if device.device_id == add_deviceID:
@@ -249,6 +273,15 @@ def add_comp(request):
             )
             add_component.save()
 
+            add_log = AuditLogs.objects.create(
+                log_id = "CL0" + str(all_userLogs + 1),
+                activity = "Add Connection",
+                username = request.user,
+                audit_details = str(request.user) + " connected sensor " + str(sensorID) + " to " + str(deviceID) + ".",
+                audit_type = 0
+            )
+            add_log.save()
+
             messages.success(request, f'Connected sensor {sensorID} to {deviceID} successfully!')
             return redirect('earthquake_components')
     else:
@@ -266,6 +299,7 @@ def edit_device(request):
             edit_deviceImage = request.FILES.get("editDeviceImage")
 
             all_devices = Device.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
             for device in all_devices:
                 if device.device_id == edit_deviceID:
@@ -279,6 +313,16 @@ def edit_device(request):
                     device.device_link = edit_deviceLink
                     device.device_image = edit_deviceImage
                     device.save()
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Edit Device",
+                        username = request.user,
+                        audit_details = str(request.user) + " updated device " + edit_deviceID + "'s details.",
+                        audit_type = 0
+                    )
+                    add_log.save()
+                    
                     messages.success(request, f'Updated {edit_deviceID} successfully!')
                     return redirect('devices')
            
@@ -312,22 +356,17 @@ def edit_sensor(request):
 
             all_components = Device_Sensor.objects.all()
             all_sensors = Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
             counter = 0
-            print(Device_Sensor.objects.filter(sensor_id__sensor_type = edit_sensorType).count())
 
             for component in all_components:
                 if component.sensor_id.sensor_id == sensorID:
-                    print(component.device_sensor_id)
                     counter += 1
-                    print(counter)
                     print(Device_Sensor.objects.filter(sensor_id__sensor_type = edit_sensorType).count() + 1)
                     id = "DS-" + type + "0" + str(component.device_id.floor_location) + "0" + str(Device_Sensor.objects.filter(sensor_id__sensor_type = edit_sensorType).count() + counter)
                     component.device_sensor_id = id
                     component.save()
-                    
-                    print(Device_Sensor.objects.filter(sensor_id__sensor_type = edit_sensorType).count() + 1)
-                    print(component.device_sensor_id)
                     continue
 
             for sensor in all_sensors:
@@ -343,6 +382,16 @@ def edit_sensor(request):
                     sensor.sensor_link = edit_sensorLink
                     sensor.sensor_image = edit_sensorImage
                     sensor.save()
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Edit Sensor",
+                        username = request.user,
+                        audit_details = str(request.user) + " updated sensor " + sensorID + "'s details.",
+                        audit_type = 0
+                    )
+                    add_log.save()
+
                     messages.success(request, f'Updated {sensorID} successfully!')
                     return redirect('sensors')
            
@@ -359,14 +408,23 @@ def edit_comp(request):
             deviceID = request.POST.get("editComponentDeviceID")
             edit_deviceID = Device.objects.filter(device_id = deviceID).first()
 
-            print(componentID)
-            print("--")
             all_components = Device_Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+
             for component in all_components:
                 print(component.device_sensor_id)
                 if component.device_sensor_id == componentID:
                     component.device_id = edit_deviceID
                     component.save()
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Edit Component",
+                        username = request.user,
+                        audit_details = str(request.user) + " updated component " + componentID + "'s details.",
+                        audit_type = 0
+                    )
+                    add_log.save()
 
                     messages.success(request, f'Updated {componentID} successfully!')
                     if component.sensor_id.sensor_type == 0:
@@ -388,6 +446,7 @@ def del_device(request):
 
             all_devices = Device.objects.all()
             all_components = Device_Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
             for device in all_devices:
                 if device.device_id == delete_deviceID:
@@ -398,6 +457,15 @@ def del_device(request):
                         if component.device_id.device_id == device.device_id:
                             component.device_sensor_isDeleted = True
                             component.save()
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Delete Device",
+                        username = request.user,
+                        audit_details = str(request.user) + " deleted device " + delete_deviceID + " from the system.",
+                        audit_type = 0
+                    )
+                    add_log.save()
 
                     messages.success(request, f'Deleted device {delete_deviceID} successfully!')
                     return redirect('devices')
@@ -414,6 +482,7 @@ def del_sensor(request):
 
             all_sensors = Sensor.objects.all()
             all_components = Device_Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
             for sensor in all_sensors:
                 if sensor.sensor_id == delete_sensorID:
@@ -424,10 +493,17 @@ def del_sensor(request):
 
                     for component in all_components:
                         if component.sensor_id.sensor_id == sensor.sensor_id:
-                            print("component found")
                             component.device_sensor_isDeleted = True
                             component.save()
-                            print("component_device deleted")
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Delete Sensor",
+                        username = request.user,
+                        audit_details = str(request.user) + " deleted senser " + delete_sensorID + " from the system.",
+                        audit_type = 0
+                    )
+                    add_log.save()
 
                     messages.success(request, f'Deleted sensor {delete_sensorID} successfully!')
                     return redirect('sensors')
@@ -443,11 +519,21 @@ def del_comp(request):
             delete_componentID = request.POST.get("deleteComponentID")
 
             all_components = Device_Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
             for component in all_components:
                 if component.device_sensor_id == delete_componentID:
                     component.device_sensor_isDeleted = True
                     component.save()
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Delete Component",
+                        username = request.user,
+                        audit_details = str(request.user) + " deleted component " + delete_componentID + " from the system.",
+                        audit_type = 0
+                    )
+                    add_log.save()
 
                     messages.success(request, f'Deleted component {delete_componentID} successfully!')
                     if component.sensor_id.sensor_type == 0:
@@ -472,13 +558,47 @@ def status(request):
 
             all_components = Device_Sensor.objects.all()
             all_devices = Device.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 2).count()
+
+            current_status = None
+            new_status = None
+            current_statusIndex = None
+            new_statusIndex = int(status)
 
             for component in all_components:
                 if component.device_sensor_id == componentID:
+                    current_statusIndex = component.sensor_status
                     component.sensor_status = status
                     component.last_maintained_datetime = dateTime
                     component.last_maintained_by = user
                     component.save()
+
+                    if current_statusIndex == 0:
+                        current_status = "Connected"
+                    elif current_statusIndex == 1:
+                        current_status = "Under Maintenance"
+                    elif current_statusIndex == 2:
+                        current_status = "Needs Maintenance"
+                    else:
+                        current_status = "Inactive"
+
+                    if new_statusIndex == 0:
+                        new_status = "Connected"
+                    elif new_statusIndex == 1:
+                        new_status = "Under Maintenance"
+                    elif new_statusIndex == 2:
+                        new_status = "Needs Maintenance"
+                    else:
+                        new_status = "Inactive"
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "ML0" + str(all_userLogs + 1),
+                        activity = "Update Sensor Status",
+                        username = request.user,
+                        audit_details = str(request.user) + " updated " + componentID + "'s status from " + current_status + " to " + new_status + ".",
+                        audit_type = 2
+                    )
+                    add_log.save()
 
                     messages.success(request, f'Updated {componentID} status successfully!')
                     if component.sensor_id.sensor_type == 0:
@@ -490,10 +610,38 @@ def status(request):
 
             for device in all_devices:
                 if device.device_id == componentID:
+                    current_statusIndex = device.device_status
                     device.device_status = status
                     device.last_maintained_datetime = dateTime
                     device.last_maintained_by = user
                     device.save()
+
+                    if current_statusIndex == 0:
+                        current_status = "Connected"
+                    elif current_statusIndex == 1:
+                        current_status = "Under Maintenance"
+                    elif current_statusIndex == 2:
+                        current_status = "Needs Maintenance"
+                    else:
+                        current_status = "Inactive"
+
+                    if new_statusIndex == 0:
+                        new_status = "Connected"
+                    elif new_statusIndex == 1:
+                        new_status = "Under Maintenance"
+                    elif new_statusIndex == 2:
+                        new_status = "Needs Maintenance"
+                    else:
+                        new_status = "Inactive"
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "ML0" + str(all_userLogs + 1),
+                        activity = "Update Device Status",
+                        username = request.user,
+                        audit_details = str(request.user) + " updated " + componentID + "'s status from " + current_status + " to " + new_status + ".",
+                        audit_type = 2
+                    )
+                    add_log.save()
 
                     messages.success(request, f'Updated {componentID} status successfully!')
                     return redirect('devices')

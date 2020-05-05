@@ -14,7 +14,7 @@
     <div class="container-fluid"
       style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
 
-      <div class="row">
+      <div class="row mt-2">
         <!--Page Labels-->
         <div class="col">
           <h3 id="dashboardLabel"><b><b>SUMMARY REPORT</b></b></h3>
@@ -43,10 +43,12 @@
   </form>
   </div>
   -->
-        <!--Generate Report Button-->
+        <!--Download PDF-->
         <div class="col-2">
+          <form action="" method="POST">
           <button type="button" class="btn btn-dark btn-sm mr-3 float-right" id="downloadPDFButton"><i
-              class="fas fa-download fa-sm mr-2"></i>Download</button>
+            class="fas fa-download fa-sm mr-2"></i>Download Report</button>
+          </form>
         </div>
       </div>
 
@@ -57,35 +59,24 @@
     <div class="container-fluid"
       style=" background-color: rgba(52, 58, 64,.1); padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
 
-      <div class="row" style="padding-left:25px;">
-        <div class="col-2">
-          <form action="#" method="post">
+      <!--Date Range Form-->
+      <form action="#" method="post">
+        <div class="row" style="padding-left:25px;">
+          <div class="col-3">
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
-              <input type="text" class="input form-control form-control-sm datepicker" name="startDate" placeholder="Start Date">
+              <input type="text" class="input form-control form-control-sm datefilter" name="dateRange"
+                placeholder="Date Range">
             </div>
-          </form>
+          </div>
+          <div class="col-2">
+            <button type="button" class="btn btn-dark btn-sm float-left" id="generateReportButton"><i
+                class="fas fa-sync-alt fa-sm mr-2"></i>Generate</button>
+          </div>
         </div>
-
-        <div class="col-2">
-          <form action="#" method="post">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-              <input type="text" id="datepicker" class="input form-control form-control-sm datepicker" name="endDate"
-                placeholder="End Date">
-            </div>
-          </form>
-        </div>
-
-        <div class="col-2">
-          <button type="button" class="btn btn-dark btn-sm mr-3 float-left" id="generateReportButton"><i
-              class="fas fa-sync-alt fa-sm mr-2"></i>Generate</button>
-        </div>
-      </div>
+      </form>
 
       <div class="container-fluid mt-4" style="padding:0 25px 25px 25px;">
         <div class="container-fluid"
@@ -122,7 +113,27 @@
 </body>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--Date Range Picker-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script>
+  $('.datefilter').daterangepicker({
+    autoUpdateInput: false,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+
+  $('.datefilter').on('apply.daterangepicker', function (ev, picker) {
+    $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+  });
+
+  $('.datefilter').on('cancel.daterangepicker', function (ev, picker) {
+    $(this).val('');
+  });
+
   $('#pageSubmenu').show();
   $('.reports').toggleClass("dropdownActive");
   $('.summary').toggleClass("active");

@@ -20,13 +20,17 @@ def login_action(request):
             login(request, user)
 
             # Log: Logged In - Valid User
-            log = AuditLogs(
-                activity="Login",
-                username = request.user
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+            add_log = AuditLogs.objects.create(
+                log_id = "UL0" + str(all_userLogs + 1),
+                activity = "Login",
+                username = request.user,
+                audit_details = str(request.user) + " logged in to the system.",
+                audit_type = 1
             )
-            log.save()
+            add_log.save()
 
-            messages.success(request, f'Login is successful!')
+            messages.success(request, f'Logged in successfully!')
             return redirect('earthquake_components')
         else:
             messages.error(request, f'Invalid credentials.')
@@ -34,11 +38,16 @@ def login_action(request):
 
 def logout_action(request):
     # Log: Logged Out
-    log = AuditLogs(
-        activity="Logout",
-        username = request.user
+
+    all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+    add_log = AuditLogs.objects.create(
+        log_id = "UL0" + str(all_userLogs + 1),
+        activity = "Logout",
+        username = request.user,
+        audit_details = str(request.user) + " logged out of the system.",
+        audit_type = 1
     )
-    log.save()
+    add_log.save()
 
     logout(request)
     return redirect('login_page')
@@ -55,7 +64,7 @@ def masterlist(request):
     logs = []
 
     for audit in audit_logs:
-        temp = (str(audit.username), audit.activity, audit.date_time,  audit.details)
+        temp = (str(audit.username), audit.activity, audit.date_time,  audit.audit_details)
         logs.append(temp)
 
     return render(request, 'AEIRBS-Masterlist.html', {'users': users, 'logs': logs})
@@ -91,6 +100,7 @@ def add_user(request):
                 add_userImage = DEFAULT_IMAGE
 
             all_users = User.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
             isExisting = False
             for user in all_users:
                 if user.username == add_employeeID:
@@ -117,6 +127,15 @@ def add_user(request):
                 add_admin.profile.mobile_number = add_mobileNumber
                 add_admin.save()
 
+                add_log = AuditLogs.objects.create(
+                    log_id = "UL0" + str(all_userLogs + 1),
+                    activity = "Add User",
+                    username = request.user,
+                    audit_details = str(request.user) + " added " + add_employeeID + " to the system.",
+                    audit_type = 1
+                )
+                add_log.save()
+
                 messages.success(request, f'Added user {add_employeeID} successfully!')
                 return redirect('masterlist')
     else:
@@ -125,27 +144,29 @@ def add_user(request):
 def del_user(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            employee_id = request.POST.get("username")
+            employeeID = request.POST.get("username")
 
-            users = User.objects.all()
+            all_users = User.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
 
-            log = AuditLogs(
-                activity="Delete",
-                username = request.user,
-                details= "User " + str(request.user) + " deleted user " + employee_id + " from the system."  
-            )
-
-            log.save()
-
-            for user in users:
-                if user.username == employee_id:
+            for user in all_users:
+                if user.username == employeeID:
                     user.profile.is_deleted = True
                     user.is_active = False
                     user.save()
-                    messages.success(request, f'Removed user {user.first_name} {user.last_name} successfully!')
+
+                    add_log = AuditLogs.objects.create(
+                    log_id = "UL0" + str(all_userLogs + 1),
+                    activity = "Delete User",
+                    username = request.user,
+                    audit_details = str(request.user) + " deleted uder " + employeeID + " from the system.",
+                    audit_type = 1
+                    )
+                    add_log.save()
+                    messages.success(request, f'Deleted user {employeeID} successfully!')
                     return redirect('masterlist')
             
-            messages.error(request, f'Cannot find {employee_id}.')
+            messages.error(request, f'Cannot find {employeeID}.')
             return redirect('masterlist')
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -164,9 +185,8 @@ def edit_user(request):
             edit_mobileNumber = request.POST.get("editAdminMobileNumber")
             edit_userImage = request.FILES.get("editAdminImage")
 
-
-
             all_users = User.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
 
             for user in all_users:
                 if user.username == employeeID:
@@ -181,34 +201,33 @@ def edit_user(request):
                     user.profile.mobile_number = edit_mobileNumber
                     user.profile.user_image = edit_userImage
                     user.save()
-                    messages.success(request, f'updated user {employeeID} successfully!')
+
+                    add_log = AuditLogs.objects.create(
+                    log_id = "UL0" + str(all_userLogs + 1),
+                    activity = "Edit User",
+                    username = request.user,
+                    audit_details = str(request.user) + " updated user " + employeeID + "'s details.",
+                    audit_type = 1
+                    )
+                    add_log.save()
+
+                    messages.success(request, f'Updated user {employeeID} successfully!')
                     return redirect('masterlist')
             
-            messages.error(request, f'Cannot find user.')
+            messages.error(request, f'Cannot find {employeeID}.')
             return redirect('masterlist')
     else:
         return render(request, 'AEIRBS-Login.html')
 
 def edit_admin(request):
     if request.user.is_authenticated:
-        audit_logs = AuditLogs.objects.all()
-        logs = []
-
-        for audit in audit_logs:
-            temp = (str(audit.username), audit.activity, audit.date_time, audit.details)
-            logs.append(temp)
-
-        return render(request, 'MASTERLIST-EditAdmin.html', {'logs': logs})
+        return render(request, 'MASTERLIST-EditAdmin.html')
     else:
         return render(request, 'AEIRBS-Login.html')
    
-
 def add_admin(request):
     if request.user.is_authenticated:
-        context = {}
- 
-
-        return render(request, 'MASTERLIST-AddAdmin.html', context = context)
+        return render(request, 'MASTERLIST-AddAdmin.html')
     else:
         return render(request, 'AEIRBS-Login.html')
 

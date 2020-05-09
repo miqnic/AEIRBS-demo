@@ -47,6 +47,11 @@ def fire_components(request):
 
         context['sensor_reading'] = " "#getArduinoData()
 
+        if request.method == 'POST':
+            keyword = request.POST.get('keyword')
+            context['fire_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+
+
         return render(request, 'DASHBOARD-FireComponents.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -64,6 +69,10 @@ def earthquake_components(request):
         context['incident_type'] = INCIDENT_TYPE
 
         context['sensor_reading'] = " "#getArduinoData()
+
+        if request.method == 'POST':
+            keyword = request.POST.get('keyword')
+            context['earthquake_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
 
         return render(request, 'DASHBOARD-EarthquakeComponents.html', context = context)
     else:
@@ -83,6 +92,11 @@ def flood_components(request):
 
         context['sensor_reading'] = " "#getArduinoData()
 
+        if request.method == 'POST':
+            keyword = request.POST.get('keyword')
+            context['flood_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+
+
         return render(request, 'DASHBOARD-FloodComponents.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -100,6 +114,11 @@ def devices(request):
 
         context['sensor_reading'] = " "#getArduinoData()
 
+        if request.method == 'POST':
+            keyword = request.POST.get('keyword')
+            context['all_devices'] = Device.objects.filter(device_isDeleted=False, device_name__contains = keyword) | Device.objects.filter(device_isDeleted = False, device_id__contains = keyword)
+
+
         return render(request, 'DASHBOARD-Devices.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -116,6 +135,11 @@ def sensors(request):
 
         context['sensor_reading'] = " "#getArduinoData()
 
+        if request.method == 'POST':
+            keyword = request.POST.get('keyword')
+            context['all_sensors'] = Sensor.objects.filter(sensor_isDeleted=False, sensor_name__contains = keyword) | Sensor.objects.filter(sensor_isDeleted = False, sensor_id__contains = keyword)
+
+
         return render(request, 'DASHBOARD-Sensors.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -128,6 +152,7 @@ def add_device(request):
             add_deviceMacAddress = request.POST.get("addDeviceMacAddress")
             add_deviceFloorLocation = request.POST.get("addDeviceFloorLocation")
             add_deviceLink = request.POST.get("addDeviceLink")
+            add_sensorID = request.POST.get("addSensorID")
             add_deviceImage = request.FILES.get("addDeviceImage")
             
             if add_deviceImage == None:
@@ -158,7 +183,7 @@ def add_device(request):
                 audit_type = 0
             )
             add_log.save()
-            
+
             messages.success(request, f'Added component {add_deviceID} successfully!')
             return redirect('earthquake_components')
     else:
@@ -259,7 +284,7 @@ def add_comp(request):
                         sensor_typeIndex = 2
                         sensor_type = "EQ"
                     break
-            
+                
             add_device_sensorID = "DS-" + sensor_type + "0" + str(floor_location) + "0"
 
             count = Device_Sensor.objects.filter(sensor_id__sensor_type__contains = sensor_typeIndex).count()
@@ -648,5 +673,56 @@ def status(request):
           
             messages.error(request, f'Component {componentID} not found!')
             return redirect('earthquake_components')
+    else:
+        return render(request, 'AEIRBS-Login.html')
+def del_sensor(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            delete_sensorID = request.POST.get("deleteSensorID")
+
+            all_sensors = Sensor.objects.all()
+            all_components = Device_Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+
+            for sensor in all_sensors:
+                if sensor.sensor_id == delete_sensorID:
+                    sensor.sensor_isDeleted = True
+                    sensor.save()
+                    
+                    print("sensor " + sensor.sensor_id + " deleted")
+
+                    for component in all_components:
+                        if component.sensor_id.sensor_id == sensor.sensor_id:
+                            component.device_sensor_isDeleted = True
+                            component.save()
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Delete Sensor",
+                        username = request.user,
+                        audit_details = str(request.user) + " deleted senser " + delete_sensorID + " from the system.",
+                        audit_type = 0
+                    )
+                    add_log.save()
+
+                    messages.success(request, f'Deleted sensor {delete_sensorID} successfully!')
+                    return redirect('sensors')
+
+            messages.error(request, f'Sensor {delete_sensorID} not found!')
+            return redirect('sensors')
+    else:
+        return render(request, 'sensors')
+
+def search_component(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            search_keyword = request.POST.get("keyword")
+            component_classification = int(request.POST.get("classification"))
+            context = {}
+            
+            if component_classification == 2:
+                earthquake_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = search_keyword)
+                context['earthquake_components'] = earthquake_components
+            return render(request, 'DASHBOARD-EarthquakeComponents.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')

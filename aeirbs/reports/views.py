@@ -32,6 +32,11 @@ def audit(request):
 def component_logs(request):
     if request.user.is_authenticated and request.user.is_superuser:
         audit_logs = AuditLogs.objects.all().filter(audit_type = 0)
+
+        if request.method == 'POST':
+            keyword = request.POST.get("keyword")
+            audit_logs = AuditLogs.objects.filter(audit_type = 0, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, username__last_name__contains = keyword)
+
         return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -39,6 +44,11 @@ def component_logs(request):
 def user_logs(request):
     if request.user.is_authenticated and request.user.is_superuser:
         audit_logs = AuditLogs.objects.all().filter(audit_type = 1)
+
+        if request.method == 'POST':
+            keyword = request.POST.get("keyword")
+            audit_logs = AuditLogs.objects.filter(audit_type = 1, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, username__last_name__contains = keyword)
+
         return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -46,6 +56,11 @@ def user_logs(request):
 def maintenance_logs(request):
     if request.user.is_authenticated and request.user.is_superuser:
         audit_logs = AuditLogs.objects.all().filter(audit_type = 2)
+
+        if request.method == 'POST':
+            keyword = request.POST.get("keyword")
+            audit_logs = AuditLogs.objects.filter(audit_type = 2, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, username__last_name__contains = keyword)
+
         return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -94,24 +109,27 @@ def clear_maintenanceLogs(request):
 
 def generatePDF_audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all()
-        dateTime = datetime.datetime.now()
-        date = dateTime.strftime("%x")
-        time = dateTime.strftime("%X")
-        context = {}
+        if request.method == 'POST':
+            auditType = int(request.POST.get("auditType"))
+            audit_logs = AuditLogs.objects.filter(audit_type = auditType)
+            dateTime = datetime.datetime.now()
+            date = dateTime.strftime("%x")
+            time = dateTime.strftime("%X")
+            context = {}
 
-        context['audit_logs'] = audit_logs.reverse()
-        context['date'] = date
-        context['time'] = time
-        
-        pdf = renderPDF('reports/generatePDF-audit.html', context)
-        if pdf:
-            response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Audit-Reports-%s.pdf" %(dateTime)
-            content = "inline; filename='%s'" %(filename)
-            response['Content-Disposition'] = content
-            return response
-        return HttpResponse("Not Found")    
+            context['audit_type'] = auditType
+            context['audit_logs'] = audit_logs.reverse()
+            context['date'] = date
+            context['time'] = time
+            
+            pdf = renderPDF('reports/generatePDF-audit.html', context)
+            if pdf:
+                response = HttpResponse(pdf, content_type='application/pdf')
+                filename = "Audit-Reports-%s.pdf" %(dateTime)
+                content = "inline; filename='%s'" %(filename)
+                response['Content-Disposition'] = content
+                return response
+            return HttpResponse("Not Found")    
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

@@ -63,12 +63,13 @@
 
                     <!--Search Admin-->
                     <div class="col-3 mt-1">
-                        <form action="#" method="post">
+                        <form action="{% url 'masterlist' %}" method="POST">
+                            {% csrf_token %}
                             <div class="input-group mb-3" id="searchAdmin">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 </div>
-                                <input type="text" class="input form-control form-control-sm"
+                                <input type="text" name="keyword" class="input form-control form-control-sm"
                                     placeholder="Search Admin">
                             </div>
                         </form>

@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="{% static 'css/incident.css' %}">
     <link rel="stylesheet" href="{% static 'css/summary.css' %}">
 
+    <link rel="stylesheet" href="{% static 'css/aeirbs-logo.css' %}">
 
     <title>{% block title %}{% endblock title %}</title>
 </head>
@@ -68,15 +69,158 @@
         animation-fill-mode: forwards;
     }
 
+    .warning-lenear-loader {
+        height: 0px;
+        width: 1px;
+        border-bottom: 5px solid #B7950B;
+        ;
+
+        -webkit-animation: increase 300s;
+        -moz-animation: increase 300s;
+        -o-animation: increase 300s;
+        animation: increase 300s;
+        animation-fill-mode: forwards;
+    }
+
     @keyframes increase {
         100% {
             width: 100%;
+        }
+    }
+
+
+    .alert-logo {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+        position: relative;
+    }
+
+    .alert-fire-ring {
+        border-radius: 50%;
+        border: solid 1px rgba(255, 125, 102, 1);
+        background-color: rgba(255, 125, 102);
+        width: 100vh;
+        height: 100vh;
+        position: absolute;
+        animation: scaleIn 1.5s infinite cubic-bezier(.36, .11, .89, .32);
+    }
+
+    .alert-quake-ring {
+        border-radius: 50%;
+        border: solid 2px rgba(229, 191, 154, 1);
+        background-color: rgba(229, 191, 154);
+        width: 100vh;
+        height: 100vh;
+        position: absolute;
+        animation: scaleIn 1.5s infinite cubic-bezier(.36, .11, .89, .32);
+    }
+
+    .alert-flood-ring {
+        border-radius: 50%;
+        border: solid 2px rgba(161, 212, 242, 1);
+        background-color: rgba(161, 212, 242);
+        width: 100vh;
+        height: 100vh;
+        position: absolute;
+        animation: scaleIn 1.5s infinite cubic-bezier(.36, .11, .89, .32);
+    }
+
+    .item {
+        z-index: 100;
+        padding: 5px;
+    }
+
+    .item img {
+        width: 150px;
+        transform: translateY(1px);
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(.1, .1);
+            opacity: .5;
+        }
+
+        to {
+            transform: scale(3, 3);
+            opacity: 0;
         }
     }
 </style>
 
 <body>
     <div class="wrapper">
+        
+        <div class="alarm hidden" style="width: auto; position: fixed; top: 10%; right:30%; left: 30%; z-index: 1;">
+            <center>
+                <div class="alert-logo mb-5">
+                    <div class="item">
+                        <img src="{% static 'icons/aeirbs-logo.png' %}">
+                    </div>
+
+                    <div class="alert-flood-ring" style="animation-delay: -1s"></div>
+                    <div class="alert-quake-ring" style="animation-delay: -.5s"></div>
+                    <div class="alert-fire-ring" style="animation-delay: 0s"></div>
+                </div>
+            </center>
+            <div class="alert alert-warning text-center" role="alert" aria-live="assertive" aria-atomic="true"
+                style="border: 2px solid #343A40; padding: 25px; border-radius: 5px;">
+
+                <div class="toast-header">
+                        <strong class="text-dark" style="font-size:x-large;">ALERT!</strong>
+                </div>
+                <div class="toast-body mt-2">
+                    A sensor located in <b>[floor_location]</b> has been triggered!
+                    <div class="row mt-3 mx-5">
+                        <div class="col-2"></div>
+                        <div class="col text-left">
+                            <small><b>Device-Sensor ID:</b></small>
+                        </div>
+                        <div class="col text-left">
+                            <small>[ID]</small>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                    <div class="row mx-5">
+                        <div class="col-2"></div>
+                        <div class="col text-left">
+                            <small><b>Sensor Name:</b></small>
+                        </div>
+                        <div class="col text-left">
+                            <small>[Name]</small>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                    <div class="row mx-5">
+                        <div class="col-2"></div>
+                        <div class="col text-left">
+                            <small><b>Incident Type:</b></small>
+                        </div>
+                        <div class="col text-left">
+                            <small>[Type]</small>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+
+                    <div class="mt-5">
+                        <button type="button" class="btn btn-sm btn-danger">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm false-alarm">Cancel</button>
+                        <div class="mt-4 warning-lenear-loader"></div>
+                        
+                <div class="m-2" style="font-size:x-small; position: absolute; bottom: 0; right: 0;">
+                    Note: Public Announcement will be triggered automatically after 5 minutes.
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!--Side Navbar-->
         {% include 'AEIRBS-SideNavigation.html' %}
 
@@ -89,8 +233,12 @@
             <div class="mt-4">
                 {% block body %}{% endblock body %}
             </div>
+
+
+
+
             {% if messages %} {% for message in messages %} {% if message.tags == "error" %}
-            <div class="alert alert-danger" role="alert" aria-live="assertive" aria-atomic="true"
+            <div class="alert alert-timer alert-danger" role="alert" aria-live="assertive" aria-atomic="true"
                 style="width: 20rem; position: fixed; bottom: 1rem; right: 1rem; z-index: 100;">
 
                 <div class="toast-header">
@@ -105,8 +253,9 @@
                     <div class="mt-4 fail-lenear-loader"></div>
                 </div>
             </div>
+
             {% endif %} {% if message.tags == "success" %}
-            <div class="alert alert-success " role="alert" aria-live="assertive" aria-atomic="true"
+            <div class="alert alert-timer alert-success " role="alert" aria-live="assertive" aria-atomic="true"
                 style="width: 20rem; position: fixed; bottom: 1rem; right: 1rem; z-index: 100;">
 
                 <div class="toast-header">
@@ -169,10 +318,13 @@
     src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 <script>
     window.setTimeout(function () {
-        $(".alert").fadeTo(500, 0).slideUp(500, function () {
+        $(".alert-timer").fadeTo(500, 0).slideUp(500, function () {
             $(this).remove();
         });
     }, 4000);
+    $(".false-alarm").click(function () {
+        $(".alarm").hide();
+    });
 </script>
 
 </html>

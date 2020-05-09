@@ -61,7 +61,13 @@
                 </tr>
                 <tr>
                     <td>
-                        <h1>AUDIT LOGS</h1>
+                        {% if audit_type == 0 %}
+                        <h1>COMPONENT LOGS</h1>
+                        {% elif audit_type == 1 %}
+                        <h1>USER LOGS</h1>
+                        {% elif audit_type == 2 %}
+                        <h1>MAINTENANCE LOGS</h1>
+                        {% endif %}
                     </td>
                     <td></td>
                     <td>Time: {{time}}</td>
@@ -77,6 +83,7 @@
                     <th>Activity</th>
                     <th>Accountability</th>
                     <th>Date and Time</th>
+                    <th>Details</th>
                 </tr>
             </thead>
         </table>
@@ -85,7 +92,7 @@
             <tbody>
                 {% for log in audit_logs %}
                 <tr class="table-row ">
-                    <td>{{log.id}}</td>
+                    <td>{{log.log_id}}</td>
                     <td>{{log.activity}}</td>
                     <td>{{log.username.first_name}} {{log.username.last_name}}</td>
                     <td>{{log.date_time}}</td>

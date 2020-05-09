@@ -8,12 +8,6 @@ $(document).ready(function () {
     $(".dataTables_info").css("font-size", "14px")
 
 
-    $('[data-toggle="popover"]').popover();
 
-    window.setTimeout(function () {
-        $(".alert").fadeTo(500, 0).slideUp(500, function () {
-            $(this).remove();
-        });
-    }, 4000);
 });
 

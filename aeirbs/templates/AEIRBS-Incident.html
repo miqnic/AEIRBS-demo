@@ -4,15 +4,27 @@
     <div class="container-fluid" style="padding:0 25px 25px 25px;">
         <div class="container-fluid" style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 05px;">
 
-            <div class="row">
+            <div class="row mt-1">
                 <!--Page Labels-->
-                <div class="col">
+                <div class="col-4">
                     <h3 id="AuditLabel"><b><b>INCIDENT REPORTS</b></b>
                     </h3>
                 </div>
+                
+                <div class="col">
+                    {% if request.user.is_superuser %}
+                    <form action="{% url 'generatePDF_audit' %} " method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="auditType" value="0">
+                        <button type="submit" class="btn btn-dark btn float-right btn-sm"
+                            id="generatePDFButton"><i class="fas fa-download fa-sm mr-2"></i>Download All</button>
+                    </form>
+                    {% endif %}
+                </div>
+
 
                 <!--Search Component-->
-                <div class="col-3 mt-1">
+                <div class="col-3 ">
                     <form action="#" method="post">
                         <div class="input-group mb-3" id="searchReport">
                             <div class="input-group-prepend">

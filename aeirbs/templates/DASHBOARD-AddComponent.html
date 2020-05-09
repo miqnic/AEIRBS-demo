@@ -1,0 +1,271 @@
+{% extends 'AEIRBS-Default.html' %}
+{% block title %}DASHBOARD-Add Component{% endblock title %}
+{% load static %}
+{% block body %}
+
+<style>
+    .nav-item .nav-link {
+        background-color: rgba(0, 0, 0, .08);
+        color: #343A40;
+    }
+
+    .nav-item .nav-link.active {
+        background-color: rgba(0, 0, 0, .08);
+        color: #343A40;
+        border-bottom: 5px solid !important;
+        font-size: 18px;
+        font-weight: bold;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<!--Add New Component-->
+<div class="container" id="addNewComponentForm" style="padding:0 25px 25px 25px;">
+    <div class="container-fluid"
+        style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+
+        <div class="row">
+            <div class="col-1">
+                <a href="{% url 'earthquake_components' %}" class="btn btn-link text-dark icon" title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </a>
+            </div>
+            <div class="col">
+                <h3><b><b>ADD NEW COMPONENT</b></b></h3>
+            </div>
+        </div>
+        <hr>
+        <div class="container">
+
+            <ul class="nav nav-pills nav-fill" role="tablist">
+                <li class="nav-item">
+                    <a class="m-1 nav-link active" data-toggle="tab" href="#addDeviceForm" role="pill"
+                        aria-controls="home" aria-selected="true"><i class="fas fa-microchip mr-3"
+                            style="color:#FEC107;"></i>Device</a>
+                </li>
+                <li class="nav-item">
+                    <a class="m-1 nav-link" data-toggle="pill" href="#addSensorForm" role="tab" aria-controls="profile"
+                        aria-selected="false"><i class="fas fa-wifi mr-3" style="color:#FEC107;"></i>Sensor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="m-1 nav-link" data-toggle="pill" href="#addConnectionForm" role="tab"
+                        aria-controls="profile" aria-selected="false"><i class="fas fa-project-diagram mr-3"
+                            style="color:#FEC107;"></i>Connection</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="addDeviceForm" role="tabpanel" aria-labelledby="Device">
+
+                    <form id="addDevice" action="{% url 'add_device' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row my-5 mx-5 mt-4">
+
+                            <div class="col-1"></div>
+
+                            <!--Upload Component Image-->
+                            <div class="col-3">
+                                <div style="padding:10px;">
+                                    <div class="imgUp">
+                                        <div class="imagePreview"
+                                            style="background-size: contain; background-position: center;"></div>
+                                        <label type="button" class="btn btn-dark btn-block btn-sm">
+                                            Select Image<input type="file" class="uploadFile img"
+                                                style="width: 0px;height: 0px;overflow: hidden;" name="addDeviceImage">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col" style="border-left: 3px solid #343A40;">
+                                <div style="padding:10px;">
+                                    <div class="row">
+                                        <div class="col">
+                                            <!--Input Product ID-->
+                                            <div class="form-group">
+                                                <small>Product ID</small>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="addDeviceProductID" placeholder="Product ID">
+                                            </div>
+
+                                            <!--Input Component Name-->
+                                            <div class="form-group">
+                                                <small>Device Name</small>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="addDeviceName" placeholder="Device Name">
+                                            </div>
+
+                                            <!--Input Mac Address-->
+                                            <div class="form-group">
+                                                <small>Mac Address</small>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="addDeviceMacAddress" placeholder="Mac Address">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <!--Dropdown Floor Location-->
+                                            <div class="form-group">
+                                                <small>Floor Location</small>
+                                                <select class="form-control form-control-sm"
+                                                    name="addDeviceFloorLocation">
+                                                    <option></option>
+                                                    {% for floor in floor_locations %}
+                                                    <option value="{{floor.0}}">{{floor.1}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <!--Input Link-->
+                                            <div class="form-group">
+                                                <small>Link to Manual/ Datasheet</small>
+                                                <input type="url" class="form-control form-control-sm"
+                                                    name="addDeviceLink" placeholder="Link">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                                        data-target="#confirmAddDevice"><i
+                                            class="fas fa-paper-plane mr-2"></i>Submit</button>
+                                </div>
+                            </div>
+
+                            <div class="col-1"></div>
+
+                        </div>
+                    </form>
+
+                </div>
+
+                <div class="tab-pane fade show" id="addSensorForm" role="tabpanel" aria-labelledby="Sensor">
+
+                    <form id="addSensor" action="{% url 'add_sensor' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row my-5 mx-5 mt-4">
+                            <div class="col-1"></div>
+
+                            <!--Upload Component Image-->
+                            <div class="col-3">
+                                <div style="padding:10px;">
+                                    <div class="imgUp">
+                                        <div class="imagePreview"
+                                            style="background-size: contain; background-position: center;"></div>
+                                        <label type="button" class="btn btn-dark btn-block btn-sm">
+                                            Select Image<input type="file" class="uploadFile img"
+                                                style="width: 0px;height: 0px;overflow: hidden;" name="addSensorImage">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col" style="border-left: 3px solid #343A40;">
+                                <div style="padding:10px;">
+                                    <div class="row">
+                                        <div class="col">
+                                            <!--Dropdown Incident Type-->
+                                            <div class="form-group">
+                                                <small>Incident Type</small>
+                                                <select class="form-control form-control-sm"
+                                                    name="addSensorIncidentType">
+                                                    <option></option>
+                                                    {% for type in incident_type %}
+                                                    <option value="{{type.0}}">{{type.1}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <!--Input Product ID-->
+                                            <div class="form-group">
+                                                <small>Product ID</small>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="addSensorProductID" placeholder="Product ID">
+                                            </div>
+
+                                            <!--Input Component Name-->
+                                            <div class="form-group">
+                                                <small>Sensor Name</small>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="addSensorName" placeholder="Component Name">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <!--Input Data-->
+                                            <div class="form-group">
+                                                <small>Data</small>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="addSensorData" placeholder="Data">
+                                            </div>
+
+                                            <!--Input Voltage-->
+                                            <div class="form-group">
+                                                <small>Voltage</small>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="addSensorVoltage" placeholder="Voltage">
+                                            </div>
+
+                                            <!--Input Link-->
+                                            <div class="form-group">
+                                                <small>Link to Manual/ Datasheet</small>
+                                                <input type="url" class="form-control form-control-sm"
+                                                    name="addSensorLink" placeholder="Link">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                                        data-target="#confirmAddSensor"><i
+                                            class="fas fa-paper-plane mr-2"></i>Submit</button>
+                                </div>
+                            </div>
+
+                            <div class="col-1"></div>
+
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="tab-pane fade show" id="addConnectionForm" role="tabpanel" aria-labelledby="Connection">
+
+                    <form id="addConnection" action="{% url 'add_comp' %}" method="POST">
+                        <div class="row my-5 ml-5">
+                            <div class="col"></div>
+                            <div class="col-4">
+                                {% csrf_token %}
+
+                                <!--Dropdown Sensor ID-->
+                                <div class="form-group">
+                                    <small>Sensor Name</small>
+                                    <select class="form-control form-control-sm" name="addSensorID">
+                                        <option></option>
+                                        {% for sensor in all_sensors %}
+                                        <option value="{{sensor.sensor_id}}">{{sensor.sensor_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <!--Dropdown Device ID-->
+                                <div class="form-group">
+                                    <small>Device ID</small>
+                                    <select class="form-control form-control-sm" name="addDeviceID">
+                                        <option></option>
+                                        {% for device in all_devices %}
+                                        <option value="{{device.device_id}}">({{device.device_id}}) -
+                                            {{device.device_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                                    data-target="#confirmAddConnection"><i class="fas fa-plug mr-2"></i>Connect</button>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% include 'COMPONENTS-ConfirmationModals.html' %}
+{% endblock body %}

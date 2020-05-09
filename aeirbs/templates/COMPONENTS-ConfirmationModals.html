@@ -1,0 +1,360 @@
+<!--Components-->
+<div class="modal fade" id="confirmAddConnection" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Add Component</b></h5>
+
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to make this Connection?
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-add="Connection" class="btn btn-dark btn-sm confirmAddButton">
+                    Connect
+                </button>
+                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for component in all_components %}
+<div class="modal fade" id="confirmDelete{{component.device_sensor_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Delete Component</b></h5>
+
+                {% if component.sensor_id.sensor_type == 0 %}
+                <a href="{% url 'fire_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% elif component.sensor_id.sensor_type == 1 %}
+                <a href="{% url 'flood_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% else %}
+                <a href="{% url 'earthquake_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% endif %}
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to
+                        <span>Delete <b>{{component.device_sensor_id}}?</b></span>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-delete='{{component.device_sensor_id}}'
+                    class="btn btn-danger btn-sm confirmDeleteButton">
+                    Delete
+                </button>
+                {% if component.sensor_id.sensor_type == 0 %}
+                <a href="{% url 'fire_components' %}" class="btn btn-light btn-sm">Cancel</a>
+                {% elif component.sensor_id.sensor_type == 1 %}
+                <a href="{% url 'flood_components' %}" class="btn btn-light btn-sm">Cancel</a>
+                {% else %}
+                <a href="{% url 'earthquake_components' %}" class="btn btn-light btn-sm">Cancel</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmEdit{{component.device_sensor_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Edit Component</b></h5>
+
+                {% if component.sensor_id.sensor_type == 0 %}
+                <a href="{% url 'fire_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% elif component.sensor_id.sensor_type == 1 %}
+                <a href="{% url 'flood_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% else %}
+                <a href="{% url 'earthquake_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% endif %}
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to
+                        <span>Save Changes for <b>{{component.device_sensor_id}}?</b></span>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-edit='{{component.device_sensor_id}}'
+                    class="btn btn-dark btn-sm confirmEditButton">
+                    Save
+                </button>
+                {% if component.sensor_id.sensor_type == 0 %}
+                <a href="{% url 'fire_components' %}" class="btn btn-light btn-sm">Cancel</a>
+                {% elif component.sensor_id.sensor_type == 1 %}
+                <a href="{% url 'flood_components' %}" class="btn btn-light btn-sm">Cancel</a>
+                {% else %}
+                <a href="{% url 'earthquake_components' %}" class="btn btn-light btn-sm">Cancel</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!--Devices-->
+<div class="modal fade" id="confirmAddDevice" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Add Device</b></h5>
+
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want Add this Device?
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-add="Device" class="btn btn-dark btn-sm confirmAddButton">
+                    Submit
+                </button>
+                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for device in all_devices %}
+<div class="modal fade" id="confirmDelete{{device.device_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Delete Device</b></h5>
+
+                <a href="{% url 'devices' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to
+                        <span>Delete <b>{{device.device_id}}?</b></span>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-delete='{{device.device_id}}'
+                    class="btn btn-danger btn-sm confirmDeleteButton">
+                    Delete
+                </button>
+                <a href="{% url 'devices' %}" class="btn btn-light btn-sm">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmEdit{{device.device_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Edit Device</b></h5>
+
+                <a href="{% url 'devices' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to
+                        <span>Save Changes for <b>{{device.device_id}}?</b></span>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-edit='{{device.device_id}}'
+                    class="btn btn-dark btn-sm confirmEditButton">
+                    Save
+                </button>
+                <a href="{% url 'devices' %}" class="btn btn-light btn-sm">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!--Sensors-->
+<div class="modal fade" id="confirmAddSensor" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Add Sensor</b></h5>
+
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want Add this Sensor?
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-add="Sensor" class="btn btn-dark btn-sm confirmAddButton">
+                    Submit
+                </button>
+                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% for sensor in all_sensors %}
+<div class="modal fade" id="confirmDelete{{sensor.sensor_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Delete Sensor</b></h5>
+
+                <a href="{% url 'sensors' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to
+                        <span>Delete <b>{{sensor.sensor_id}}?</b></span>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-delete='{{sensor.sensor_id}}'
+                    class="btn btn-danger btn-sm confirmDeleteButton">
+                    Delete
+                </button>
+                <a href="{% url 'sensors' %}" class="btn btn-light btn-sm">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmEdit{{sensor.sensor_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Edit Sensor</b></h5>
+
+                <a href="{% url 'sensors' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to
+                        <span>Save Changes for <b>{{sensor.sensor_id}}?</b></span>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-edit='{{sensor.sensor_id}}'
+                    class="btn btn-dark btn-sm confirmEditButton">
+                    Save
+                </button>
+                <a href="{% url 'sensors' %}" class="btn btn-light btn-sm">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

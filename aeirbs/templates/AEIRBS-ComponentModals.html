@@ -1,0 +1,1125 @@
+{% include 'COMPONENTS-ConfirmationModals.html' %}
+<!--Component-->
+{% for component in all_components %}
+<div class="modal fade" id="componentModal{{component.device_sensor_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343A40;">
+                <div class="row ml-1">
+                    <!--Dropdown Actions-->
+                    {% if request.user.is_superuser %}
+                    <div class="dropdown componentActions">
+                        <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"><i class="fas fa-ellipsis-v fa-sm"></i></button>
+                        <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
+                            <button class="dropdown-item icon editComponentButton" style="border-radius: 0px;"
+                                type="button"><i class="far fa-edit mr-2"></i>Edit Component</button>
+                            <button class="dropdown-item icon" style="border-radius: 0px;" type="button"
+                                data-toggle="modal" data-target="#confirmDelete{{component.device_sensor_id}}"
+                                data-dismiss="modal"><i class="fas fa-trash-alt fa-sm mr-2"></i>Delete
+                                Component</button>
+
+                            <form id="delete{{component.device_sensor_id}}" action=" {% url 'del_comp' %} "
+                                method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="deleteComponentID"
+                                    value="{{component.device_sensor_id}}"></input>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <h4 class="text-light mt-2 ml-3"><b>{{component.device_sensor_id}}</b></h4>
+                </div>
+                {% if component.sensor_id.sensor_type == 0 %}
+                <a href="{% url 'fire_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% elif component.sensor_id.sensor_type == 1 %}
+                <a href="{% url 'flood_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% else %}
+                <a href="{% url 'earthquake_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                {% endif %}
+
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+
+
+                <ul class="nav nav-pills nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <a class="m-1 nav-link tabDetails active" id="{{component.device_sensor_id}}-details-tab"
+                            data-toggle="tab" href="#{{component.device_sensor_id}}-details" role="tab"
+                            aria-controls="home" aria-selected="true">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="m-1 nav-link tabData" id="{{component.device_sensor_id}}-data-tab" data-toggle="tab"
+                            href="#{{component.device_sensor_id}}-data" role="tab" aria-controls="profile"
+                            aria-selected="false">Data <small><i
+                                    class="fas fa-exclamation-circle ml-2 text-danger"></i></small></a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="{{component.device_sensor_id}}-details" role="tabpanel"
+                        aria-labelledby="{{component.device_sensor_id}}-details">
+
+                        <div class="row m-4 componentDetails">
+                            <div class="col-5 mt-2">
+                                <center>
+                                    <h5 id="" class="componentName"><b>{{component.sensor_id.sensor_name}}</b></h5>
+                                </center>
+                                <br>
+                                <center>
+                                    <div class="modalImage"
+                                        style="background-image: url('{{ component.sensor_id.sensor_image.url }}');">
+                                    </div>
+                                </center>
+
+                                {% if component.sensor_status == 0 %}
+                                <div class="row status{{component.device_sensor_id}} mt-4 mx-4"
+                                    style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                                    <div class="mx-3 my-2" style="width:100%;">
+                                        <div class="statusLabel{{component.device_sensor_id}} my-2">
+                                            <small><b>Status:</b></small><br>
+                                            <small class="status-active{{component.device_sensor_id}}">Active</small>
+                                            <small
+                                                class="status-inactive{{component.device_sensor_id}}">Inactive</small>
+                                            <small class="status-needsMaintenance{{component.device_sensor_id}}">Needs
+                                                Maintenance</small>
+                                            <small class="status-underMaintenance{{component.device_sensor_id}}">Under
+                                                Maintenance</small>
+                                        </div>
+                                        <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                                            <label class="switch switch{{component.device_sensor_id}} float-right">
+                                                <input type="checkbox"
+                                                    class="status-switch{{component.device_sensor_id}} checkbox"
+                                                    id="status-switch" checked>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <form action="{% url 'status' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="componentID"
+                                                value="{{component.device_sensor_id}}">
+                                            <input type="hidden" class="statusValue{{component.device_sensor_id}}"
+                                                name="statusValue">
+
+                                            <button
+                                                class="saveStatusButton{{component.device_sensor_id}} btn btn-link text-dark float-right btn-sm mb-2 mr-2 icon hidden"
+                                                type="submit"
+                                                style="position:absolute; right: 2px; bottom:0;text-decoration: none; font-size: 12px;"><i
+                                                    class="fas fa-save fa-sm mr-2"></i>Save</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <div class="row  mx-4">
+                                    <div class="maintenance-status{{component.device_sensor_id}}"
+                                        style="width:100%; text-align: center;">
+                                        <div class="needsMaintenance{{component.device_sensor_id}}">
+                                            <input
+                                                class="maintenance-needsMaintenance{{component.device_sensor_id}} mr-2 checkbox"
+                                                type="checkbox">
+                                            <small>Needs Maintenance</small>
+                                        </div>
+                                        <div class="underMaintenance{{component.device_sensor_id}}">
+                                            <input
+                                                class="maintenance-underMaintenance{{component.device_sensor_id}} mr-2 checkbox"
+                                                type="checkbox">
+                                            <small>Under Maintenance</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% elif component.sensor_status == 1 %}
+                                <div class="row status{{component.device_sensor_id}} mt-4 mx-4"
+                                    style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                                    <div class="mx-3 my-2" style="width:100%;">
+                                        <div class="statusLabel{{component.device_sensor_id}} my-2">
+                                            <small><b>Status:</b></small><br>
+                                            <small class="status-active{{component.device_sensor_id}}">Active</small>
+                                            <small
+                                                class="status-inactive{{component.device_sensor_id}}">Inactive</small>
+                                            <small class="status-needsMaintenance{{component.device_sensor_id}}">Needs
+                                                Maintenance</small>
+                                            <small class="status-underMaintenance{{component.device_sensor_id}}">Under
+                                                Maintenance</small>
+                                        </div>
+                                        <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                                            <label class="switch switch{{component.device_sensor_id}} float-right">
+                                                <input type="checkbox"
+                                                    class="status-switch{{component.device_sensor_id}} checkbox"
+                                                    id="status-switch">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <form action="{% url 'status' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="componentID"
+                                                value="{{component.device_sensor_id}}">
+                                            <input type="hidden" class="statusValue{{component.device_sensor_id}}"
+                                                name="statusValue">
+
+                                            <button
+                                                class="saveStatusButton{{component.device_sensor_id}} btn btn-link text-dark float-right btn-sm mb-2 mr-2 icon hidden"
+                                                type="submit"
+                                                style="position:absolute; right: 2px; bottom:0;text-decoration: none; font-size: 12px;"><i
+                                                    class="fas fa-save fa-sm mr-2"></i>Save</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <div class="row  mx-4">
+                                    <div class="maintenance-status{{component.device_sensor_id}}"
+                                        style="width:100%; text-align: center;">
+                                        <div class="needsMaintenance{{component.device_sensor_id}}">
+                                            <input
+                                                class="maintenance-needsMaintenance{{component.device_sensor_id}} mr-2 checkbox"
+                                                type="checkbox">
+                                            <small>Needs Maintenance</small>
+                                        </div>
+                                        <div class="underMaintenance{{component.device_sensor_id}}">
+                                            <input
+                                                class="maintenance-underMaintenance{{component.device_sensor_id}} mr-2 checkbox"
+                                                type="checkbox" checked>
+                                            <small>Under Maintenance</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% elif component.sensor_status == 2 %}
+                                <div class="row status{{component.device_sensor_id}} mt-4 mx-4"
+                                    style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                                    <div class="mx-3 my-2" style="width:100%;">
+                                        <div class="statusLabel{{component.device_sensor_id}} my-2">
+                                            <small><b>Status:</b></small><br>
+                                            <small class="status-active{{component.device_sensor_id}}">Active</small>
+                                            <small
+                                                class="status-inactive{{component.device_sensor_id}}">Inactive</small>
+                                            <small class="status-needsMaintenance{{component.device_sensor_id}}">Needs
+                                                Maintenance</small>
+                                            <small class="status-underMaintenance{{component.device_sensor_id}}">Under
+                                                Maintenance</small>
+                                        </div>
+                                        <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                                            <label class="switch switch{{component.device_sensor_id}} float-right">
+                                                <input type="checkbox"
+                                                    class="status-switch{{component.device_sensor_id}} checkbox"
+                                                    id="status-switch">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <form action="{% url 'status' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="componentID"
+                                                value="{{component.device_sensor_id}}">
+                                            <input type="hidden" class="statusValue{{component.device_sensor_id}}"
+                                                name="statusValue">
+
+                                            <button
+                                                class="saveStatusButton{{component.device_sensor_id}} btn btn-link text-dark float-right btn-sm mb-2 mr-2 icon hidden"
+                                                type="submit"
+                                                style="position:absolute; right: 2px; bottom:0;text-decoration: none; font-size: 12px;"><i
+                                                    class="fas fa-save fa-sm mr-2"></i>Save</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <div class="row  mx-4">
+                                    <div class="maintenance-status{{component.device_sensor_id}}"
+                                        style="width:100%; text-align: center;">
+                                        <div class="needsMaintenance{{component.device_sensor_id}}">
+                                            <input
+                                                class="maintenance-needsMaintenance{{component.device_sensor_id}} mr-2 checkbox"
+                                                type="checkbox" checked>
+                                            <small>Needs Maintenance</small>
+                                        </div>
+                                        <div class="underMaintenance{{component.device_sensor_id}}">
+                                            <input
+                                                class="maintenance-underMaintenance{{component.device_sensor_id}} mr-2 checkbox"
+                                                type="checkbox">
+                                            <small>Under Maintenance</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% elif component.sensor_status == 3 %}
+                                <div class="row status{{component.device_sensor_id}} mt-4 mx-4"
+                                    style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                                    <div class="mx-3 my-2" style="width:100%;">
+                                        <div class="statusLabel{{component.device_sensor_id}} my-2">
+                                            <small><b>Status:</b></small><br>
+                                            <small class="status-active{{component.device_sensor_id}}">Active</small>
+                                            <small
+                                                class="status-inactive{{component.device_sensor_id}}">Inactive</small>
+                                            <small class="status-needsMaintenance{{component.device_sensor_id}}">Needs
+                                                Maintenance</small>
+                                            <small class="status-underMaintenance{{component.device_sensor_id}}">Under
+                                                Maintenance</small>
+                                        </div>
+                                        <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                                            <label class="switch switch{{component.device_sensor_id}} float-right">
+                                                <input type="checkbox"
+                                                    class="status-switch{{component.device_sensor_id}} checkbox"
+                                                    id="status-switch">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <form action="{% url 'status' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="componentID"
+                                                value="{{component.device_sensor_id}}">
+                                            <input type="hidden" class="statusValue{{component.device_sensor_id}}"
+                                                name="statusValue">
+
+                                            <button
+                                                class="saveStatusButton{{component.device_sensor_id}} btn btn-link text-dark float-right btn-sm mb-2 mr-2 icon hidden"
+                                                type="submit"
+                                                style="position:absolute; right: 2px; bottom:0;text-decoration: none; font-size: 12px;"><i
+                                                    class="fas fa-save fa-sm mr-2"></i>Save</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <div class="row  mx-4">
+                                    <div class="maintenance-status{{component.device_sensor_id}}"
+                                        style="width:100%; text-align: center;">
+                                        <div class="needsMaintenance{{component.device_sensor_id}}">
+                                            <input
+                                                class="maintenance-needsMaintenance{{component.device_sensor_id}} mr-2 checkbox"
+                                                type="checkbox">
+                                            <small>Needs Maintenance</small>
+                                        </div>
+                                        <div class="underMaintenance{{component.device_sensor_id}}">
+                                            <input
+                                                class="maintenance-underMaintenance{{component.device_sensor_id}} mr-2 checkbox"
+                                                type="checkbox">
+                                            <small>Under Maintenance</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <div class="connectivity row mx-4"
+                                    style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                                    <button class="btn btn-link text-dark float-right btn-sm mt-2 mr-2 icon"
+                                        style="position:absolute; right: 2px; top:0;"><i
+                                            class="fas fa-sync-alt"></i></button>
+                                    <div class="mx-3" style="width:100%;">
+                                        <div class="my-2">
+                                            <small><b>Connectivity:</b></small><br>
+                                            <small class="connectivity-connected">Connected</small>
+                                            <small class="connectivity-disconnected">Disconnected</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col ml-3" style="background-color: #EAEDED; border-radius: 5px;">
+                                <div class="mx-2 my-4">
+                                    <div class="my-3">
+                                        <b>Sensor Details:</b>
+                                        <div class="row ml-2">
+                                            <div class="col">
+                                                <small><b>Incident Type:</b></small>
+                                            </div>
+                                            <div class="col">
+                                                {% if component.sensor_id.sensor_type == 0 %}
+                                                <small>Fire</small>
+                                                {% elif component.sensor_id.sensor_type == 1 %}
+                                                <small>Flood</small>
+                                                {% elif component.sensor_id.sensor_type == 2 %}
+                                                <small>Earthquake</small> {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="row ml-2">
+                                            <div class="col">
+                                                <small><b>Sensor ID:</b></small>
+                                            </div>
+                                            <div class="col">
+                                                <small>{{component.sensor_id.sensor_id}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row ml-2">
+                                            <div class="col">
+                                                <small><b>Sensor Name:</b></small>
+                                            </div>
+                                            <div class="col">
+                                                <small>{{component.sensor_id.sensor_name}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="my-3">
+                                        <b>Device Details:</b>
+                                        <div class="row ml-2">
+                                            <div class="col">
+                                                <small><b>Device ID:</b></small>
+                                            </div>
+                                            <div class="col">
+                                                <small>{{component.device_id.device_id}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row ml-2">
+                                            <div class="col">
+                                                <small><b>Device Name:</b></small>
+                                            </div>
+                                            <div class="col">
+                                                <small>{{component.device_id.device_name}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row ml-2">
+                                            <div class="col">
+                                                <small><b>Location:</b></small>
+                                            </div>
+                                            <div class="col">
+                                                {% for floor in floor_locations %}
+                                                {% if floor.0 == component.device_id.floor_location %}
+                                                <small>{{floor.1}}</small>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="my-3">
+                                        <b>Maintenance Details:</b>
+                                        <div class="row ml-2">
+                                            <div class="col">
+                                                <small><b>Last Maintenance:</b></small>
+                                            </div>
+                                            <div class="col">
+                                                <small>{{component.last_maintained_datetime}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row ml-2">
+                                            <div class="col">
+                                                <small><b>Last Maintained By:</b></small>
+                                            </div>
+                                            <div class="col">
+                                                <small>{{component.last_maintained_by}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container my-3 hidden editComponentForm"
+                            style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); width: 95%;">
+
+                            <button class="btn btn-link text-dark float-left icon cancelEditComponentButton"
+                                title="Go Back">
+                                <span><i class="fas fa-arrow-left"></i></span>
+                            </button>
+
+                            <!--Edit Component Form-->
+                            <form class="mt-5" id="edit{{component.device_sensor_id}}" action="{% url 'edit_comp' %}"
+                                method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="editComponentID" value="{{component.device_sensor_id}}">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <center>
+                                            <!--Upload Component Image-->
+                                            <div class="imgUp mt-3">
+                                                <div class="imagePreview"
+                                                    style="background-image: url('{{component.sensor_id.sensor_image.url}}'); background-size: contain; background-position: center;">
+                                                </div>
+                                                <label type="button" class="btn btn-dark btn-block btn-sm hidden">
+                                                    Select Image<input type="file" class="uploadFile img"
+                                                        style="width: 0px;height: 0px;overflow: hidden;">
+                                                </label>
+                                            </div>
+                                        </center>
+                                    </div>
+
+                                    <div class="col" style="border-left: 3px solid #343A40;">
+                                        <div class="my-3">
+                                            <b>Sensor Details:</b>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <!--Display Incident Type-->
+                                                    <div class="form-group">
+                                                        <small>Incident Type</small>
+                                                        <select class="form-control form-control-sm" disabled>
+                                                            {% for type in incident_type %}
+                                                            {% if type.0 == component.sensor_id.sensor_type %}
+                                                            <option value="{{type.0}}" selected>{{type.1}}</option>
+                                                            {% else %}
+                                                            <option value="{{type.0}}">{{type.1}}</option>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <!--Display Sensor ID-->
+                                                    <div class="form-group">
+                                                        <small>Sensor ID</small>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                            value="{{component.sensor_id.sensor_id}}"
+                                                            name="editComponentSensorID" disabled>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <!--Display Sensor ID-->
+                                                    <div class="form-group">
+                                                        <small>Sensor Name</small>
+                                                        <select class="form-control form-control-sm" disabled>
+                                                            {% for sensor in all_sensors %}
+                                                            {% if sensor.sensor_id == component.sensor_id.sensor_id %}
+                                                            <option value="{{sensor.sensor_id}}" selected>
+                                                                {{sensor.sensor_name}}</option>
+                                                            {% else %}
+                                                            <option value="{{sensor.sensor_id}}">{{sensor.sensor_name}}
+                                                            </option>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="my-3">
+                                            <b>Device Details:</b>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <!--Display Device ID-->
+                                                    <div class="form-group">
+                                                        <small>Device ID</small>
+                                                        <select class="form-control form-control-sm"
+                                                            name="editComponentDeviceID">
+                                                            {% for device in all_devices %}
+                                                            {% if device.device_id == component.device_id.device_id %}
+                                                            <option value="{{device.device_id}}" selected>
+                                                                ({{device.device_id}}) - {{device.device_name}}</option>
+                                                            {{device.device_id}}</option>
+                                                            {% else %}
+                                                            <option value="{{device.device_id}}">({{device.device_id}})
+                                                                -
+                                                                {{device.device_name}}</option>
+                                                            </option>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <!--Display Device Name-->
+                                                    <div class="form-group">
+                                                        <small>Device Name</small>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                            value="{{component.device_id.device_name}}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <!--Dropdown Floor Location-->
+                                                    <div class="form-group">
+                                                        <small>Floor Location</small>
+                                                        <select class="form-control form-control-sm"
+                                                            name="editDeviceFloorLocation" disabled>
+                                                            {% for floor in floor_locations %}
+                                                            {% if component_device_id.floor_location == floor.0 %}
+                                                            <option value="{{floor.0}}" selected>{{floor.1}}</option>
+                                                            {% else %}
+                                                            <option value="{{floor.0}}">{{floor.1}}</option>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                            </form>
+                            <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                                data-target="#confirmEdit{{component.device_sensor_id}}" data-dismiss="modal"><i
+                                    class="fas fa-save fa-sm mr-2 "></i>Save</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="{{component.device_sensor_id}}-data" role="tabpanel"
+                aria-labelledby="{{component.device_sensor_id}}-data">
+                <canvas id="{{component.device_sensor_id}}" width="100%" style="padding: 25px;"></canvas>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</div>
+</div>
+{% endfor %}
+
+<!--Device Modal-->
+{% for device in all_devices %}
+<div class="modal fade" id="deviceModal{{device.device_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343A40;">
+                <div class="row ml-1">
+                    <!--Dropdown Actions-->
+                    {% if request.user.is_superuser %}
+                    <div class="dropdown deviceActions">
+                        <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"><i class="fas fa-ellipsis-v fa-sm"></i></button>
+                        <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
+                            <button class="dropdown-item icon editDeviceButton" style="border-radius: 0px;"
+                                type="button"><i class="far fa-edit mr-2"></i>Edit Device</button>
+                            <button class="dropdown-item icon" style="border-radius: 0px;" type="button"
+                                data-toggle="modal" data-target="#confirmDelete{{device.device_id}}"
+                                data-dismiss="modal"><i class="fas fa-trash-alt fa-sm mr-2"></i>Delete
+                                Device</button>
+                            <form id="delete{{device.device_id}}" action=" {% url 'del_device' %} " method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="deleteDeviceID" value="{{device.device_id}}"></input>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <h5 class="text-light mt-2 ml-3"><b>{{device.device_id}}</b></h5>
+                </div>
+                <a href="{% url 'devices' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row deviceDetails m-2">
+                    <div class="col-5 mt-2">
+                        <center>
+                            <h6 id="" class="componentName"><b>{{device.device_name}}</b></h6>
+                        </center>
+                        <center>
+                            <div class="modalImage" style="background-image: url('{{ device.device_image.url }}');">
+                            </div>
+                        </center>
+
+                        {% if device.device_status == 0 %}
+                        <div class="row status{{device.device_id}}"
+                            style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                            <div class="mx-3 my-2" style="width:100%;">
+                                <div class="statusLabel{{device.device_id}} my-2">
+                                    <small><b>Status:</b></small><br>
+                                    <small class="status-active{{device.device_id}}">Active</small>
+                                    <small class="status-inactive{{device.device_id}}">Inactive</small>
+                                    <small class="status-needsMaintenance{{device.device_id}}">Needs Maintenance</small>
+                                    <small class="status-underMaintenance{{device.device_id}}">Under Maintenance</small>
+                                </div>
+                                <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                                    <label class="switch switch{{device.device_id}} float-right">
+                                        <input type="checkbox" class="status-switch{{device.device_id}} checkbox"
+                                            checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <form action="{% url 'status' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="componentID" value="{{device.device_id}}">
+                                    <input type="hidden" class="statusValue{{device.device_id}}" name="statusValue">
+
+                                    <button
+                                        class="saveStatusButton{{device.device_id}} btn btn-link text-dark float-right btn-sm mb-2 mr-2 icon hidden"
+                                        type="submit"
+                                        style="position:absolute; right: 2px; bottom:0;text-decoration: none; font-size: 12px;"><i
+                                            class="fas fa-save fa-sm mr-2"></i>Save</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="maintenance-status{{device.device_id}}" style="width:100%; text-align: center;">
+                                <div class="needsMaintenance{{device.device_id}}">
+                                    <input class="maintenance-needsMaintenance{{device.device_id}} mr-2 checkbox"
+                                        type="checkbox">
+                                    <small>Needs Maintenance</small>
+                                </div>
+                                <div class="underMaintenance{{device.device_id}}">
+                                    <input class="maintenance-underMaintenance{{device.device_id}} mr-2 checkbox"
+                                        type="checkbox">
+                                    <small>Under Maintenance</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% elif device.device_status == 1 %}
+                        <div class="row status{{device.device_id}}"
+                            style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                            <div class="mx-3 my-2" style="width:100%;">
+                                <div class="statusLabel{{device.device_id}} my-2">
+                                    <small><b>Status:</b></small><br>
+                                    <small class="status-active{{device.device_id}}">Active</small>
+                                    <small class="status-inactive{{device.device_id}}">Inactive</small>
+                                    <small class="status-needsMaintenance{{device.device_id}}">Needs Maintenance</small>
+                                    <small class="status-underMaintenance{{device.device_id}}">Under Maintenance</small>
+                                </div>
+                                <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                                    <label class="switch switch{{device.device_id}} float-right">
+                                        <input type="checkbox" class="status-switch{{device.device_id}} checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <form action="{% url 'status' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="componentID" value="{{device.device_id}}">
+                                    <input type="hidden" class="statusValue{{device.device_id}}" name="statusValue">
+
+                                    <button
+                                        class="saveStatusButton{{device.device_id}} btn btn-link text-dark float-right btn-sm mb-2 mr-2 icon hidden"
+                                        type="submit"
+                                        style="position:absolute; right: 2px; bottom:0;text-decoration: none; font-size: 12px;"><i
+                                            class="fas fa-save fa-sm mr-2"></i>Save</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="maintenance-status{{device.device_id}}" style="width:100%; text-align: center;">
+                                <div class="needsMaintenance{{device.device_id}}">
+                                    <input class="maintenance-needsMaintenance{{device.device_id}} mr-2 checkbox"
+                                        type="checkbox">
+                                    <small>Needs Maintenance</small>
+                                </div>
+                                <div class="underMaintenance{{device.device_id}}">
+                                    <input class="maintenance-underMaintenance{{device.device_id}} mr-2 checkbox"
+                                        type="checkbox" checked>
+                                    <small>Under Maintenance</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% elif device.device_status == 2 %}
+                        <div class="row status{{device.device_id}}"
+                            style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                            <div class="mx-3 my-2" style="width:100%;">
+                                <div class="statusLabel{{device.device_id}} my-2">
+                                    <small><b>Status:</b></small><br>
+                                    <small class="status-active{{device.device_id}}">Active</small>
+                                    <small class="status-inactive{{device.device_id}}">Inactive</small>
+                                    <small class="status-needsMaintenance{{device.device_id}}">Needs Maintenance</small>
+                                    <small class="status-underMaintenance{{device.device_id}}">Under Maintenance</small>
+                                </div>
+                                <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                                    <label class="switch switch{{device.device_id}} float-right">
+                                        <input type="checkbox" class="status-switch{{device.device_id}} checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <form action="{% url 'status' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="componentID" value="{{device.device_id}}">
+                                    <input type="hidden" class="statusValue{{device.device_id}}" name="statusValue">
+
+                                    <button
+                                        class="saveStatusButton{{device.device_id}} btn btn-link text-dark float-right btn-sm mb-2 mr-2 icon hidden"
+                                        type="submit"
+                                        style="position:absolute; right: 2px; bottom:0;text-decoration: none; font-size: 12px;"><i
+                                            class="fas fa-save fa-sm mr-2"></i>Save</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="maintenance-status{{device.device_id}}" style="width:100%; text-align: center;">
+                                <div class="needsMaintenance{{device.device_id}}">
+                                    <input class="maintenance-needsMaintenance{{device.device_id}} mr-2 checkbox"
+                                        type="checkbox" checked>
+                                    <small>Needs Maintenance</small>
+                                </div>
+                                <div class="underMaintenance{{device.device_id}}">
+                                    <input class="maintenance-underMaintenance{{device.device_id}} mr-2 checkbox"
+                                        type="checkbox">
+                                    <small>Under Maintenance</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% elif device.device_status == 3 %}
+                        <div class="row status{{device.device_id}}"
+                            style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                            <div class="mx-3 my-2" style="width:100%;">
+                                <div class="statusLabel{{device.device_id}} my-2">
+                                    <small><b>Status:</b></small><br>
+                                    <small class="status-active{{device.device_id}}">Active</small>
+                                    <small class="status-inactive{{device.device_id}}">Inactive</small>
+                                    <small class="status-needsMaintenance{{device.device_id}}">Needs Maintenance</small>
+                                    <small class="status-underMaintenance{{device.device_id}}">Under Maintenance</small>
+                                </div>
+                                <div class="mt-2 mr-2" style="position: absolute; right:2px; top:0;">
+                                    <label class="switch switch{{device.device_id}} float-right">
+                                        <input type="checkbox" class="status-switch{{device.device_id}} checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <form action="{% url 'status' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="componentID" value="{{device.device_id}}">
+                                    <input type="hidden" class="statusValue{{device.device_id}}" name="statusValue">
+
+                                    <button
+                                        class="saveStatusButton{{device.device_id}} btn btn-link text-dark float-right btn-sm mb-2 mr-2 icon hidden"
+                                        type="submit"
+                                        style="position:absolute; right: 2px; bottom:0;text-decoration: none; font-size: 12px;"><i
+                                            class="fas fa-save fa-sm mr-2"></i>Save</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="maintenance-status{{device.device_id}}" style="width:100%; text-align: center;">
+                                <div class="needsMaintenance{{device.device_id}}">
+                                    <input class="maintenance-needsMaintenance{{device.device_id}} mr-2 checkbox"
+                                        type="checkbox">
+                                    <small>Needs Maintenance</small>
+                                </div>
+                                <div class="underMaintenance{{device.device_id}}">
+                                    <input class="maintenance-underMaintenance{{device.device_id}} mr-2 checkbox"
+                                        type="checkbox">
+                                    <small>Under Maintenance</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="status row"
+                            style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                            <button class="btn btn-link text-dark float-right btn-sm mt-2 mr-2 icon"
+                                style="position:absolute; right: 2px; top:0;"><i class="fas fa-sync-alt"></i></button>
+                            <div class="mx-3" style="width:100%;">
+                                <div class="my-2">
+                                    <small><b>Connectivity:</b></small><br>
+                                    <small class="connectivity-connected">Connected</small>
+                                    <small class="connectivity-disconnected">Disconnected</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col ml-2" style="background-color: #EAEDED; border-radius: 5px;">
+                        <div class="my-4">
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Product ID:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{device.device_productID}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Mac Address:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{device.mac_address}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Location:</b></small>
+                                </div>
+                                <div class="col">
+                                    {% for floor in floor_locations %}
+                                    {% if floor.0 == device.floor_location %}
+                                    <small>{{floor.1}}</small>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <small><b>Last Maintenance:</b></small>
+                                </div>
+                            </div>
+                            <div class="row ml-2">
+                                <div class="col">
+                                    <small>{{device.last_maintained_datetime}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Last Maintained by:</b></small>
+                                </div>
+                            </div>
+                            <div class="row ml-2">
+                                <div class="col">
+                                    <small>{{device.last_maintained_by}}</small>
+                                </div>
+                            </div>
+
+                            <div style="position: absolute; bottom: 0;">
+                                <a href="{{device.device_link}}" class="btn btn-link btn-block btn-sm"
+                                    target="_blank"><i class="fas fa-link mr-2"></i>Link
+                                    to Manual/
+                                    Datasheet</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container my-3 hidden editDeviceForm"
+                style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); width: 95%;">
+
+                <button class="btn btn-link text-dark float-left icon cancelEditDeviceButton" title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </button>
+
+                <!--Edit Device Form-->
+                <form class="mt-4" id="edit{{device.device_id}}" action="{% url 'edit_device' %}" method="POST"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="editDeviceID" value="{{device.device_id}}">
+                    <center>
+                        <!--Upload Component Image-->
+                        <div class="imgUp">
+                            <div class="imagePreview"
+                                style="background-image: url('{{device.device_image.url}}'); background-size: contain; background-position: center;">
+                            </div>
+                            <label type="button" class="btn btn-dark btn-block btn-sm">
+                                Select Image<input type="file" class="uploadFile img"
+                                    style="width: 0px;height: 0px;overflow: hidden;" name="editDeviceImage">
+                            </label>
+                        </div>
+                    </center>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <!--Input Product ID-->
+                            <div class="form-group">
+                                <small>Product ID</small>
+                                <input type="text" class="form-control form-control-sm" name="editDeviceProductID"
+                                    placeholder="Product ID" value="{{device.device_productID}}">
+                            </div>
+
+                            <!--Input Component Name-->
+                            <div class="form-group">
+                                <small>Device Name</small>
+                                <input type="text" class="form-control form-control-sm" name="editDeviceName"
+                                    placeholder="Device Name" value="{{device.device_name}}">
+                            </div>
+
+                            <!--Input Mac Address-->
+                            <div class="form-group">
+                                <small>Mac Address</small>
+                                <input type="text" class="form-control form-control-sm" name="editDeviceMacAddress"
+                                    placeholder="Mac Address" value="{{device.mac_address}}">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!--Dropdown Floor Location-->
+                            <div class="form-group">
+                                <small>Floor Location</small>
+                                <select class="form-control form-control-sm" name="editDeviceFloorLocation">
+                                    <option></option>
+                                    {% for floor in floor_locations %}
+                                    {% if device.floor_location == floor.0 %}
+                                    <option value="{{floor.0}}" selected>{{floor.1}}</option>
+                                    {% else %}
+                                    <option value="{{floor.0}}">{{floor.1}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!--Input Link-->
+                            <div class="form-group">
+                                <small>Link to Manual/ Datasheet</small>
+                                <input type="url" class="form-control form-control-sm" name="editDeviceLink"
+                                    placeholder="Link" value="{{device.device_link}}">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                    data-target="#confirmEdit{{device.device_id}}" data-dismiss="modal"><i
+                        class="fas fa-save fa-sm mr-2 "></i>Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!--Sensor Modal-->
+{% for sensor in all_sensors %}
+<div class="modal fade" id="sensorModal{{sensor.sensor_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343A40;">
+                <div class="row ml-1">
+                    <!--Dropdown Actions-->
+                    {% if request.user.is_superuser %}
+                    <div class="dropdown sensorActions">
+                        <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"><i class="fas fa-ellipsis-v fa-sm"></i></button>
+                        <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
+                            <button class="dropdown-item icon editSensorButton" style="border-radius: 0px;"
+                                type="button"><i class="far fa-edit mr-2"></i>Edit Sensor</button>
+                            <button class="dropdown-item icon" style="border-radius: 0px;" type="submit"
+                                data-toggle="modal" data-target="#confirmDelete{{sensor.sensor_id}}"
+                                data-dismiss="modal"><i class="fas fa-trash-alt fa-sm mr-2"></i>Delete Sensor</button>
+                            <form id="delete{{sensor.sensor_id}}" action=" {% url 'del_sensor' %} " method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="deleteSensorID" value="{{sensor.sensor_id}}"></input>
+
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <h5 class="text-light mt-2 ml-3"><b>{{sensor.sensor_id}}</b></h5>
+                </div>
+                <a href="{% url 'sensors' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row m-2 sensorDetails">
+                    <div class="col-5 mt-2">
+                        <center>
+                            <h6><b>{{sensor.sensor_name}}</b></h6>
+                        </center>
+                        <br>
+                        <center>
+                            <div class="modalImage" style="background-image: url('{{sensor.sensor_image.url}}');">
+                            </div>
+                        </center>
+                    </div>
+
+                    <div class="col ml-2" style="background-color: #EAEDED; border-radius: 5px;">
+                        <div class="my-3">
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Incident Type:</b></small>
+                                </div>
+                                <div class="col">
+                                    {% if sensor.sensor_type == 0 %}
+                                    <small>Fire</small>
+                                    {% elif sensor.sensor_type == 1 %}
+                                    <small>Flood</small>
+                                    {% elif sensor.sensor_type == 2 %}
+                                    <small>Earthquake</small> {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Product ID:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_productID}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Data:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_data}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Voltage:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_voltage}} volts</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="position: absolute; bottom: 0;">
+                            <a href="{{sensor.sensor_link}}" class="btn btn-link btn-block btn-sm" target="_blank"><i
+                                    class="fas fa-link mr-2"></i>Link to Manual/
+                                Datasheet</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container mb-3 hidden editSensorForm"
+                style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); width: 95%;">
+
+                <button class="btn btn-link text-dark float-left icon cancelEditSensorButton" title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </button>
+
+                <!--Edit Sensor Form-->
+                <form class="mt-4" id="edit{{sensor.sensor_id}}" action="{% url 'edit_sensor' %}" method="POST"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="editSensorID" value="{{sensor.sensor_id}}">
+                    <center>
+                        <!--Upload Component Image-->
+                        <div class="imgUp">
+                            <div class="imagePreview"
+                                style="background-image: url('{{sensor.sensor_image.url}}'); background-size: contain; background-position: center;">
+                            </div>
+                            <label type="button" class="btn btn-dark btn-block btn-sm">
+                                Select Image<input type="file" class="uploadFile img"
+                                    style="width: 0px;height: 0px;overflow: hidden;" name="editSensorImage"
+                                    value="{{sensor.sensor_image.name}}">
+                            </label>
+                        </div>
+                    </center>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <!--Dropdow  Incident Type-->
+                            <div class="form-group">
+                                <small>Incident Type</small>
+                                <select class="form-control form-control-sm" name="editSensorIncidentType">
+                                    {% for type in incident_type %}
+                                    {% if type.0 == sensor.sensor_type %}
+                                    <option value="{{type.0}}" selected>{{type.1}}</option>
+                                    {% else %}
+                                    <option value="{{type.0}}">{{type.1}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!--Input Product ID-->
+                            <div class="form-group">
+                                <small>Product ID</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorProductID"
+                                    placeholder="Product ID" value="{{sensor.sensor_productID}}">
+                            </div>
+
+                            <!--Input Component Name-->
+                            <div class="form-group">
+                                <small>Sensor Name</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorName"
+                                    placeholder="Sensor Name" value="{{sensor.sensor_name}}">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!--Input Data-->
+                            <div class="form-group">
+                                <small>Data</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorData"
+                                    placeholder="Data" value="{{sensor.sensor_data}}">
+                            </div>
+
+                            <!--Input Voltage-->
+                            <div class="form-group">
+                                <small>Voltage</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorVoltage"
+                                    placeholder="Voltage" value="{{sensor.sensor_voltage}}">
+                            </div>
+
+                            <!--Input Link-->
+                            <div class="form-group">
+                                <small>Link to Manual/ Datasheet</small>
+                                <input type="url" class="form-control form-control-sm" name="editSensorLink"
+                                    placeholder="Link" value="{{sensor.sensor_link}}">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <button class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                    data-target="#confirmEdit{{sensor.sensor_id}}" data-dismiss="modal"><i
+                        class="fas fa-save fa-sm mr-2 "></i>Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

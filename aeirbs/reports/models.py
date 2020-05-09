@@ -5,15 +5,22 @@ from components.models import Device_Sensor
 from .utils import IncidentCombinations, IncidentLevels
 
 # Create your models here.
+AUDIT_TYPE= [
+    (0, 'Component Logs'),
+    (1, 'User Logs'),
+    (2, 'Maintenance Logs')
+]
 
 class AuditLogs(models.Model):
+    log_id = models.CharField(max_length=15, unique=True)
     activity = models.CharField(max_length=100)
     username = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     date_time = models.DateTimeField(auto_now_add=True)
-    details = models.CharField(max_length=100, default='details')
+    audit_details = models.CharField(max_length=100, default='details')
+    audit_type = models.IntegerField(choices=AUDIT_TYPE, default=0)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.log_id)
 
 class Incident(models.Model):
     incident_type = models.CharField(

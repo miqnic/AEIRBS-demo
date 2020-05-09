@@ -1,0 +1,70 @@
+{% extends 'AEIRBS-Default.html' %}
+{% block title %}DASHBOARD-Add Connection{% endblock title %}
+{% load static %}
+{% block body %}
+
+<!--Add New Connections-->
+<div class="container" id="addNewConnectionsForm" style="padding:0 25px 25px 25px;">
+    <div class="container-fluid"
+        style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+
+        <h3><b><b>ADD NEW CONNECTION</b></b></h3>
+
+        <div class="container my-3 "
+            style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); width: 95%;">
+
+            <div class="row ml-1 mt-1">
+                <a href="{% url 'earthquake_components' %}" class="btn btn-link text-dark float-left icon"
+                    title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </a>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="container" style="padding: 25px;">
+
+                        <form id="addConnection" action="{% url 'add_comp' %}" method="POST">
+                            <div class="row my-3 ml-5">
+                                <div class="col"></div>
+                                <div class="col-10">
+                                    {% csrf_token %}
+
+                                    <!--Dropdown Sensor ID-->
+                                    <div class="form-group">
+                                        <small>Sensor Name</small>
+                                        <select class="form-control form-control-sm" name="addSensorID">
+                                            <option></option>
+                                            {% for sensor in all_sensors %}
+                                            <option value="{{sensor.sensor_id}}">{{sensor.sensor_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <!--Dropdown Device ID-->
+                                    <div class="form-group">
+                                        <small>Device ID</small>
+                                        <select class="form-control form-control-sm" name="addDeviceID">
+                                            <option></option>
+                                            {% for device in all_devices %}
+                                            <option value="{{device.device_id}}">({{device.device_id}}) -
+                                                {{device.device_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                                        data-target="#confirmAddConnection">Connect</button>
+                                </div>
+                                <div class="col"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col backgroundImage">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'COMPONENTS-ConfirmationModals.html' %}
+{% endblock body %}

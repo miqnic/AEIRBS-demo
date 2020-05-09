@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-
+from django.contrib import messages
 from .models import AuditLogs, IncidentReport
   
 from django.shortcuts import render
@@ -24,14 +24,77 @@ def renderPDF(template_src, context_dict={}):
 
 def audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all().order_by('-username')
+        audit_logs = AuditLogs.objects.all()
         return render(request, "AEIRBS-Audit.html", {'audit_logs': audit_logs})
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+def component_logs(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        audit_logs = AuditLogs.objects.all().filter(audit_type = 0)
+        return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def user_logs(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        audit_logs = AuditLogs.objects.all().filter(audit_type = 1)
+        return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def maintenance_logs(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        audit_logs = AuditLogs.objects.all().filter(audit_type = 2)
+        return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def clear_componentLogs(request):
+    if request.user.is_authenticated:
+        if AuditLogs.objects.filter(audit_type = 0).count() > 0:
+            AuditLogs.objects.filter(audit_type = 0).delete()
+            audit_logs = AuditLogs.objects.all().filter(audit_type = 0)
+            messages.success(request, f'Cleared Component Logs successfully!')
+            return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
+        else:
+            audit_logs = AuditLogs.objects.all().filter(audit_type = 0)
+            messages.error(request, f'Component Logs is Empty!')
+            return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+def clear_userLogs(request):
+    if request.user.is_authenticated:
+        if AuditLogs.objects.filter(audit_type = 1).count() > 0:
+            AuditLogs.objects.filter(audit_type = 1).delete()
+            audit_logs = AuditLogs.objects.all().filter(audit_type = 1)
+            messages.success(request, f'Cleared User Logs successfully!')
+            return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
+        else:
+            audit_logs = AuditLogs.objects.all().filter(audit_type = 1)
+            messages.error(request, f'User Logs is Empty!')
+            return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+def clear_maintenanceLogs(request):
+    if request.user.is_authenticated:
+        if AuditLogs.objects.filter(audit_type = 2).count() > 0:
+            AuditLogs.objects.filter(audit_type = 2).delete()
+            audit_logs = AuditLogs.objects.all().filter(audit_type = 2)
+            messages.success(request, f'Cleared Maintenance Logs successfully!')
+            return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
+        else:
+            audit_logs = AuditLogs.objects.all().filter(audit_type = 2)
+            messages.error(request, f'Maintenance Logs is Empty!')
+            return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
 def generatePDF_audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all();
+        audit_logs = AuditLogs.objects.all()
         dateTime = datetime.datetime.now()
         date = dateTime.strftime("%x")
         time = dateTime.strftime("%X")

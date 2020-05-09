@@ -48,8 +48,9 @@
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: #EAEDED;
+    
+    overflow-y: auto;
 }
-
 .overflow-css {
     overflow-y: auto;
 }
@@ -81,6 +82,7 @@ body {
 
 #content nav {
     position: sticky;
+    
 }
 
 
@@ -89,6 +91,7 @@ body {
 .icon {
     border-radius: 5px;
     color: black;
+    text-decoration: none;
 }
 
 .icon:hover {
@@ -118,27 +121,35 @@ body {
 /*Add Image*/
 
 .imagePreview {
-    width: 100%;
-    height: 170px;
+    width: 175px;
+    height: 175px;
     background-position: center;
     background: url("../icons/lineal/img.png");
     background-color: #fff;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
     display: inline-block;
     border-radius: 5px;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 }
-
-.btn-img {
-    display: block;
-    background-color: #343A40;
-    color: white;
-    margin-top: 3px;
+.modalImage {
+    width: 150px;
+    height: 150px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+.cardImage {
+    width: 90px;
+    height: 90px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
 }
 
 .btn-img:hover {
-    background-color: black;
     cursor: pointer;
 }
 
@@ -157,4 +168,31 @@ body {
 
 .table-row:hover {
     background-color: #F4F6F6;
+}
+
+input{
+    line-height: 1rem;
+}
+
+.center{
+    text-align: center;
+}
+
+.imgUp{
+    width: 175px;
+    display: block;
+    text-align: center;
+}
+.nav-item .nav-link {
+    background-color: rgba(0, 0, 0, .08);
+    color: #343A40;
+}
+
+.nav-item .nav-link.active {
+    background-color: rgba(0, 0, 0, .08);
+    color: #343A40;
+    border-bottom: 5px solid !important;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 }

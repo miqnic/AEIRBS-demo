@@ -25,16 +25,20 @@ from reports import views as reports_views
 urlpatterns = [
     # URL Pages
     # Admin Page will be removed when it is to be deployed
-    path('', accounts_views.login_page, name='login_page'),
-    path('home/', components_views.home, name='home'),
+    path('', accounts_views.login_page, name='login_page'), 
+    #path('home/', components_views.home, name='home'),
     path('masterlist/', accounts_views.masterlist, name='masterlist'),
     path('audit/', reports_views.audit, name='audit'),
     path('incident/', reports_views.incident, name='incident'),
     path('summary/', reports_views.summary, name='summary'),
-    path('profile/', accounts_views.profile, name='profile'),
+    path('edit-admin/', accounts_views.edit_admin, name='edit_admin'),
     path('admin/', admin.site.urls),
+    
+    # Add Component Path
+    path('add-component/', components_views.add_component, name='add_component'),
 
     # URL Actions
+    path('add-admin/', accounts_views.add_admin, name='add_admin'),
     path('add-user/', accounts_views.add_user, name='add_user'),
     path('del-user/', accounts_views.del_user, name='del_user'),
     path('edit-user/', accounts_views.edit_user, name='edit_user'),
@@ -42,19 +46,43 @@ urlpatterns = [
     path('generate-audit/', reports_views.generatePDF_audit, name='generatePDF_audit'),
     path('generate-incident/', reports_views.generatePDF_incident, name='generatePDF_incident'),
 
-    # DASHBOARD Components
-    path('earthquake-components/', components_views.earthquake_components, name='earthquake_components'),
-    path('fire-components/', components_views.fire_components, name='fire_components'),
-    path('flood-components/', components_views.flood_components, name='flood_components'),
-    path('other-components/', components_views.other_components, name='other_components'),
-
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
+
+    # CRUD Actions
+    path('add-device/', components_views.add_device, name='add_device'),
+    path('add-sensor/', components_views.add_sensor, name='add_sensor'),
     path('add-comp/', components_views.add_comp, name='add_comp'),
-    path('search-comp/', components_views.search_comp, name='search_comp'),
+
+    path('edit-device/', components_views.edit_device, name='edit_device'),
+    path('edit-sensor/', components_views.edit_sensor, name='edit_sensor'),
+    path('edit-comp/', components_views.edit_comp, name='edit_comp'),
+    path('status/', components_views.status, name='status'),
+
+    path('delete-device/', components_views.del_device, name='del_device'),
+    path('delete-sensor/', components_views.del_sensor, name='del_sensor'),
+    path('delete-comp/', components_views.del_comp, name='del_comp'),
+
     # path('del-comp/', components_views.del_comp, name='del_comp'),
     # path('update-comp/', components_views.update_comp, name='update_comp'),
     path('login/', accounts_views.login_action, name='login_action'),
     path('logout/', accounts_views.logout_action, name='logout_action'),
+
+    # DASHBOARD Components
+    path('dashboard/earthquake-components/', components_views.earthquake_components, name='earthquake_components'),
+    path('dashboard/fire-components/', components_views.fire_components, name='fire_components'),
+    path('dashboard/flood-components/', components_views.flood_components, name='flood_components'),
+    path('dashboard/devices/', components_views.devices, name='devices'),
+    path('dashboard/sensors/', components_views.sensors, name='sensors'),
+
+    # AUDIT Logs
+    path('audit/component-logs/', reports_views.component_logs, name='component_logs'),
+    path('audit/user-logs/', reports_views.user_logs, name='user_logs'),
+    path('audit/maintenance-logs/', reports_views.maintenance_logs, name='maintenance_logs'),
+
+    path('audit/component-logs/clear-logs/', reports_views.clear_componentLogs, name='clear_componentLogs'),
+    path('audit/user-logs/clear-logs/', reports_views.clear_userLogs, name='clear_userLogs'),
+    path('audit/maintenance-logs/clear-logs/', reports_views.clear_maintenanceLogs, name='clear_maintenanceLogs'),
+
 ] 
 
 if settings.DEBUG:

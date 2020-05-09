@@ -9,7 +9,7 @@
         </li>
         <li class="nav-item mr-4">
             <div class="form-group">
-                <select class="form-control" id="sort">
+                <select class="form-control  form-control-sm" id="sort">
                     <option>Component ID</option>
                 </select>
             </div>
@@ -21,36 +21,59 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
-                    <input type="text" class="input form-control" placeholder="Search Component">
+                    <input type="text" class="input form-control form-control-sm" placeholder="Search Component">
                 </div>
             </form>
         </li>
     </ul>
 
-    <div class="d-inline-flex flex-row  justify-content-start text-center" style="padding: 20px 57px 20px 57px;">
+    <div class="container-fluid">
+        <div class="text-center" style="margin-left: auto; margin-right: auto;">
         {% for eq in earthquake_components %}
-        <div class="card card-layout border-0 m-2" data-toggle="modal"
-            data-target="#sensorModal{{eq.device_sensor_id}}">
+        <div class="card card-layout border-0 m-2 component earthquakeComponent" data-toggle="modal"
+            data-target="#componentModal{{eq.device_sensor_id}}" data-component='{{eq.device_sensor_id}}' style="display: inline-block;">
             <div class="card-header border-0">
-                <b style="font-size: 16px;">{{eq.device_sensor_id}}</b>
+                <b style="font-size: 16px;">{{eq.device_sensor_id}}</b>  <small><i class="fas fa-exclamation-circle ml-2 text-danger"></i></small>
             </div>
             <div class="card-body border-0">
                 <div class="row my-2">
-                    <div class="col-4">
-                        <img src="{{ eq.sensor_id.sensor_image.url }}" height="90" style="border-radius: 5px;">
+                    <div class="col-4">          
+                        <center>
+                            <div class="cardImage" style="background-image: url('{{ eq.sensor_id.sensor_image.url }}');">
+                            </div>
+                        </center>
                     </div>
                     <div class="col-8 mt-3" style="font-size: 14px;">
                         <h6>{{eq.sensor_id.sensor_name}}</h6>
-                        <small>{{eq.device_id.floor_location}}</small>
+                        {% for floor in floor_locations %}
+                        {% if floor.0 == eq.device_id.floor_location %}
+                        <small>{{floor.1}}</small>
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-
-            <div class="card-overlay" style="background-color:#1E8449;"></div>
+            {% if eq.sensor_status == 0 %}
+            <div class="card-overlay connected-card-overlay"></div>
+            {% elif eq.sensor_status == 1 %}
+            <div class="card-overlay underMaintenance-card-overlay"></div>
+            {% elif eq.sensor_status == 2 %}
+            <div class="card-overlay needsMaintenance-card-overlay"></div>
+            {% elif eq.sensor_status == 3 %}
+            <div class="card-overlay inactive-card-overlay"></div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
+</div>
+    {% include 'AEIRBS-ComponentModals.html' %}
+    {% include 'COMPONENTS-ConfirmationModals.html' %}
 </body>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
+    $(".dashboard").toggleClass("active");
+    $(".earthquake").toggleClass("active");
+    $(".addComponent").click("active");
 </script>
 {% endblock content %}

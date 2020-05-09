@@ -3,17 +3,17 @@
 {%block body%}
 
 <body>
-  <nav id="sidebar">
+  <nav id="sidebar" class="active" style="position: relative;">
     <div class="sticky-top">
       <div class="sidebar-header">
-        <img id="logo-AEIRBS" src="{% static 'icons/AEIRBS.png' %}" height="45">
-        <img id="logo" class="hidden" src="{% static 'icons/logo.png' %}" height="45">
+        <img id="logo-AEIRBS"  class="hidden" src="{% static 'icons/AEIRBS.png' %}" height="45">
+        <img id="logo" src="{% static 'icons/aeirbs-logo.png' %}" height="45">
       </div>
 
-      <div class="sidebar-body">
+      <div class="sidebar-body" style="height: 100%;">
         <ul class="list-unstyled components border-0">
-          <li>
-            <a id="dashboard" class="dashboard" href="{% url 'home' %}">
+          <li class="mx-2 my-1">
+            <a id="dashboard" class="dashboard" href="{% url 'earthquake_components' %}" style="display:none; border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-cogs mx-3"></i>
@@ -23,13 +23,14 @@
                 </div>
               </div>
             </a>
-            <a id="dashboard-logo" class="" style="display:none;" href="{% url 'home' %}" title="Dashboard">
-              <i class="fas fa-cogs fa-lg"></i></h6>
+            <a id="dashboard-logo" class="dashboard" style="border-radius: 5px;"
+              href="{% url 'earthquake_components' %}" title="Dashboard">
+              <i class="fas fa-cogs fa-lg" style="border-radius: 5px;"></i></h6>
             </a>
           </li>
 
-          <li>
-            <a id="masterlist" class="" href="{% url 'masterlist' %}">
+          <li class="mx-2 my-1">
+            <a id="masterlist" class="masterlist" href="{% url 'masterlist' %}" style="display:none;border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-users mx-3"></i>
@@ -39,76 +40,83 @@
                 </div>
               </div>
             </a>
-            <a id="masterlist-logo" class="" style="display:none;" href="{% url 'masterlist' %}" title="Masterlist">
+            <a id="masterlist-logo" class="masterlist" style="border-radius: 5px;" href="{% url 'masterlist' %}"
+              title="Masterlist">
               <i class="fas fa-users fa-lg"></i>
             </a>
           </li>
-          <li>
-            <a id="reports" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown">
+
+          <li class="mx-2 my-1" >
+            <a id="reports" class="reports" style="display:none;border-radius: 5px;">
               <div class="row">
                 <div class="col-2">
                   <i class="fas fa-folder-open mx-3"></i>
                 </div>
-                <div class="col ml-1">
+                <div class="col-6 ml-1">
                   Reports
                 </div>
+                <div class="col dropdown-toggle"></div>
               </div>
             </a>
-            <a id="reports-logo" class="" style="display:none;" href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
-              class="dropdown" title="Reports">
+            <a id="reports-logo" style="border-radius: 5px;" class="reports" title="Reports">
               <i class="fas fa-folder-open fa-lg ml-2"></i>
             </a>
 
-            <ul class="collapse list-unstyled" id="pageSubmenu">
-              <li>
-                <a id="audit" class="" href="{% url 'audit' %}">
+            <ul class="list-unstyled hidden" id="pageSubmenu">
+              <li class="m-2">
+                <a id="audit" class="audit" href="{% url 'component_logs' %}" style="display:none;border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
-                      <i class="fas fa-file-alt mx-3"></i>
+                      <i class="fas fa-file-alt"></i>
                     </div>
                     <div class="col ml-1">
                       Audit Logs
                     </div>
                   </div>
                 </a>
-                <a id="audit-logo" class="" style="display:none;" href="{% url 'audit' %}" title="Audit Logs">
-                  <i class="fas fa-file-alt fa-sm ml-2"></i>
+                <a id="audit-logo" class="audit" style="border-radius: 5px;" href="{% url 'component_logs' %}"
+                  title="Audit Logs">
+                  <i class="fas fa-file-alt fa-sm"></i>
                 </a>
               </li>
-              <li>
-                <a id="incident" class="" href="{% url 'incident' %}">
+
+              <li class="m-2">
+                <a id="incident" class="incident" href="{% url 'incident' %}" style="display:none;border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
-                      <i class="fas fa-clipboard mx-3"></i>
+                      <i class="fas fa-clipboard"></i>
                     </div>
                     <div class="col ml-1">
                       Incident Reports
                     </div>
                   </div>
                 </a>
-                <a id="incident-logo" class="" style="display:none;" href="{% url 'incident' %}" title="Incident Reports">
-                  <i class="fas fa-clipboard fa-sm ml-2"></i>
+                <a id="incident-logo" class="incident" style="border-radius: 5px;" href="{% url 'incident' %}"
+                  title="Incident Reports">
+                  <i class="fas fa-clipboard fa-sm"></i>
                 </a>
               </li>
-              <li>
-                <a id="summary" class="" href="{% url 'summary' %}">
+
+              <li class="m-2">
+                <a id="summary" class="summary" href="{% url 'summary' %}" style="display:none; border-radius: 5px;">
                   <div class="row">
                     <div class="col-2">
-                      <i class="fas fa-chart-bar mx-3"></i>
+                      <i class="fas fa-chart-bar"></i>
                     </div>
                     <div class="col ml-1">
                       Summary Reports
                     </div>
                   </div>
                 </a>
-                <a id="summary-logo" class="" style="display:none;" href="{% url 'summary' %}" title="Summary Reports">
-                  <i class="fas fa-chart-bar fa-sm ml-2"></i>
+                <a id="summary-logo" class="summary " style="border-radius: 5px;" href="{% url 'summary' %}" title="Summary Reports">
+                  <i class="fas fa-chart-bar fa-sm"></i>
                 </a>
               </li>
             </ul>
           </li>
         </ul>
       </div>
+     
     </div>
   </nav>
 </body>

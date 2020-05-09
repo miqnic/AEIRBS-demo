@@ -1,12 +1,14 @@
-$(document).ready(function() {
-    $('.table').DataTable({
+$(document).ready(function () {
+    $('.dataTable').DataTable({
         "paging": false,
-        searching: false
+        searching: false,
+        "order": [0, "desc"]
     });
-
-    $(".dataTables_paginate").addClass("btn btn-sm float-right")
-    $("label").css("font-size", "14px")
+    $("label").css("font-size", "12px")
     $(".dataTables_info").css("font-size", "14px")
+
+
+    $('[data-toggle="popover"]').popover();
 
     window.setTimeout(function () {
         $(".alert").fadeTo(500, 0).slideUp(500, function () {
@@ -14,3 +16,4 @@ $(document).ready(function() {
         });
     }, 4000);
 });
+

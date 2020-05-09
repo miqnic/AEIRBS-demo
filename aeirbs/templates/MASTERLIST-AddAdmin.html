@@ -1,0 +1,144 @@
+{% extends 'AEIRBS-Default.html' %}
+{% block title %}Masterlist-Add User{% endblock title %}
+{% load static %}
+{% block body %}
+<!--Add Admin Form-->
+<div class="container" style="padding:0 25px 25px 25px;">
+    <div class="container-fluid"
+        style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+
+        <div class="row">
+            <div class="col-1">
+                <a href="{% url 'masterlist' %}" class="btn btn-link text-dark icon" title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </a>
+            </div>
+            <div class="col">
+                <h3><b><b>ADD ADMIN</b></b></h3>
+            </div>
+        </div>
+        <hr>
+
+
+        <form action="{% url 'add_user' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row my-5">
+                <!--Upload Component Image-->
+                <div class="col-3">
+                    <div style="padding:10px;">
+                        <center>
+                            <div class="imgUp">
+                                <div class="imagePreview"
+                                    style="background-size: contain; background-position: center;">
+                                </div>
+                                <label type="button" class="btn btn-dark btn-block btn-sm">
+                                    Select Image<input type="file" class="uploadFile img"
+                                        style="width: 0px;height: 0px;overflow: hidden;" name="addAdminImage">
+                                </label>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+
+                <div class="col" style="border-left: 3px solid #343A40;">
+                    <div style="padding:10px;">
+                        <div class="row">
+                            <!--Dropdown Access Role-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Access Role</small>
+                                    <select class="form-control form-control-sm" name="addAdminAccessRole">
+                                        <option></option>
+                                        <option value="adminRole">Admin</option>
+                                        <option value="superRole">Super Admin</option>
+                                        {% if inputAccessRole == True %}
+                                        <option value="adminRole">Admin</option>
+                                        <option value="superRole" selected>Super Admin</option>
+                                        {% elif inputAccessRole == False %}
+                                        <option value="adminRole" selected>Admin</option>
+                                        <option value="superRole">Super Admin</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!--Input Employee ID-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Employee ID</small>
+                                    <input type="text" class="form-control form-control-sm" name="addAdminEmployeeID"
+                                        placeholder="Employee ID" value="{{inputEmployeeID}}">
+                                </div>
+                            </div>
+
+                            <div class="col">
+                            </div>
+                        </div>
+
+                        <!--Input First Name-->
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>First Name</small>
+                                    <input type="text" class="form-control form-control-sm" name="addAdminFirstName"
+                                        placeholder="First Name" value="{{inputFirstName}}">
+                                </div>
+                            </div>
+
+                            <!--Input Middle Name-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Middle Name</small>
+                                    <input type="text" class="form-control form-control-sm" name="addAdminMiddleName"
+                                        placeholder="Middle Name" value="{{inputMiddleName}}">
+                                </div>
+                            </div>
+
+                            <!--Input last Name-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Last Name</small>
+                                    <input type="text" class="form-control form-control-sm" id="inputLastName"
+                                        name="addAdminLastName" placeholder="Last Name" value="{{inputLastName}}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!--Input Job Position-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Job Position</small>
+                                    <input type="text" class="form-control form-control-sm" name="addAdminJobPosition"
+                                        placeholder="Job Position" value="{{inputJobPosition}}">
+                                </div>
+                            </div>
+
+                            <!--Input Company Email-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Company Email</small>
+                                    <input type="email" class="form-control form-control-sm" name="addAdminCompanyEmail"
+                                        placeholder="Company Email" value="{{InputCompanyEmail}}">
+                                </div>
+                            </div>
+
+                            <!--Input Phone Number-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Mobile Number</small>
+                                    <input type="text" class="form-control form-control-sm" name="addAdminMobileNumber"
+                                        placeholder="Mobile Number" value="{{inputMobileNumber}}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark float-right btn-sm">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% include 'COMPONENTS-ConfirmationModals.html' %}
+{% endblock body %}

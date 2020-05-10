@@ -20,6 +20,26 @@ def getArduinoData():
     port_stream.close() 
     return float(str(''.join(ard_data[:])))
 
+def sort_components(request, incident_type, sort_by, filter_by):
+    if sort_by == 'floor':
+        if filter_by == 1:
+            sort_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.all().filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id__floor_location')
+        else:
+             sort_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False).order_by('-device_id__floor_location')
+    elif sort_by == 'device':
+         sort_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False).order_by('device_id')
+    elif sort_by == 'id':
+         sort_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False)
+    return sort_components
+
+def filter_components(request, incident_type, sort_by, filter_by):
+    if filter_by == 12:
+        if sort_by == 'floor':
+            filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.all().filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id__floor_location')
+
+    return filter_components
+
+
 def add_component(request):
     if request.user.is_authenticated:
         context = {}
@@ -65,14 +85,40 @@ def earthquake_components(request):
 
         context['earthquake_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False)
        
+        context['sort'] = 'id'
+        context['filter'] = 1
         context['floor_locations'] = FLOOR_LOCATIONS
         context['incident_type'] = INCIDENT_TYPE
 
         context['sensor_reading'] = " "#getArduinoData()
 
+        all_components = Device_Sensor.objects.all()
         if request.method == 'POST':
-            keyword = request.POST.get('keyword')
-            context['earthquake_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+            if request.POST.get('keyword'):
+                keyword = request.POST.get('keyword')
+                context['earthquake_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+            if request.POST.get('sortComponent'):
+                sortBy = request.POST.get('sortComponent')
+                filterBy = int(request.POST.get('filterValue'))
+                context['earthquake_components'] = sort_components(request, 2, sortBy, filterBy)
+                context['sort'] = sortBy
+                context['filter'] = filterBy
+                                    
+            if request.POST.get('filterComponent'):
+                filterBy = int(request.POST.get('filterComponent'))
+                sortBy = request.POST.get('sortValue')
+                print(request.POST.get('sortValue'))
+                if sortBy == 'floor':
+                    if filterBy == 1:
+                        context['earthquake_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False).order_by('-device_id__floor_location')
+                    elif filterBy == 12:
+                        context['earthquake_components'] = (Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id__floor_location')
+                if filterBy == 1:
+                    context['earthquake_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False)
+                elif filterBy == 12:
+                    context['earthquake_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_status = 2)
+                    context['filter'] = 12
+
 
         return render(request, 'DASHBOARD-EarthquakeComponents.html', context = context)
     else:

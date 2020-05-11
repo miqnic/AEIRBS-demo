@@ -1,4 +1,145 @@
 $(document).ready(function () {
+  if ($(".ascending-descending").val() == 'asc') {
+    $(".descending").css("color", "white");
+} else {
+    $(".ascending").css("color", "white");
+}
+
+$(".asc-desc-btn").click(function () {
+    if ($(".ascending-descending").val() == 'asc') {
+        $(".ascending-descending").val('desc');
+    } else {
+        $(".ascending-descending").val('asc');
+    }
+});
+
+$(".sortComponent").on('change', function () {
+    if ($('.sortComponent').val() == 'floor') {
+        $('.floor').prop("selected", true);
+    }
+    $(".sort-filter-componentForm").submit();
+});
+
+if ($('.filterComponent').val() == 1) {
+    $('.filter-active').prop("checked", true);
+    $('.filter-underMaintenance').prop("checked", true);
+    $('.filter-needsMaintenance').prop("checked", true);
+    $('.filter-inactive').prop("checked", true);
+} else if ($('.filterComponent').val() == 2) {
+    $('.filter-active').prop("checked", true);
+    $('.filter-underMaintenance').prop("checked", true);
+    $('.filter-needsMaintenance').prop("checked", true);
+    $('.filter-inactive').prop("checked", false);
+} else if ($('.filterComponent').val() == 3) {
+    $('.filter-active').prop("checked", true);
+    $('.filter-underMaintenance').prop("checked", true);
+    $('.filter-needsMaintenance').prop("checked", false);
+    $('.filter-inactive').prop("checked", true);
+} else if ($('.filterComponent').val() == 4) {
+    $('.filter-active').prop("checked", true);
+    $('.filter-underMaintenance').prop("checked", false);
+    $('.filter-needsMaintenance').prop("checked", true);
+    $('.filter-inactive').prop("checked", true);
+} else if ($('.filterComponent').val() == 5) {
+    $('.filter-active').prop("checked", false);
+    $('.filter-underMaintenance').prop("checked", true);
+    $('.filter-needsMaintenance').prop("checked", true);
+    $('.filter-inactive').prop("checked", true);
+} else if ($('.filterComponent').val() == 6) {
+    $('.filter-active').prop("checked", true);
+    $('.filter-underMaintenance').prop("checked", true);
+    $('.filter-needsMaintenance').prop("checked", false);
+    $('.filter-inactive').prop("checked", false);
+} else if ($('.filterComponent').val() == 7) {
+    $('.filter-active').prop("checked", true);
+    $('.filter-underMaintenance').prop("checked", false);
+    $('.filter-needsMaintenance').prop("checked", true);
+    $('.filter-inactive').prop("checked", false);
+} else if ($('.filterComponent').val() == 8) {
+    $('.filter-active').prop("checked", true);
+    $('.filter-underMaintenance').prop("checked", false);
+    $('.filter-needsMaintenance').prop("checked", false);
+    $('.filter-inactive').prop("checked", true);
+} else if ($('.filterComponent').val() == 9) {
+    $('.filter-active').prop("checked", false);
+    $('.filter-underMaintenance').prop("checked", true);
+    $('.filter-needsMaintenance').prop("checked", true);
+    $('.filter-inactive').prop("checked", false);
+} else if ($('.filterComponent').val() == 10) {
+    $('.filter-active').prop("checked", false);
+    $('.filter-underMaintenance').prop("checked", true);
+    $('.filter-needsMaintenance').prop("checked", false);
+    $('.filter-inactive').prop("checked", true);
+} else if ($('.filterComponent').val() == 11) {
+    $('.filter-active').prop("checked", false);
+    $('.filter-underMaintenance').prop("checked", false);
+    $('.filter-needsMaintenance').prop("checked", true);
+    $('.filter-inactive').prop("checked", true);
+} else if ($('.filterComponent').val() == 12) {
+    $('.filter-active').prop("checked", true);
+    $('.filter-underMaintenance').prop("checked", false);
+    $('.filter-needsMaintenance').prop("checked", false);
+    $('.filter-inactive').prop("checked", false);
+} else if ($('.filterComponent').val() == 13) {
+    $('.filter-active').prop("checked", false);
+    $('.filter-underMaintenance').prop("checked", true);
+    $('.filter-needsMaintenance').prop("checked", false);
+    $('.filter-inactive').prop("checked", false);
+} else if ($('.filterComponent').val() == 14) {
+    $('.filter-active').prop("checked", false);
+    $('.filter-underMaintenance').prop("checked", false);
+    $('.filter-needsMaintenance').prop("checked", true);
+    $('.filter-inactive').prop("checked", false);
+} else if ($('.filterComponent').val() == 15) {
+    $('.filter-active').prop("checked", false);
+    $('.filter-underMaintenance').prop("checked", false);
+    $('.filter-needsMaintenance').prop("checked", false);
+    $('.filter-inactive').prop("checked", true);
+} else if ($('.filterComponent').val() == 16) {
+    $('.filter-active').prop("checked", false);
+    $('.filter-underMaintenance').prop("checked", false);
+    $('.filter-needsMaintenance').prop("checked", false);
+    $('.filter-inactive').prop("checked", false);
+}
+
+$(".filter").on('change', function () {
+    var sortBy = $('.sortComponent').val();
+    $('.sortValue').val(sortBy)
+    if ($('.filter-active').is(":checked") && $('.filter-underMaintenance').is(":checked") && $('.filter-needsMaintenance').is(":checked") && $('.filter-inactive').is(":checked")) {
+        $('.filterComponent').val(1);
+    } else if ($('.filter-active').is(":checked") && $('.filter-underMaintenance').is(":checked") && $('.filter-needsMaintenance').is(":checked")) {
+        $('.filterComponent').val(2);
+    } else if ($('.filter-active').is(":checked") && $('.filter-underMaintenance').is(":checked") && $('.filter-inactive').is(":checked")) {
+        $('.filterComponent').val(3);
+    } else if ($('.filter-active').is(":checked") && $('.filter-needsMaintenance').is(":checked") && $('.filter-inactive').is(":checked")) {
+        $('.filterComponent').val(4);
+    } else if ($('.filter-underMaintenance').is(":checked") && $('.filter-needsMaintenance').is(":checked") && $('.filter-inactive').is(":checked")) {
+        $('.filterComponent').val(5);
+    } else if ($('.filter-active').is(":checked") && $('.filter-underMaintenance').is(":checked")) {
+        $('.filterComponent').val(6);
+    } else if ($('.filter-active').is(":checked") && $('.filter-needsMaintenance').is(":checked")) {
+        $('.filterComponent').val(7);
+    } else if ($('.filter-active').is(":checked") && $('.filter-inactive').is(":checked")) {
+        $('.filterComponent').val(8);
+    } else if ($('.filter-underMaintenance').is(":checked") && $('.filter-needsMaintenance').is(":checked")) {
+        $('.filterComponent').val(9);
+    } else if ($('.filter-underMaintenance').is(":checked") && $('.filter-inactive').is(":checked")) {
+        $('.filterComponent').val(10);
+    } else if ($('.filter-needsMaintenance').is(":checked") && $('.filter-inactive').is(":checked")) {
+        $('.filterComponent').val(11);
+    } else if ($('.filter-active').is(":checked")) {
+        $('.filterComponent').val(12);
+    } else if ($('.filter-underMaintenance').is(":checked")) {
+        $('.filterComponent').val(13);
+    } else if ($('.filter-needsMaintenance').is(":checked")) {
+        $('.filterComponent').val(14);
+    } else if ($('.filter-inactive').is(":checked")) {
+        $('.filterComponent').val(15);
+    } else {
+        $('.filterComponent').val(16);
+    }
+    $('.sort-filter-componentForm').submit();
+});
 
   //Device
   $(".editDeviceButton").click(function () {

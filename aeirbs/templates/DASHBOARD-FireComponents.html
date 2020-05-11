@@ -5,29 +5,87 @@
 <body>
     <ul class="nav justify-content-end">
         <li class="nav-item mt-1 mr-3">
-            Sort by:
+            <small>Sort by:</small>
         </li>
         <li class="nav-item mr-4">
-            <div class="form-group">
-                <select class="form-control  form-control-sm" id="sort">
-                    <option>Component ID</option>
-                </select>
-            </div>
+            <form class="sort-filter-componentForm" action="{% url 'fire_components' %}" method="POST">
+                {% csrf_token %}
+                <input class="filterComponent" type="hidden" name="filterComponent" value="{{filter}}">
+                <input class="ascending-descending" type="hidden" name="ascDesc" value="{{ascending_descending}}">
+                <div class="input-group">
+                    <select class="custom-select form-control form-control-sm sortComponent" name="sortComponent">
+                        {% if sort == 'floor' %}
+                        <option class="id" value="id">Component ID</option>
+                        <option class="floor" value="floor" selected>Floor Location</option>
+                        <option class="device" value="device">Device Connected</option>
+                        {% elif sort == 'device' %}
+                        <option class="id" value="id">Component ID</option>
+                        <option class="floor" value="floor">Floor Location</option>
+                        <option class="device" value="device" selected>Device Connected</option>
+                        {% else %}
+                        <option class="id" value="id" selected>Component ID</option>
+                        <option class="floor" value="floor">Floor Location</option>
+                        <option class="device" value="device">Device Connected</option>
+                        {% endif %}
+                    </select>
+                    <div class="input-group-append">
+                        <button class="btn btn-link icon btn-sm asc-desc-btn"
+                            style="border: 1px solid #D2D7DD; color: #495057;"><i
+                                class="fas fa-long-arrow-alt-up ascending"></i><i
+                                class="fas fa-long-arrow-alt-down descending"></i></button>
+                    </div>
+                </div>
+            </form>
         </li>
         <li class="nav-item">
-            <form action="#" method="post">
+            <form action="{% url 'fire_components' %}" method="POST">
                 {% csrf_token %}
                 <div class="input-group" id="searchComponent">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
-                    <input type="text" class="input form-control form-control-sm" placeholder="Search Component">
+                    <input type="text" name="keyword" class="input form-control form-control-sm"
+                        placeholder="Search Component">
                 </div>
             </form>
         </li>
     </ul>
+    <div class="row float-right">
+        <div class="mr-3">
+            <div class="form-check">
+                <input class="form-check-input filter filter-active" type="checkbox">
+                <label class="form-check-label" for="defaultCheck1">
+                    Active
+                </label>
+            </div>
+        </div>
+        <div class="mr-3">
+            <div class="form-check">
+                <input class="form-check-input filter filter-underMaintenance" type="checkbox">
+                <label class="form-check-label">
+                    Under Maintenance
+                </label>
+            </div>
+        </div>
+        <div class="mr-3">
+            <div class="form-check">
+                <input class="form-check-input filter filter-needsMaintenance" type="checkbox">
+                <label class="form-check-label">
+                    Needs Maintenance
+                </label>
+            </div>
+        </div>
+        <div class="mr-3">
+            <div class="form-check">
+                <input class="form-check-input filter filter-inactive" type="checkbox">
+                <label class="form-check-label">
+                    Inactive
+                </label>
+            </div>
+        </div>
+    </div>
 
-    <div class="container-fluid">
+    <div class="container-fluid mt-5">
         <div class="text-center" style="margin-left: auto; margin-right: auto;">
             {% for fr in fire_components %}
             <div class="card card-layout border-0 m-2 component fireComponent" data-toggle="modal"

@@ -106,7 +106,7 @@
                                             <!--Dropdown Floor Location-->
                                             <div class="form-group">
                                                 <small>Floor Location</small>
-                                                <select class="form-control form-control-sm"
+                                                <select class="custom-select form-control form-control-sm"
                                                     name="addDeviceFloorLocation">
                                                     <option></option>
                                                     {% for floor in floor_locations %}
@@ -121,6 +121,7 @@
                                                 <input type="url" class="form-control form-control-sm"
                                                     name="addDeviceLink" placeholder="Link">
                                             </div>
+
                                         </div>
                                     </div>
 
@@ -165,7 +166,7 @@
                                             <!--Dropdown Incident Type-->
                                             <div class="form-group">
                                                 <small>Incident Type</small>
-                                                <select class="form-control form-control-sm"
+                                                <select class="custom-select form-control form-control-sm"
                                                     name="addSensorIncidentType">
                                                     <option></option>
                                                     {% for type in incident_type %}
@@ -236,7 +237,7 @@
                                 <!--Dropdown Sensor ID-->
                                 <div class="form-group">
                                     <small>Sensor Name</small>
-                                    <select class="form-control form-control-sm" name="addSensorID">
+                                    <select class="custom-select form-control form-control-sm" name="addSensorID">
                                         <option></option>
                                         {% for sensor in all_sensors %}
                                         <option value="{{sensor.sensor_id}}">{{sensor.sensor_name}}</option>
@@ -247,7 +248,7 @@
                                 <!--Dropdown Device ID-->
                                 <div class="form-group">
                                     <small>Device ID</small>
-                                    <select class="form-control form-control-sm" name="addDeviceID">
+                                    <select class="custom-select form-control form-control-sm" name="addDeviceID">
                                         <option></option>
                                         {% for device in all_devices %}
                                         <option value="{{device.device_id}}">({{device.device_id}}) -
@@ -255,8 +256,11 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
-                                    data-target="#confirmAddConnection"><i class="fas fa-plug mr-2"></i>Connect</button>
+                                <center>
+                                    <button type="button" class="mt-2 btn btn-dark btn-sm" data-toggle="modal"
+                                        data-target="#confirmAddConnection"><i
+                                            class="fas fa-plug mr-2"></i>Connect</button>
+                                </center>
                             </div>
                             <div class="col"></div>
                         </div>

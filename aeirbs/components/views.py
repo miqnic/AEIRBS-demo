@@ -20,6 +20,216 @@ def getArduinoData():
     port_stream.close() 
     return float(str(''.join(ard_data[:])))
 
+def sort_filter_components(request, incident_type, sort_by, filter_by, asc_desc):
+    if asc_desc == 'asc':
+        if sort_by == 'floor':
+            if filter_by == 2:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('device_id__floor_location')
+            elif filter_by == 3:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id__floor_location')
+            elif filter_by == 4:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id__floor_location')
+            elif filter_by == 5:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id__floor_location')
+            elif filter_by == 6:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1)).order_by('device_id__floor_location')
+            elif filter_by == 7:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('device_id__floor_location')
+            elif filter_by == 8:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id__floor_location')
+            elif filter_by == 9:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('device_id__floor_location')
+            elif filter_by == 10:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id__floor_location')
+            elif filter_by == 11:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id__floor_location')
+            elif filter_by == 12:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0).order_by('device_id__floor_location')
+            elif filter_by == 13:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1).order_by('device_id__floor_location')
+            elif filter_by == 14:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2).order_by('device_id__floor_location')
+            elif filter_by == 15:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3).order_by('device_id__floor_location')
+            elif filter_by == 16:
+                sort_filter_components = None
+            else:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False).order_by('device_id__floor_location')
+
+        elif sort_by == 'device':
+            if filter_by == 2:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('device_id')
+            elif filter_by == 3:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id')
+            elif filter_by == 4:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id')
+            elif filter_by == 5:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id')
+            elif filter_by == 6:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1)).order_by('device_id')
+            elif filter_by == 7:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('device_id')
+            elif filter_by == 8:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id')
+            elif filter_by == 9:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('device_id')
+            elif filter_by == 10:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id')
+            elif filter_by == 11:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('device_id')
+            elif filter_by == 12:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0).order_by('device_id')
+            elif filter_by == 13:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1).order_by('device_id')
+            elif filter_by == 14:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2).order_by('device_id')
+            elif filter_by == 15:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3).order_by('device_id')
+            elif filter_by == 16:
+                sort_filter_components = None
+            else:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False).order_by('device_id')
+
+        elif sort_by == 'id':
+            if filter_by == 2:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2))
+            elif filter_by == 3:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3))
+            elif filter_by == 4:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3))
+            elif filter_by == 5:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3))
+            elif filter_by == 6:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1))
+            elif filter_by == 7:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2))
+            elif filter_by == 8:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3))
+            elif filter_by == 9:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2))
+            elif filter_by == 10:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3))
+            elif filter_by == 11:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3))
+            elif filter_by == 12:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0)
+            elif filter_by == 13:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1)
+            elif filter_by == 14:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)
+            elif filter_by == 15:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)
+            elif filter_by == 16:
+                sort_filter_components = None
+            else:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False)
+    else:
+        if sort_by == 'floor':
+            if filter_by == 2:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id__floor_location')
+            elif filter_by == 3:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id__floor_location')
+            elif filter_by == 4:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id__floor_location')
+            elif filter_by == 5:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id__floor_location')
+            elif filter_by == 6:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1)).order_by('-device_id__floor_location')
+            elif filter_by == 7:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id__floor_location')
+            elif filter_by == 8:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id__floor_location')
+            elif filter_by == 9:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id__floor_location')
+            elif filter_by == 10:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id__floor_location')
+            elif filter_by == 11:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id__floor_location')
+            elif filter_by == 12:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0).order_by('-device_id__floor_location')
+            elif filter_by == 13:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1).order_by('-device_id__floor_location')
+            elif filter_by == 14:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2).order_by('-device_id__floor_location')
+            elif filter_by == 15:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3).order_by('-device_id__floor_location')
+            elif filter_by == 16:
+                sort_filter_components = None
+            else:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False).order_by('-device_id__floor_location')
+
+        elif sort_by == 'device':
+            if filter_by == 2:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id')
+            elif filter_by == 3:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id')
+            elif filter_by == 4:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id')
+            elif filter_by == 5:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id')
+            elif filter_by == 6:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1)).order_by('-device_id')
+            elif filter_by == 7:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id')
+            elif filter_by == 8:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id')
+            elif filter_by == 9:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_id')
+            elif filter_by == 10:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id')
+            elif filter_by == 11:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_id')
+            elif filter_by == 12:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0).order_by('-device_id')
+            elif filter_by == 13:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1).order_by('-device_id')
+            elif filter_by == 14:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2).order_by('-device_id')
+            elif filter_by == 15:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3).order_by('-device_id')
+            elif filter_by == 16:
+                sort_filter_components = None
+            else:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False).order_by('-device_id')
+
+        elif sort_by == 'id':
+            if filter_by == 2:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_sensor_id')
+            elif filter_by == 3:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_sensor_id')
+            elif filter_by == 4:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_sensor_id')
+            elif filter_by == 5:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_sensor_id')
+            elif filter_by == 6:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1)).order_by('-device_sensor_id')
+            elif filter_by == 7:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_sensor_id')
+            elif filter_by == 8:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_sensor_id')
+            elif filter_by == 9:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2)).order_by('-device_sensor_id')
+            elif filter_by == 10:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_sensor_id')
+            elif filter_by == 11:
+                sort_filter_components = (Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2) | Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3)).order_by('-device_sensor_id')
+            elif filter_by == 12:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 0).order_by('-device_sensor_id')
+            elif filter_by == 13:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 1).order_by('-device_sensor_id')
+            elif filter_by == 14:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 2).order_by('-device_sensor_id')
+            elif filter_by == 15:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False, sensor_status = 3).order_by('-device_sensor_id')
+            elif filter_by == 16:
+                sort_filter_components = None
+            else:
+                sort_filter_components = Device_Sensor.objects.filter(sensor_id__sensor_type = incident_type, device_sensor_isDeleted = False).order_by('-device_sensor_id')
+
+    return sort_filter_components
+
+
+
 def add_component(request):
     if request.user.is_authenticated:
         context = {}
@@ -40,12 +250,32 @@ def fire_components(request):
         context['all_sensors'] = Sensor.objects.filter(sensor_isDeleted=False)
         context['all_components'] = Device_Sensor.objects.all()
 
-        context['fire_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=0, device_sensor_isDeleted=False)
-      
+        context['fire_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted=False)
+       
+        context['sort'] = 'id'
+        context['filter'] = 1
+        context['ascending_descending'] = 'asc'
         context['floor_locations'] = FLOOR_LOCATIONS
         context['incident_type'] = INCIDENT_TYPE
 
         context['sensor_reading'] = " "#getArduinoData()
+
+        all_components = Device_Sensor.objects.all()
+        if request.method == 'POST':
+            if request.POST.get('keyword'):
+                keyword = request.POST.get('keyword')
+                context['fire_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+            else:
+                sortBy = request.POST.get('sortComponent')
+                filterBy = int(request.POST.get('filterComponent'))
+                asc_desc = request.POST.get('ascDesc')
+                print(sortBy)
+                print(filterBy)
+                print(0)
+                context['fire_components'] = sort_filter_components(request, 0, sortBy, filterBy, asc_desc)
+                context['sort'] = sortBy
+                context['filter'] = filterBy
+                context['ascending_descending'] = asc_desc
 
         return render(request, 'DASHBOARD-FireComponents.html', context = context)
     else:
@@ -58,13 +288,32 @@ def earthquake_components(request):
         context['all_sensors'] = Sensor.objects.filter(sensor_isDeleted=False)
         context['all_components'] = Device_Sensor.objects.all()
 
-        context['earthquake_components'] = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False)
+        context['earthquake_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False)
        
+        context['sort'] = 'id'
+        context['filter'] = 1
+        context['ascending_descending'] = 'asc'
         context['floor_locations'] = FLOOR_LOCATIONS
         context['incident_type'] = INCIDENT_TYPE
 
         context['sensor_reading'] = " "#getArduinoData()
 
+        all_components = Device_Sensor.objects.all()
+        if request.method == 'POST':
+            if request.POST.get('keyword'):
+                keyword = request.POST.get('keyword')
+                context['earthquake_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+            else:
+                sortBy = request.POST.get('sortComponent')
+                filterBy = int(request.POST.get('filterComponent'))
+                asc_desc = request.POST.get('ascDesc')
+                print(sortBy)
+                print(filterBy)
+                context['earthquake_components'] = sort_filter_components(request, 2, sortBy, filterBy, asc_desc)
+                context['sort'] = sortBy
+                context['filter'] = filterBy
+                context['ascending_descending'] = asc_desc
+                
         return render(request, 'DASHBOARD-EarthquakeComponents.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -78,10 +327,29 @@ def flood_components(request):
 
         context['flood_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted=False)
        
+        context['sort'] = 'id'
+        context['filter'] = 1
+        context['ascending_descending'] = 'asc'
         context['floor_locations'] = FLOOR_LOCATIONS
         context['incident_type'] = INCIDENT_TYPE
 
         context['sensor_reading'] = " "#getArduinoData()
+
+        all_components = Device_Sensor.objects.all()
+        if request.method == 'POST':
+            if request.POST.get('keyword'):
+                keyword = request.POST.get('keyword')
+                context['flood_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+            else:
+                sortBy = request.POST.get('sortComponent')
+                filterBy = int(request.POST.get('filterComponent'))
+                asc_desc = request.POST.get('ascDesc')
+                print(sortBy)
+                print(filterBy)
+                context['flood_components'] = sort_filter_components(request, 1, sortBy, filterBy, asc_desc)
+                context['sort'] = sortBy
+                context['filter'] = filterBy
+                context['ascending_descending'] = asc_desc
 
         return render(request, 'DASHBOARD-FloodComponents.html', context = context)
     else:
@@ -100,6 +368,11 @@ def devices(request):
 
         context['sensor_reading'] = " "#getArduinoData()
 
+        if request.method == 'POST':
+            keyword = request.POST.get('keyword')
+            context['all_devices'] = Device.objects.filter(device_isDeleted=False, device_name__contains = keyword) | Device.objects.filter(device_isDeleted = False, device_id__contains = keyword)
+
+
         return render(request, 'DASHBOARD-Devices.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -116,6 +389,11 @@ def sensors(request):
 
         context['sensor_reading'] = " "#getArduinoData()
 
+        if request.method == 'POST':
+            keyword = request.POST.get('keyword')
+            context['all_sensors'] = Sensor.objects.filter(sensor_isDeleted=False, sensor_name__contains = keyword) | Sensor.objects.filter(sensor_isDeleted = False, sensor_id__contains = keyword)
+
+
         return render(request, 'DASHBOARD-Sensors.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -128,6 +406,7 @@ def add_device(request):
             add_deviceMacAddress = request.POST.get("addDeviceMacAddress")
             add_deviceFloorLocation = request.POST.get("addDeviceFloorLocation")
             add_deviceLink = request.POST.get("addDeviceLink")
+            add_sensorID = request.POST.get("addSensorID")
             add_deviceImage = request.FILES.get("addDeviceImage")
             
             if add_deviceImage == None:
@@ -158,7 +437,7 @@ def add_device(request):
                 audit_type = 0
             )
             add_log.save()
-            
+
             messages.success(request, f'Added component {add_deviceID} successfully!')
             return redirect('earthquake_components')
     else:
@@ -259,7 +538,7 @@ def add_comp(request):
                         sensor_typeIndex = 2
                         sensor_type = "EQ"
                     break
-            
+                
             add_device_sensorID = "DS-" + sensor_type + "0" + str(floor_location) + "0"
 
             count = Device_Sensor.objects.filter(sensor_id__sensor_type__contains = sensor_typeIndex).count()
@@ -650,21 +929,54 @@ def status(request):
             return redirect('earthquake_components')
     else:
         return render(request, 'AEIRBS-Login.html')
-
-def search_comp(request):
+def del_sensor(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            searched = request.POST.get("search")
-
-            searched_components = Device_Sensor.objects.filter(device_sensor_id__contains=searched)
+            delete_sensorID = request.POST.get("deleteSensorID")
 
             all_sensors = Sensor.objects.all()
             all_components = Device_Sensor.objects.all()
-            fire_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=0, sensor_status=1, device_id__device_status=1)
-            flood_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=1, sensor_status=1, device_id__device_status=1)
-            earthquake_components = Device_Sensor.objects.all().filter(sensor_id__sensor_type=2, sensor_status=1, device_id__device_status=1)
-            other_components = Device.objects.all().filter(device_status=1)
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
-            return render(request, 'AEIRBS-Search.html', {'searched': searched_components, 'all_sensors': all_sensors, 'all_components': all_components, 'other_components': other_components, 'fire_components': fire_components, 'flood_components': flood_components, 'earthquake_components': earthquake_components})
+            for sensor in all_sensors:
+                if sensor.sensor_id == delete_sensorID:
+                    sensor.sensor_isDeleted = True
+                    sensor.save()
+                    
+                    print("sensor " + sensor.sensor_id + " deleted")
+
+                    for component in all_components:
+                        if component.sensor_id.sensor_id == sensor.sensor_id:
+                            component.device_sensor_isDeleted = True
+                            component.save()
+
+                    add_log = AuditLogs.objects.create(    
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Delete Sensor",
+                        username = request.user,
+                        audit_details = str(request.user) + " deleted senser " + delete_sensorID + " from the system.",
+                        audit_type = 0
+                    )
+                    add_log.save()
+
+                    messages.success(request, f'Deleted sensor {delete_sensorID} successfully!')
+                    return redirect('sensors')
+
+            messages.error(request, f'Sensor {delete_sensorID} not found!')
+            return redirect('sensors')
+    else:
+        return render(request, 'sensors')
+
+def search_component(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            search_keyword = request.POST.get("keyword")
+            component_classification = int(request.POST.get("classification"))
+            context = {}
+            
+            if component_classification == 2:
+                earthquake_components = Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = search_keyword)
+                context['earthquake_components'] = earthquake_components
+            return render(request, 'DASHBOARD-EarthquakeComponents.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')

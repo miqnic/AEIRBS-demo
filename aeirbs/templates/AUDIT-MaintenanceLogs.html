@@ -20,7 +20,9 @@
                                 class="fas fa-trash-alt fa-sm mr-2"></i>Clear Logs</a>
                         {% endif %}
 
-                        <form action="{% url 'generatePDF_audit' %} " method="post ">
+                        <form action="{% url 'generatePDF_audit' %} " method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="auditType" value="2">
                             <button type="submit" class="btn btn-dark btn mr-3 float-right btn-sm"
                                 id="generatePDFButton"><i class="fas fa-download fa-sm mr-2"></i>Download</button>
                         </form>
@@ -28,12 +30,13 @@
 
                     <!--Search Component-->
                     <div class="col-3">
-                        <form action="#" method="post">
-                            <div class="input-group mb-3" id="searchAudit">
+                        <form action="{% url 'maintenance_logs' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 </div>
-                                <input type="text" class="input form-control form-control-sm"
+                                <input type="text" name="keyword" class="input form-control form-control-sm"
                                     placeholder="Search Audit">
                             </div>
                         </form>

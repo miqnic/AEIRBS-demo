@@ -15,9 +15,6 @@ body, html{
     background-color: rgb(51, 54, 51,.7);
     border-radius: 5px;
 }
-.input {
-    line-height: 1em;
-}
 #logo {
     width: 100px;
     height: 100px;

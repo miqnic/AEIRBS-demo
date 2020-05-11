@@ -59,15 +59,15 @@ def login_page(request):
         return render(request, 'AEIRBS-Login.html')
 
 def masterlist(request):
-    users = User.objects.all().filter(profile__is_deleted=False)
-    audit_logs = AuditLogs.objects.all()
-    logs = []
+    context = {}
+    context['users'] = User.objects.all().filter(profile__is_deleted=False)
+    context['logs'] = AuditLogs.objects.all()
 
-    for audit in audit_logs:
-        temp = (str(audit.username), audit.activity, audit.date_time,  audit.audit_details)
-        logs.append(temp)
-
-    return render(request, 'AEIRBS-Masterlist.html', {'users': users, 'logs': logs})
+    if request.method == 'POST':
+        keyword = request.POST.get("keyword")
+        context['users'] = User.objects.filter(profile__is_deleted=False, username__contains = keyword) | User.objects.filter(profile__is_deleted=False, first_name__contains = keyword) | User.objects.filter(profile__is_deleted=False, profile__middle_name__contains = keyword) | User.objects.filter(profile__is_deleted=False, last_name__contains = keyword)
+    
+    return render(request, 'AEIRBS-Masterlist.html', context = context)
 
 def add_user(request):
     if request.user.is_authenticated:

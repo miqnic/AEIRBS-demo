@@ -66,6 +66,7 @@
     <div class="container-fluid mt-5">
         <div class="text-center" style="margin-left: auto; margin-right: auto;">
             {% for device in all_devices %}
+
             <div class="card card-layout border-0 m-2 component" data-toggle="modal"
                 data-target="#deviceModal{{device.device_id}}" data-component='{{device.device_id}}' style="display: inline-block;">
                 <div class="card-header border-0">
@@ -80,7 +81,7 @@
                             </center>
                         </div>
                         <div class="col-8 mt-3" style="font-size: 14px;">
-                            <h6>{{device.device_name}}</h6>
+                            <h6 class="devdevdev">{{device.device_name}}</h6>
                             {% for floor in floor_locations %}
                             {% if floor.0 == device.floor_location %}
                             <small>{{floor.1}}</small>
@@ -100,15 +101,45 @@
                 {% endif %}
             </div>
             {% endfor %}
+            <script>
+                $(".card").click(function () {
+                    ard_interval = setInterval(function() {
+                        $.ajax({
+                            type: 'POST',
+                            headers: {
+                                "X-CSRFTOKEN": "{{ csrf_token }}"
+                            },
+                            url: '/ajax/getdata/',
+                            dataType: 'json',
+                            success: function (result) {
+                                if (result.noise_level != 0) {
+                                    alert("message: " + result.noise_level);
+
+                                    if (result.noise_level < 10 ){
+                                        $(".alarm").show();
+                                        soundAlarm();
+                                        clearInterval(ard_interval);
+                                    }
+                                }
+                                else 
+                                    alert("message: " + result.noise_level + 
+                                    "\nNO ARDUINO PRESENT.");
+                            },
+                            error: function(data){
+                                alert('error..');
+                            }
+                        });
+                    }, 3000);
+                });
+              </script>
         </div>
     </div>
     {% include 'AEIRBS-ComponentModals.html' %}
     {% include 'COMPONENTS-ConfirmationModals.html' %}
 </body>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
     $(".dashboard").toggleClass("active");
     $(".devices").toggleClass("active");
 </script>
+
 {% endblock content %}

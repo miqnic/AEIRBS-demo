@@ -5,7 +5,9 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
 from reports.models import AuditLogs
 
-import serial 
+from django.core.mail import EmailMessage
+
+import serial
 import json
 import datetime
 
@@ -15,10 +17,31 @@ from .models import Device, Sensor, Device_Sensor, FLOOR_LOCATIONS, INCIDENT_TYP
  
 # Connect to Arduino through COM3 port
 def getArduinoData():
-    port_stream = serial.Serial("COM3",9600)
-    ard_data = list(str(port_stream.readline(),'utf-8'))
-    port_stream.close() 
-    return float(str(''.join(ard_data[:])))
+    try:
+        sr = serial.Serial("COM1",9600)
+        st = list(str(sr.readline(),'utf-8'))
+        sr.close() 
+        print(int(str(''.join(st[:]))))
+        return int(str(''.join(st[:])))
+    except:
+        return 0
+
+def ajax_data(request):
+    ard = getArduinoData()
+    data = {'noise_level': ard}
+    json_data = json.dumps(data)
+    return HttpResponse(json.dumps(data))
+
+# auto-email
+def autoalarm_mail(request):
+    # TEMP - Mail content
+    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>Norwegian forest puma and bombay thai for british shorthair american bobtail. Ragdoll ocelot ocelot american shorthair, but savannah yet grimalkin. Cornish rex. Tom cornish rex. Siberian. Himalayan havana brown, yet bengal bobcat or havana brown and manx. Devonshire rex russian blue ocicat, kitten and siberian. Puma russian blue. Grimalkin egyptian mau burmese yet egyptian mau. Lion. Egyptian mau manx, or cornish rex. Donskoy leopard or tabby, grimalkin. Bombay turkish angora, abyssinian leopard tiger and tabby. Abyssinian himalayan for thai abyssinian , so russian blue for malkin for egyptian mau. Scottish fold bengal munchkin malkin cheetah but persian. Tiger mouser or malkin so manx tomcat, yet norwegian forest. Tom thai, yet malkin havana brown and british shorthair jaguar manx. Malkin leopard havana brown bobcat puma. Savannah ragdoll lion. Kitty maine coon himalayan british shorthair, but cheetah.</p><br>" + "<p>Devonshire rex. Tabby sphynx siberian. Malkin ocelot lynx. Grimalkin savannah for malkin but abyssinian for siberian so turkish angora. Tiger birman and manx american bobtail grimalkin for norwegian forest. Maine coon puma siberian, for sphynx bombay. Cornish rex maine coon. Kitten cornish rex cougar, jaguar thai russian blue. Abyssinian persian and leopard himalayan malkin american shorthair. American bobtail cheetah for turkish angora puma. Siberian ocelot kitten. Tiger sphynx. Cougar devonshire rex but american bobtail for turkish angora or tiger lynx. Egyptian mau ocicat puma, american bobtail, and cheetah, so ocicat.</p><br>" + "</div>"
+
+    email = EmailMessage("AEIRBS: EMERGENCY", mail_body, "damim526@gmail.com", ["damim526@gmail.com"])
+    email.content_subtype = 'html'
+
+    send_email = email.send()
+    return HttpResponse('%s'%send_email)
 
 def sort_filter_components(request, incident_type, sort_by, filter_by, asc_desc):
     if asc_desc == 'asc':

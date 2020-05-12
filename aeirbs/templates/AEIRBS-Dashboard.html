@@ -43,6 +43,12 @@
 </style>
 
 <body>
+    {% if request.user.profile.logged == 0 %}
+        <script>
+            $('#changePassModal').modal({backdrop: "static"});
+        </script>
+    {% endif %}
+
     <div class="container-fluid" id="dashboardHeader" style="padding:0 25px 25px 25px;">
         <div class="container-fluid"
             style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">

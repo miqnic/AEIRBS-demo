@@ -43,7 +43,6 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-    <script type="text/javascript" src="{% static 'js/speakClient.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/say.js'%}"></script>
 
 
@@ -161,8 +160,8 @@
 
 <body>
     <div class="wrapper">
-        
-        <div class="alarm hidden" style="width: auto; position: fixed; top: 10%; right:30%; left: 30%; z-index: 1;">
+        <!-- Alarm -->
+        <div class="alarm hidden" style="width: auto; position: fixed; top: 10%; right:30%; left: 30%; z-index: 2000;">
             <center>
                 <div class="alert-logo mb-5">
                     <div class="item">
@@ -214,17 +213,41 @@
                     </div>
 
                     <div class="mt-5">
-                        <button type="button" class="btn btn-sm btn-danger">
+                        <button type="button" class="btn btn-sm btn-danger confirm-alarm">
                             Confirm
                         </button>
                         <button type="button" class="btn btn-dark btn-sm false-alarm">Cancel</button>
                         <div class="mt-4 warning-lenear-loader"></div>
-                        
+                
                 <div class="m-2" style="font-size:x-small; position: absolute; bottom: 0; right: 0;">
                     Note: Public Announcement will be triggered automatically after 5 minutes.
                 </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- TEMP - Change Password -->
+        <div class="modal" id="changePassModal" tabindex="-1" role="dialog" aria-labelledby="changePassModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">First-time Login</h5>
+                </div>
+                <form id="changePass" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <p>You need to change your password</p>
+                            <div class="form-group">
+                                <label for="newpass">Password</label>
+                                <input type="password" class="form-control" id="newpass" placeholder="New Password">
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+              </div>
             </div>
         </div>
 
@@ -318,16 +341,58 @@
             });
         }, 4000);
 
+        function soundAlarm() {
+            timer = setTimeout(function () {
+                audio = say('Alert! Alert! An emergency has been detected!');
+                synth = audio[0];
+                msg = audio[1];
+
+                email = $.ajax({
+                    headers: {
+                        "X-CSRFTOKEN": "{{ csrf_token }}"
+                    },
+                    url: '/alarm-mail',
+                    success: function () {
+                        // TEMP - for debugging
+                        alert('success');
+                    },
+                    error: function(data){
+                        // TEMP - for debugging
+                        alert('error..');
+                    }
+                });
+
+                var refreshID = setInterval(function interval() {
+                    synth.speak(msg);
+                    
+                    if($(".alarm").css('display') == 'none' || $(".alarm").css("visibility") == "hidden") {
+                        synth.cancel(msg);
+                        clearInterval(refreshID);
+                    }  
+                },3000);
+
+                if($(".alarm").css('display') == 'none' || $(".alarm").css("visibility") == "hidden") {
+                        email.abort();
+                        clearTimeout(timer);
+                }  
+            }, 10000);
+        }
+
         $(".false-alarm").click(function () {
             $(".alarm").hide();
         });
 
-            /*HOY MEG DITO YON*/
-        if($(".alarm").is(":visible")) {
-            /*Do something*/
-        }else{
-            /*Do something*/
-        }
+        $(".confirm-alarm").click(function () {
+            // TEMP FUNCTION
+            $(".confirm-alarm").hide();
+            $(".false-alarm").hide();
+        });
+
+        $("#showAlarm").click(function () {
+            $(".alarm").show();
+            
+            soundAlarm();
+        });
     </script>
 
 </html>

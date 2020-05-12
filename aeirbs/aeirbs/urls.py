@@ -53,6 +53,7 @@ urlpatterns = [
     # path('del-comp/', components_views.del_comp, name='del_comp'),
     # path('update-comp/', components_views.update_comp, name='update_comp'),
     path('login/', accounts_views.login_action, name='login_action'),
+    path('login-newpass/', accounts_views.login_changepass, name='login_newpass'),
     path('logout/', accounts_views.logout_action, name='logout_action'),
 
     # DASHBOARD Components
@@ -84,6 +85,13 @@ urlpatterns = [
     path('audit/maintenance-logs/', reports_views.maintenance_logs, name='maintenance_logs'),
     
     path('audit/clear-logs/', reports_views.clear_logs, name='clear_logs'),
+
+    # ARDUINO
+    path('ajax/getdata/', components_views.ajax_data, name='get_data'),
+
+    # EMAIL
+    path('alarm-mail/', components_views.autoalarm_mail, name='sendalarm_email'),
+    path('addadmin-mail/', accounts_views.addadmin_mail, name='sendadmin_email'),
 ] 
 
 if settings.DEBUG:

@@ -139,11 +139,4 @@
     $(".dashboard").toggleClass("active");
     $(".fire").toggleClass("active");
 </script>
-{% for component in all_components %}
-    <script>
-        $('#componentModal{{component.device_sensor_id}}').on('shown.bs.modal', function () {
-            say('To the parent of the lost boy, CONGRATULATIONS! Your lost boy is now a girl! To claim, please proceed to our lost and found section. Thank you! Again, congratulations!');
-        });
-    </script>
-    {% endfor %}
 {% endblock content %}

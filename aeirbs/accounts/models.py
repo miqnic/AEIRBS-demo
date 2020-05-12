@@ -13,6 +13,7 @@ class Profile(models.Model):
     job_position = models.CharField(max_length=100)
     mobile_number = models.CharField(max_length=20)
     is_deleted = models.BooleanField(default=False)
+    logged = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username} Profile'

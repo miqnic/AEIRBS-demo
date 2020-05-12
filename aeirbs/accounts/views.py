@@ -7,9 +7,62 @@ from django.contrib.auth.models import User
 from reports.models import AuditLogs
 from .models import Profile, DEFAULT_IMAGE
 from django.core.files.storage import FileSystemStorage
+import django.contrib.auth.hashers
 
-# Create your views here.
+from django.core.mail import EmailMessage
+from datetime import date
 
+# auto-email
+def addadmin_mail(recipient, lastname, username):
+    # TEMP - Mail content
+    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>Default Password is: " + lastname + username + "</p><br>" + "</div>"
+
+    email = EmailMessage("AEIRBS: Admin Details", mail_body, "damim526@gmail.com", [recipient])
+    email.content_subtype = 'html'
+
+    send_email = email.send()
+
+def deladmin_mail(recipient):
+    # TEMP - Mail content
+    now = date.today().strftime("%d/%m/%Y")
+
+    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>YOUR ACCOUNT HAS BEEN TERMINATED AS OF "+ now +"</p><br>" + "</div>"
+
+    email = EmailMessage("AEIRBS: Account termination", mail_body, "damim526@gmail.com", [recipient])
+    email.content_subtype = 'html'
+
+    send_email = email.send()
+
+# first login - change password
+def login_changepass(request):
+    user_newPass = request.POST.get("new_pass")
+    print(user_newPass)
+    employeeID = request.POST.get("username")
+    print(employeeID)
+    all_users = User.objects.all()
+    all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+
+    for user in all_users:
+        if user.username == employeeID:
+            user.set_password(user_newPass)
+            user.profile.logged = True
+            user.save()
+
+            add_log = AuditLogs.objects.create(
+                log_id = "UL0" + str(all_userLogs + 1),
+                activity = "Update password",
+                username = user,
+                audit_details = str(user) + " updated user password from default password.",
+                audit_type = 1
+            )
+            add_log.save()
+
+            messages.success(request, f'Updated user {employeeID} successfully!')
+            return redirect('earthquake_components')
+
+    return render(request, 'AEIRBS-Login.html')
+
+# login 
 def login_action(request):
     if request.method == 'POST':
         username = request.POST.get("company_id")
@@ -17,6 +70,10 @@ def login_action(request):
         user = authenticate(username=username, password=password)
 
         if user:
+            # check if user is a new user
+            if user.profile.logged == 0:
+                return render(request, 'AEIRBS-Login.html', {'new': 1, 'username': username})
+
             login(request, user)
 
             # Log: Logged In - Valid User
@@ -56,7 +113,7 @@ def login_page(request):
     if request.user.is_authenticated:
         return redirect('earthquake_components')
     else:
-        return render(request, 'AEIRBS-Login.html')
+        return render(request, 'AEIRBS-Login.html', {'new': 0})
 
 def masterlist(request):
     context = {}
@@ -127,6 +184,8 @@ def add_user(request):
                 add_admin.profile.mobile_number = add_mobileNumber
                 add_admin.save()
 
+                addadmin_mail(add_admin.email, add_admin.last_name, add_admin.username)
+
                 add_log = AuditLogs.objects.create(
                     log_id = "UL0" + str(all_userLogs + 1),
                     activity = "Add User",
@@ -153,6 +212,9 @@ def del_user(request):
                 if user.username == employeeID:
                     user.profile.is_deleted = True
                     user.is_active = False
+
+                    deladmin_mail(user.email)
+
                     user.save()
 
                     add_log = AuditLogs.objects.create(

@@ -1,4 +1,6 @@
 function say(m) {
+    var synth = window.speechSynthesis;
+
     var msg = new SpeechSynthesisUtterance();
     var voices = window.speechSynthesis.getVoices();
     msg.voice = voices[10];
@@ -8,5 +10,6 @@ function say(m) {
     msg.pitch = 0.8;
     msg.text = m;
     msg.lang = 'en-US';
-    speechSynthesis.speak(msg);
+    
+    return [synth, msg];
 }

@@ -136,3 +136,9 @@ MEDIA_URL = '/media/'
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login_page'
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'damim526@gmail.com'
+EMAIL_HOST_PASSWORD = '(methinksustingym8)'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+

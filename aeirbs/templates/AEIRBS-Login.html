@@ -16,6 +16,11 @@
     <link href="{% static 'css/aeirbs-login.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
         integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+    
+    <!--JS-->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <title>AEIRBS | Login</title>
 </head>
@@ -45,7 +50,26 @@
             </div>
             {% endfor %} {% endif %}
             <!--Login Form-->
-            <form action="{% url 'login_action' %}" method="post">
+            {% if new == 1 %}
+                <script>
+                    $(document).ready(function(){
+                        console.log('1');
+                        $('#loginForm').hide();
+                        $('#changePassForm').show();
+                    });
+                </script>
+            {% else %}
+                <script>
+                    $(document).ready(function(){
+                        console.log('2');
+                        $('#changePassForm').hide();
+                        $('#loginForm').show();
+                    });
+                    
+                </script>
+            {% endif %}
+            <!-- Login Form -->
+            <form action="{% url 'login_action' %}" method="post" id="loginForm">
                 {% csrf_token %}
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -65,6 +89,30 @@
                     <center><button type="submit" name="forgotPassword" class="btn btn-link" data-dismiss="modal"
                             style="color:#CD6155; font-size:10px;">Forgot Password?</button></center>
                     <center><button type="submit" name="login" class="btn btn-sm btn-warning mt-2">LOGIN</button>
+                    </center>
+                </div>
+            </form>
+
+            <!-- Form for new users -->
+            <form action="{% url 'login_newpass' %}" method="post" id="changePassForm">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">   
+                        <span class="input-group-text"><img src="{% static 'icons/flat/password.png' %}"
+                                height="23"></span>
+                    </div>
+                    <input type="password" name="new_pass" class="form-control form-control-sm" placeholder="New Password">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">   
+                        <span class="input-group-text"><img src="{% static 'icons/flat/password.png' %}"
+                                height="23"></span>
+                    </div>
+                    <input type="password" name="confirm_password" class="form-control form-control-sm" placeholder="Confirm Password">
+                    <input type="hidden" id="username" name="username" value="{{username}}">
+                </div>
+                <div class="text-center">
+                    <center><button type="submit" name="login" class="btn btn-sm btn-warning mt-2">SUBMIT</button>
                     </center>
                 </div>
             </form>

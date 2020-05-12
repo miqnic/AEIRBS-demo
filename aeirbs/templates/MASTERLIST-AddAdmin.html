@@ -20,7 +20,7 @@
         <hr>
 
 
-        <form action="{% url 'add_user' %}" method="post" enctype="multipart/form-data">
+        <form id="addUser" action="{% url 'add_user' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row my-5">
                 <!--Upload Component Image-->
@@ -133,12 +133,12 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-dark float-right btn-sm">Submit</button>
+                        <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal" data-target="#confirmAddUser" >Submit</button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
-{% include 'COMPONENTS-ConfirmationModals.html' %}
+{% include 'MASTERLIST-ConfirmationModals.html' %}
 {% endblock body %}

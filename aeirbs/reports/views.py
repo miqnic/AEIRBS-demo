@@ -31,11 +31,11 @@ def audit(request):
 
 def component_logs(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all().filter(audit_type = 0)
+        audit_logs = AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False)
 
         if request.method == 'POST':
             keyword = request.POST.get("keyword")
-            audit_logs = AuditLogs.objects.filter(audit_type = 0, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, username__last_name__contains = keyword)
+            audit_logs = AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, username__last_name__contains = keyword)
 
         return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
     else:
@@ -43,11 +43,11 @@ def component_logs(request):
 
 def user_logs(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all().filter(audit_type = 1)
+        audit_logs = AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False)
 
         if request.method == 'POST':
             keyword = request.POST.get("keyword")
-            audit_logs = AuditLogs.objects.filter(audit_type = 1, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, username__last_name__contains = keyword)
+            audit_logs = AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, username__last_name__contains = keyword)
 
         return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
     else:
@@ -55,55 +55,63 @@ def user_logs(request):
 
 def maintenance_logs(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        audit_logs = AuditLogs.objects.all().filter(audit_type = 2)
+        audit_logs = AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False)
 
         if request.method == 'POST':
             keyword = request.POST.get("keyword")
-            audit_logs = AuditLogs.objects.filter(audit_type = 2, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, username__last_name__contains = keyword)
+            audit_logs = AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, username__last_name__contains = keyword)
 
         return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-def clear_componentLogs(request):
+def clear_logs(request):
     if request.user.is_authenticated:
-        if AuditLogs.objects.filter(audit_type = 0).count() > 0:
-            AuditLogs.objects.filter(audit_type = 0).delete()
-            audit_logs = AuditLogs.objects.all().filter(audit_type = 0)
-            messages.success(request, f'Cleared Component Logs successfully!')
-            return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
-        else:
-            audit_logs = AuditLogs.objects.all().filter(audit_type = 0)
-            messages.error(request, f'Component Logs is Empty!')
-            return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
-    else:
-        return render(request, 'AEIRBS-Login.html')
-
-def clear_userLogs(request):
-    if request.user.is_authenticated:
-        if AuditLogs.objects.filter(audit_type = 1).count() > 0:
-            AuditLogs.objects.filter(audit_type = 1).delete()
-            audit_logs = AuditLogs.objects.all().filter(audit_type = 1)
-            messages.success(request, f'Cleared User Logs successfully!')
-            return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
-        else:
-            audit_logs = AuditLogs.objects.all().filter(audit_type = 1)
-            messages.error(request, f'User Logs is Empty!')
-            return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
-    else:
-        return render(request, 'AEIRBS-Login.html')
-
-def clear_maintenanceLogs(request):
-    if request.user.is_authenticated:
-        if AuditLogs.objects.filter(audit_type = 2).count() > 0:
-            AuditLogs.objects.filter(audit_type = 2).delete()
-            audit_logs = AuditLogs.objects.all().filter(audit_type = 2)
-            messages.success(request, f'Cleared Maintenance Logs successfully!')
-            return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
-        else:
-            audit_logs = AuditLogs.objects.all().filter(audit_type = 2)
-            messages.error(request, f'Maintenance Logs is Empty!')
-            return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
+        if request.method == 'POST':
+            audit_type = int(request.POST.get("clearAuditType"))
+            audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False)
+            for log in audit_logs:
+                log.audit_isDeleted = True
+                log.save()
+            if audit_type == 0:
+                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
+                add_log = AuditLogs.objects.create(
+                    log_id = "CL0" + str(log_count + 1),
+                    activity = "Clear Component Logs",
+                    username = request.user,
+                    audit_details = str(request.user) + " cleared all Component Logs from the system.",
+                    audit_type = audit_type
+                )
+                add_log.save()
+                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
+                messages.success(request, f'Cleared Component Logs successfully!')
+                return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
+            if audit_type == 1:
+                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
+                add_log = AuditLogs.objects.create(
+                    log_id = "UL0" + str(log_count + 1),
+                    activity = "Clear User Logs",
+                    username = request.user,
+                    audit_details = str(request.user) + " cleared all User Logs from the system.",
+                    audit_type = audit_type
+                )
+                add_log.save()
+                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
+                messages.success(request, f'Cleared User Logs successfully!')
+                return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
+            if audit_type == 2:
+                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
+                add_log = AuditLogs.objects.create(
+                    log_id = "ML0" + str(log_count + 1),
+                    activity = "Clear Maintenance Logs",
+                    username = request.user,
+                    audit_details = str(request.user) + " cleared all Maintenance Logs from the system.",
+                    audit_type = audit_type
+                )
+                add_log.save()
+                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
+                messages.success(request, f'Cleared Maintenance Logs successfully!')
+                return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
     else:
         return render(request, 'AEIRBS-Login.html')
 

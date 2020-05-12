@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 INCIDENT_TYPE = [
-    (0, 'Fire'),
-    (1, 'Flood'),
-    (2, 'Earthquake')
+    (0, 'Earthquake'),
+    (1, 'Fire'),
+    (2, 'Flood')
 ]
 STATUS = [
     (0, 'Connected'),

@@ -1,0 +1,111 @@
+<!--Audit Logs-->
+<!--Component Logs-->
+<div class="modal fade" id="confirmClearComponentLogs" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Clear Logs</b></h5>
+
+                <a href="{% url 'component_logs' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to Clear <b>Component Logs</b>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-log='ComponentLogs'
+                    class="btn btn-danger btn-sm confirmClearLogs">
+                    Clear
+                </button>
+                <a href="{% url 'component_logs' %}" class="btn btn-light btn-sm">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--User Logs-->
+<div class="modal fade" id="confirmClearUserLogs" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Clear Logs</b></h5>
+
+                <a href="{% url 'user_logs' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to Clear <b>User Logs</b>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-log='UserLogs'
+                    class="btn btn-danger btn-sm confirmClearLogs">
+                    Clear
+                </button>
+                <a href="{% url 'user_logs' %}" class="btn btn-light btn-sm">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Maintenance Logs-->
+<div class="modal fade" id="confirmClearMaintenanceLogs" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Clear Logs</b></h5>
+
+                <a href="{% url 'maintenance_logs' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to Clear <b>Maintenance Logs</b>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-log='MaintenanceLogs'
+                    class="btn btn-danger btn-sm confirmClearLogs">
+                    Clear
+                </button>
+                <a href="{% url 'maintenance_logs' %}" class="btn btn-light btn-sm">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>

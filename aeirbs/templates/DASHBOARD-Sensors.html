@@ -5,16 +5,30 @@
 <body>
     <ul class="nav justify-content-end">
         <li class="nav-item mt-1 mr-3">
-            Sort by:
+            <small>Sort by:</small>
         </li>
         <li class="nav-item mr-4">
-            <div class="form-group">
-                <select class="custom-select form-control form-control-sm" id="sort">
-                    <option></option>
-                    <option val="floor">Floor Location</option>
-                    <option val="device">Device Connected</option>
-                </select>
-            </div>
+            <form class="sort-filter-componentForm" action="{% url 'sensors' %}" method="POST">
+                {% csrf_token %}
+                <input class="ascending-descending" type="hidden" name="ascDesc" value="{{ascending_descending}}">
+                <div class="input-group" >
+                    <select class="custom-select form-control form-control-sm sortComponent" name="sortComponent">
+                        {% if sort == 'type' %}
+                        <option class="id" value="id">Sensor ID</option>
+                        <option class="type" value="type" selected>Incident Type</option>
+                        {% else %}
+                        <option class="id" value="id" selected>Sensor ID</option>
+                        <option class="type" value="type">Incident Type</option>
+                        {% endif %}
+                    </select>
+                    <div class="input-group-append">
+                        <button class="btn btn-link icon btn-sm asc-desc-btn"
+                            style="border: 1px solid #D2D7DD; color: #495057;"><i
+                                class="fas fa-long-arrow-alt-up ascending"></i><i
+                                class="fas fa-long-arrow-alt-down descending"></i></button>
+                    </div>
+                </div>
+            </form>
         </li>
         <li class="nav-item">
             <form action="{% url 'sensors' %}" method="POST">
@@ -23,48 +37,18 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
-                    <input type="text" name="keyword" class="input form-control form-control-sm" placeholder="Search Component">
+                    <input type="text" name="keyword" class="input form-control form-control-sm"
+                        placeholder="Search Component">
                 </div>
             </form>
         </li>
     </ul>
-    <div class="row float-right">
-        <div class="mr-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                <label class="form-check-label" for="defaultCheck1">
-                    Active
-                </label>
-            </div>
-        </div>
-        <div class="mr-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                <label class="form-check-label" for="defaultCheck1">
-                    Under Maintenance
-                </label>
-            </div>
-        </div>
-        <div class="mr-3">
-            <div class="form-check">
-                <input class="form-check-input " type="checkbox" value="" id="defaultCheck1">
-                <label class="form-check-label" for="defaultCheck1">
-                    Needs Maintenance
-                </label>
-            </div>
-        </div>
-        <div class="mr-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                <label class="form-check-label" for="defaultCheck1">
-                    Inactive
-                </label>
-            </div>
-        </div>
-    </div>
 
     <div class="container-fluid mt-5">
         <div class="text-center" style="margin-left: auto; margin-right: auto;">
+            {% if count == 0 %}
+            <b>No sensor available.</b>
+            {% endif %}
             {% for sensor in all_sensors %}
             <div class="card card-layout border-0 m-2" data-toggle="modal"
                 data-target="#sensorModal{{sensor.sensor_id}}" style="display: inline-block;">
@@ -82,11 +66,11 @@
                         <div class="col-8 mt-3" style="font-size: 14px;">
                             <h6>{{sensor.sensor_name}}</h6>
                             {% if sensor.sensor_type == 0 %}
-                            <small>Fire</small>
+                            <small>Earthquake</small>
                             {% elif sensor.sensor_type == 1 %}
-                            <small>Flood</small>
+                            <small>Fire</small>
                             {% elif sensor.sensor_type == 2 %}
-                            <small>Earthquake</small> {% endif %}
+                            <small>Flood</small> {% endif %}
                         </div>
                     </div>
                 </div>

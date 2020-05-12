@@ -82,10 +82,8 @@ urlpatterns = [
     path('audit/component-logs/', reports_views.component_logs, name='component_logs'),
     path('audit/user-logs/', reports_views.user_logs, name='user_logs'),
     path('audit/maintenance-logs/', reports_views.maintenance_logs, name='maintenance_logs'),
-
-    path('audit/component-logs/clear-logs/', reports_views.clear_componentLogs, name='clear_componentLogs'),
-    path('audit/user-logs/clear-logs/', reports_views.clear_userLogs, name='clear_userLogs'),
-    path('audit/maintenance-logs/clear-logs/', reports_views.clear_maintenanceLogs, name='clear_maintenanceLogs'),
+    
+    path('audit/clear-logs/', reports_views.clear_logs, name='clear_logs'),
 ] 
 
 if settings.DEBUG:

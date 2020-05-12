@@ -17,7 +17,8 @@ class AuditLogs(models.Model):
     username = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     date_time = models.DateTimeField(auto_now_add=True)
     audit_details = models.CharField(max_length=100, default='details')
-    audit_type = models.IntegerField(choices=AUDIT_TYPE, default=0)
+    audit_type = models.IntegerField(choices=AUDIT_TYPE)
+    audit_isDeleted = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.log_id)

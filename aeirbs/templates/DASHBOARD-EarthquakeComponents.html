@@ -87,6 +87,9 @@
 
     <div class="container-fluid mt-5">
         <div class="text-center" style="margin-left: auto; margin-right: auto;">
+            {% if count == 0 %}
+            <b>No component available.</b>
+            {% endif %}
             {% for eq in earthquake_components %}
             <div class="card card-layout border-0 m-2 component earthquakeComponent" data-toggle="modal"
                 data-target="#componentModal{{eq.device_sensor_id}}" data-component='{{eq.device_sensor_id}}'

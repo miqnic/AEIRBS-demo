@@ -2,7 +2,11 @@
 {% block title %}Masterlist-Edit User{% endblock title %}
 {% load static %}
 {% block body %}
+
+{% include 'MASTERLIST-ConfirmationModals.html' %}
 <!--Add Admin Form-->
+{% for user in all_users%}
+{% if user.username == username %}
 <div class="container" style="padding:0 25px 25px 25px;">
     <div class="container-fluid"
         style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
@@ -14,16 +18,16 @@
                 </a>
             </div>
             <div class="col">
-                <h3><b><b>{{request.user.username}}</b></b></h3>
+                <h3><b><b>{{user.username}}</b></b></h3>
             </div>
         </div>
         <hr>
 
 
-        <form action="{% url 'edit_user' %}" method="post" enctype="multipart/form-data">
+        <form id="edit{{user.username}}" action="{% url 'edit_user' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <input type="hidden" name="username" value="{{ request.user.username }}">
+            <input type="hidden" name="username" value="{{user.username}}">
             <div class="row my-5">
                 <!--Upload Component Image-->
                 <div class="col-3">
@@ -31,7 +35,7 @@
                         <center>
                             <div class="imgUp">
                                 <div class="imagePreview"
-                                    style="background-image: url('{{request.user.profile.user_image.url}}'); background-size: contain; background-position: center;">
+                                    style="background-image: url('{{user.profile.user_image.url}}'); background-size: contain; background-position: center;">
                                 </div>
                                 <label type="button" class="btn btn-dark btn-block btn-sm">
                                     Select Image<input type="file" class="uploadFile img"
@@ -50,10 +54,10 @@
                                 <div class="form-group">
                                     <small>Access Role</small>
                                     <select class="form-control form-control-sm" name="editAdminAccessRole">
-                                        {% if request.user.is_superuser == True %}
+                                        {% if user.is_superuser == True %}
                                         <option value="adminRole">Admin</option>
                                         <option value="superRole" selected>Super Admin</option>
-                                        {% elif request.user.is_superuser == False %}
+                                        {% elif user.is_superuser == False %}
                                         <option value="adminRole" selected>Admin</option>
                                         <option value="superRole">Super Admin</option>
                                         {% endif %}
@@ -80,7 +84,7 @@
                                 <div class="form-group">
                                     <small>First Name</small>
                                     <input type="text" class="form-control form-control-sm" name="editAdminFirstName"
-                                        placeholder="First Name" value="{{request.user.first_name}}">
+                                        placeholder="First Name" value="{{user.first_name}}">
                                 </div>
                             </div>
 
@@ -89,7 +93,7 @@
                                 <div class="form-group">
                                     <small>Middle Name</small>
                                     <input type="text" class="form-control form-control-sm" name="editAdminMiddleName"
-                                        placeholder="Middle Name" value="{{request.user.profile.middle_name}}">
+                                        placeholder="Middle Name" value="{{user.profile.middle_name}}">
                                 </div>
                             </div>
 
@@ -98,7 +102,7 @@
                                 <div class="form-group">
                                     <small>Last Name</small>
                                     <input type="text" class="form-control form-control-sm" name="editAdminLastName"
-                                        placeholder="Last Name" value="{{request.user.last_name}}">
+                                        placeholder="Last Name" value="{{user.last_name}}">
                                 </div>
                             </div>
                         </div>
@@ -109,7 +113,7 @@
                                 <div class="form-group">
                                     <small>Job Position</small>
                                     <input type="text" class="form-control form-control-sm" name="editAdminJobPosition"
-                                        placeholder="Job Position" value="{{request.user.profile.job_position}}">
+                                        placeholder="Job Position" value="{{user.profile.job_position}}">
                                 </div>
                             </div>
 
@@ -119,7 +123,7 @@
                                     <small>Company Email</small>
                                     <input type="email" class="form-control form-control-sm"
                                         name="editAdminCompanyEmail" placeholder="Company Email"
-                                        value="{{request.user.email}}">
+                                        value="{{user.email}}">
                                 </div>
                             </div>
 
@@ -128,12 +132,13 @@
                                 <div class="form-group">
                                     <small>Mobile Number</small>
                                     <input type="text" class="form-control form-control-sm" name="editAdminMobileNumber"
-                                        placeholder="Mobile Number" value="{{request.user.profile.mobile_number}}">
+                                        placeholder="Mobile Number" value="{{user.profile.mobile_number}}">
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-dark float-right btn-sm"><i
+                        <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                        data-target="#confirmEdit{{user.username}}"><i
                                 class="fas fa-save fa-sm mr-2 "></i>Save</button>
                     </div>
                 </div>
@@ -141,5 +146,6 @@
         </form>
     </div>
 </div>
-{% include 'COMPONENTS-ConfirmationModals.html' %}
+{% endif %}
+{% endfor %}
 {% endblock body %}

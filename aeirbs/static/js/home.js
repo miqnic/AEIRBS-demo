@@ -152,6 +152,16 @@ $(".filter").on('change', function () {
     $(".deviceActions").show();
     $(".editDeviceForm").hide();
   });
+  $(".connectSensorButton").click(function () {
+    $(".connectSensorForm").show();
+    $(".deviceActions").hide();
+    $(".deviceDetails").hide();
+  });
+  $(".cancelConnectSensorButton").click(function () {
+    $(".deviceDetails").show();
+    $(".deviceActions").show();
+    $(".connectSensorForm").hide();
+  });
 
   //Sensor
   $(".editSensorButton").click(function () {
@@ -211,7 +221,6 @@ $(".filter").on('change', function () {
     });
   });
 
-  //not yet finalized
   $(".confirmDeleteButton").click(function () {
     var deleteID = "#delete" + $(this).data("delete");
     $(deleteID).submit();
@@ -225,6 +234,12 @@ $(".filter").on('change', function () {
   $(".confirmAddButton").click(function () {
     var type = "#add" + $(this).data("add");
     $(type).submit();
+  });
+
+  
+  $(".confirmConnectSensorButton").click(function () {
+    var connectID = "#connectSensor" + $(this).data("connect");
+    $(connectID).submit();
   });
 
   

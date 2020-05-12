@@ -87,45 +87,51 @@
 
     <div class="container-fluid mt-5">
         <div class="text-center" style="margin-left: auto; margin-right: auto;">
-        {% for fl in flood_components %}
-        <div class="card card-layout border-0 m-2 component floodComponent" data-toggle="modal"
-            data-target="#componentModal{{fl.device_sensor_id}}" data-component='{{fl.device_sensor_id}}' style="display: inline-block;">
-            <div class="card-header border-0">
-                <b style="font-size: 16px;">{{fl.device_sensor_id}}</b>  <small><i class="fas fa-exclamation-circle ml-2 text-danger"></i></small>
-            </div>
-            <div class="card-body border-0">
-                <div class="row my-2">
-                    <div class="col-4">
-                        <center>
-                            <div class="cardImage" style="background-image: url('{{ fl.sensor_id.sensor_image.url }}');">
-                            </div>
-                        </center>
-                    </div>
-                    <div class="col-8 mt-3" style="font-size: 14px;">
-                        <h6>{{fl.sensor_id.sensor_name}}</h6>
-                        {% for floor in floor_locations %}
-                        {% if floor.0 == fl.device_id.floor_location %}
-                        <small>{{floor.1}}</small>
-                        {% endif %}
-                        {% endfor %}
+            {% if count == 0 %}
+            <b>No component available.</b>
+            {% endif %}
+            {% for fl in flood_components %}
+            <div class="card card-layout border-0 m-2 component floodComponent" data-toggle="modal"
+                data-target="#componentModal{{fl.device_sensor_id}}" data-component='{{fl.device_sensor_id}}'
+                style="display: inline-block;">
+                <div class="card-header border-0">
+                    <b style="font-size: 16px;">{{fl.device_sensor_id}}</b> <small><i
+                            class="fas fa-exclamation-circle ml-2 text-danger"></i></small>
+                </div>
+                <div class="card-body border-0">
+                    <div class="row my-2">
+                        <div class="col-4">
+                            <center>
+                                <div class="cardImage"
+                                    style="background-image: url('{{ fl.sensor_id.sensor_image.url }}');">
+                                </div>
+                            </center>
+                        </div>
+                        <div class="col-8 mt-3" style="font-size: 14px;">
+                            <h6>{{fl.sensor_id.sensor_name}}</h6>
+                            {% for floor in floor_locations %}
+                            {% if floor.0 == fl.device_id.floor_location %}
+                            <small>{{floor.1}}</small>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {% if fl.sensor_status == 0 %}
-            <div class="card-overlay connected-card-overlay"></div>
-            {% elif fl.sensor_status == 1 %}
-            <div class="card-overlay underMaintenance-card-overlay"></div>
-            {% elif fl.sensor_status == 2 %}
-            <div class="card-overlay needsMaintenance-card-overlay"></div>
-            {% elif fl.sensor_status == 3 %}
-            <div class="card-overlay inactive-card-overlay"></div>
-            {% endif %}
+                {% if fl.sensor_status == 0 %}
+                <div class="card-overlay connected-card-overlay"></div>
+                {% elif fl.sensor_status == 1 %}
+                <div class="card-overlay underMaintenance-card-overlay"></div>
+                {% elif fl.sensor_status == 2 %}
+                <div class="card-overlay needsMaintenance-card-overlay"></div>
+                {% elif fl.sensor_status == 3 %}
+                <div class="card-overlay inactive-card-overlay"></div>
+                {% endif %}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-    {% include 'AEIRBS-ComponentModals.html' %}
-    {% include 'COMPONENTS-ConfirmationModals.html' %}
+        {% include 'AEIRBS-ComponentModals.html' %}
+        {% include 'COMPONENTS-ConfirmationModals.html' %}
 </body>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

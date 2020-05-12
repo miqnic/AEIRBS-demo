@@ -27,4 +27,9 @@ $(document).ready(function() {
         $(".auditContainer").css("padding", "0 25px 25px 25px");
         $(id).hide();
     });
+
+    $(".confirmClearLogs").click(function () {
+        var auditType = "#clear" + $(this).data("log");
+        $(auditType).submit();
+      });
 });

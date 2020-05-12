@@ -53,27 +53,6 @@ $(document).ready(function () {
         }
     });
 
-    //Edit Admin Details
-    $(".editAdmin").click(function() {
-        $(".adminDetails").hide();
-        $(".editAdminForm").show();
-    });
-
-    //Cancel Edit Admin Details
-    $(".cancelEditAdmin").click(function() {
-        $(".adminDetails").show();
-        $(".editAdminForm").hide();
-    });
-
-    //Save Admin Details
-    $(".saveAdmin").click(function() {
-        $(".adminDetails").show();
-        $(".editAdmin").show();
-        $(".closeAdmin").show();
-        $(".adminForm").hide();
-        $(".saveAdmin").hide();
-    });
-
     //Close Admin Details
     $(".closeAdmin").click(function() {
         var username = $(this).data("username");
@@ -83,4 +62,19 @@ $(document).ready(function () {
         $(".userContainer").css("padding", "0 25px 25px 25px");
         $(id).hide();
     });
+
+    $(".confirmDeleteButton").click(function () {
+        var deleteID = "#delete" + $(this).data("delete");
+        $(deleteID).submit();
+      });
+    
+      $(".confirmEditButton").click(function () {
+        var editID = "#edit" + $(this).data("edit");
+        $(editID).submit();
+      });
+    
+      $(".confirmAddButton").click(function () {
+        var type = "#add" + $(this).data("add");
+        $(type).submit();
+      });
 });

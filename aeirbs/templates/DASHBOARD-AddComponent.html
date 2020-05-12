@@ -47,11 +47,6 @@
                     <a class="m-1 nav-link" data-toggle="pill" href="#addSensorForm" role="tab" aria-controls="profile"
                         aria-selected="false"><i class="fas fa-wifi mr-3" style="color:#FEC107;"></i>Sensor</a>
                 </li>
-                <li class="nav-item">
-                    <a class="m-1 nav-link" data-toggle="pill" href="#addConnectionForm" role="tab"
-                        aria-controls="profile" aria-selected="false"><i class="fas fa-project-diagram mr-3"
-                            style="color:#FEC107;"></i>Connection</a>
-                </li>
             </ul>
 
             <div class="tab-content">
@@ -221,48 +216,6 @@
 
                             <div class="col-1"></div>
 
-                        </div>
-                    </form>
-                </div>
-
-
-                <div class="tab-pane fade show" id="addConnectionForm" role="tabpanel" aria-labelledby="Connection">
-
-                    <form id="addConnection" action="{% url 'add_comp' %}" method="POST">
-                        <div class="row my-5 ml-5">
-                            <div class="col"></div>
-                            <div class="col-4">
-                                {% csrf_token %}
-
-                                <!--Dropdown Sensor ID-->
-                                <div class="form-group">
-                                    <small>Sensor Name</small>
-                                    <select class="custom-select form-control form-control-sm" name="addSensorID">
-                                        <option></option>
-                                        {% for sensor in all_sensors %}
-                                        <option value="{{sensor.sensor_id}}">{{sensor.sensor_name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <!--Dropdown Device ID-->
-                                <div class="form-group">
-                                    <small>Device ID</small>
-                                    <select class="custom-select form-control form-control-sm" name="addDeviceID">
-                                        <option></option>
-                                        {% for device in all_devices %}
-                                        <option value="{{device.device_id}}">({{device.device_id}}) -
-                                            {{device.device_name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <center>
-                                    <button type="button" class="mt-2 btn btn-dark btn-sm" data-toggle="modal"
-                                        data-target="#confirmAddConnection"><i
-                                            class="fas fa-plug mr-2"></i>Connect</button>
-                                </center>
-                            </div>
-                            <div class="col"></div>
                         </div>
                     </form>
                 </div>

@@ -87,6 +87,9 @@
 
     <div class="container-fluid mt-5">
         <div class="text-center" style="margin-left: auto; margin-right: auto;">
+            {% if count == 0 %}
+            <b>No component available.</b>
+            {% endif %}
             {% for fr in fire_components %}
             <div class="card card-layout border-0 m-2 component fireComponent" data-toggle="modal"
                 data-target="#componentModal{{fr.device_sensor_id}}" data-component='{{fr.device_sensor_id}}'

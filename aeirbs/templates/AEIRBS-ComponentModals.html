@@ -10,7 +10,7 @@
                     {% if request.user.is_superuser %}
                     <div class="dropdown componentActions">
                         <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"><i class="fas fa-ellipsis-v fa-sm"></i></button>
+                            aria-expanded="false"><i class="fas fa-align-justify fa-sm"></i></button>
                         <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
                             <button class="dropdown-item icon editComponentButton" style="border-radius: 0px;"
                                 type="button"><i class="far fa-edit mr-2"></i>Edit Component</button>
@@ -32,13 +32,13 @@
                     <h4 class="text-light mt-2 ml-3"><b>{{component.device_sensor_id}}</b></h4>
                 </div>
                 {% if component.sensor_id.sensor_type == 0 %}
-                <a href="{% url 'fire_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                <a href="{% url 'earthquake_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
                     style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
                 {% elif component.sensor_id.sensor_type == 1 %}
-                <a href="{% url 'flood_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                <a href="{% url 'fire_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
                     style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
                 {% else %}
-                <a href="{% url 'earthquake_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                <a href="{% url 'flood_components' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
                     style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
                 {% endif %}
 
@@ -327,11 +327,12 @@
                                             </div>
                                             <div class="col">
                                                 {% if component.sensor_id.sensor_type == 0 %}
-                                                <small>Fire</small>
+                                                <small>Earthquake</small>
                                                 {% elif component.sensor_id.sensor_type == 1 %}
-                                                <small>Flood</small>
+                                                <small>Fire</small>
                                                 {% elif component.sensor_id.sensor_type == 2 %}
-                                                <small>Earthquake</small> {% endif %}
+                                                <small>Flood</small>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="row ml-2">
@@ -569,7 +570,7 @@
                     {% if request.user.is_superuser %}
                     <div class="dropdown deviceActions">
                         <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"><i class="fas fa-ellipsis-v fa-sm"></i></button>
+                            aria-expanded="false"><i class="fas fa-align-justify fa-sm"></i></button>
                         <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
                             <button class="dropdown-item icon editDeviceButton" style="border-radius: 0px;"
                                 type="button"><i class="far fa-edit mr-2"></i>Edit Device</button>
@@ -581,6 +582,11 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="deleteDeviceID" value="{{device.device_id}}"></input>
                             </form>
+
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item icon connectSensorButton" style="border-radius: 0px;"
+                                type="button"><i class="fas fa-plug fa-sm mr-2"></i>Connect
+                                Sensor</button>
                         </div>
                     </div>
                     {% endif %}
@@ -937,6 +943,42 @@
                     data-target="#confirmEdit{{device.device_id}}" data-dismiss="modal"><i
                         class="fas fa-save fa-sm mr-2 "></i>Save</button>
             </div>
+
+            <div class="container hidden my-3 connectSensorForm"
+                style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); width: 95%;">
+
+                <button class="btn btn-link text-dark float-left icon cancelConnectSensorButton" title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </button>
+
+                <!--Connect Sensor Form-->
+                <form id="connectSensor{{device.device_id}}" action="{% url 'add_comp' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="addDeviceID" value="{{device.device_id}}">
+                    <div class="row my-5">
+                        <div class="col"></div>
+                        <div class="col-7">
+                            <!--Dropdown Sensor ID-->
+                            <div class="form-group">
+                                <small>Sensor Name</small>
+                                <select class="custom-select form-control form-control-sm" name="addSensorID">
+                                    <option></option>
+                                    {% for sensor in all_sensors %}
+                                    <option value="{{sensor.sensor_id}}">{{sensor.sensor_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <center>
+                                <button type="button" class="mt-2 btn btn-dark btn-sm" data-toggle="modal"
+                                    data-target="#confirmConnectSensor{{device.device_id}}" data-dismiss="modal"><i
+                                    class="fas fa-plug fa-sm mr-2"></i>Connect</button>
+                            </center>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -953,7 +995,7 @@
                     {% if request.user.is_superuser %}
                     <div class="dropdown sensorActions">
                         <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"><i class="fas fa-ellipsis-v fa-sm"></i></button>
+                            aria-expanded="false"><i class="fas fa-align-justify fa-sm"></i></button>
                         <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
                             <button class="dropdown-item icon editSensorButton" style="border-radius: 0px;"
                                 type="button"><i class="far fa-edit mr-2"></i>Edit Sensor</button>
@@ -995,11 +1037,12 @@
                                 </div>
                                 <div class="col">
                                     {% if sensor.sensor_type == 0 %}
-                                    <small>Fire</small>
+                                    <small>Earthquake</small>
                                     {% elif sensor.sensor_type == 1 %}
-                                    <small>Flood</small>
+                                    <small>Fire</small>
                                     {% elif sensor.sensor_type == 2 %}
-                                    <small>Earthquake</small> {% endif %}
+                                    <small>Flood</small>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="row">

@@ -15,7 +15,7 @@ from datetime import date
 # auto-email
 def addadmin_mail(recipient, lastname, username):
     # TEMP - Mail content
-    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>Default Password is: " + lastname + username + "</p><br>" + "</div>"
+    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>Default Password is: " + username + "</p><br>" + "</div>"
 
     email = EmailMessage("AEIRBS: Admin Details", mail_body, "damim526@gmail.com", [recipient])
     email.content_subtype = 'html'

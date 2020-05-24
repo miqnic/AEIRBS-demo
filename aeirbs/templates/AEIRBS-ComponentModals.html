@@ -12,8 +12,9 @@
                         <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false"><i class="fas fa-align-justify fa-sm"></i></button>
                         <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
-                            <button class="dropdown-item icon editComponentButton" style="border-radius: 0px;"
-                                type="button"><i class="far fa-edit mr-2"></i>Edit Component</button>
+                            <button class="dropdown-item icon editComponentButton"
+                                id="edit{{component.device_sensor_id}}" style="border-radius: 0px;" type="button"><i
+                                    class="far fa-edit mr-2"></i>Edit Component</button>
                             <button class="dropdown-item icon" style="border-radius: 0px;" type="button"
                                 data-toggle="modal" data-target="#confirmDelete{{component.device_sensor_id}}"
                                 data-dismiss="modal"><i class="fas fa-trash-alt fa-sm mr-2"></i>Delete
@@ -816,10 +817,10 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <small><b>Mac Address:</b></small>
+                                    <small><b>Port Number:</b></small>
                                 </div>
                                 <div class="col">
-                                    <small>{{device.mac_address}}</small>
+                                    <small>{{device.port_number}}</small>
                                 </div>
                             </div>
                             <div class="row">
@@ -907,11 +908,11 @@
                                     placeholder="Device Name" value="{{device.device_name}}">
                             </div>
 
-                            <!--Input Mac Address-->
+                            <!--Input Port Number-->
                             <div class="form-group">
-                                <small>Mac Address</small>
+                                <small>Port Number</small>
                                 <input type="text" class="form-control form-control-sm" name="editDeviceMacAddress"
-                                    placeholder="Mac Address" value="{{device.mac_address}}">
+                                    placeholder="Port Number" value="{{device.port_number}}">
                             </div>
                         </div>
                         <div class="col">
@@ -972,7 +973,7 @@
                             <center>
                                 <button type="button" class="mt-2 btn btn-dark btn-sm" data-toggle="modal"
                                     data-target="#confirmConnectSensor{{device.device_id}}" data-dismiss="modal"><i
-                                    class="fas fa-plug fa-sm mr-2"></i>Connect</button>
+                                        class="fas fa-plug fa-sm mr-2"></i>Connect</button>
                             </center>
                         </div>
                         <div class="col"></div>
@@ -986,14 +987,16 @@
 
 <!--Sensor Modal-->
 {% for sensor in all_sensors %}
-<div class="modal fade" id="sensorModal{{sensor.sensor_id}}" data-keyboard="false" data-backdrop="static">
+{% if error == True %}
+{% if sensor.sensor_id == sensorID %}
+<div class="modal fade show" id="sensorModal{{sensor.sensor_id}}" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-ml" role="document">
         <div class="modal-content">
             <div class="modal-header" style="position:relative; background-color:#343A40;">
                 <div class="row ml-1">
                     <!--Dropdown Actions-->
                     {% if request.user.is_superuser %}
-                    <div class="dropdown sensorActions">
+                    <div class="dropdown sensorActions hidden">
                         <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false"><i class="fas fa-align-justify fa-sm"></i></button>
                         <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
@@ -1011,13 +1014,13 @@
                     </div>
                     {% endif %}
 
-                    <h5 class="text-light mt-2 ml-3"><b>{{sensor.sensor_id}}</b></h5>
+                    <h5 class="text-light mt-2 ml-3"><b>{{sensor.sensor_id}}    </b></h5>
                 </div>
                 <a href="{% url 'sensors' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
                     style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
             </div>
-            <div class="modal-body" style="border-radius:5px">
-                <div class="row m-2 sensorDetails">
+            <div class="modal-body sensorDetails hidden" style="border-radius:5px">
+                <div class="row m-2 ">
                     <div class="col-5 mt-2">
                         <center>
                             <h6><b>{{sensor.sensor_name}}</b></h6>
@@ -1078,7 +1081,217 @@
                     </div>
                 </div>
             </div>
-            <div class="container mb-3 hidden editSensorForm"
+            <div class="container my-3 editSensorForm"
+                style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); width: 95%;">
+
+                <button class="btn btn-link text-dark float-left icon cancelEditSensorButton" title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </button>
+
+                <!--Edit Sensor Form-->
+                <form class="mt-4" id="edit{{sensor.sensor_id}}" action="{% url 'edit_sensor' %}" method="POST"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="editSensorID" value="{{sensor.sensor_id}}">
+                    <center>
+                        <!--Upload Component Image-->
+                        <div class="imgUp">
+                            <div class="imagePreview"
+                                style="background-image: url('{{sensor.sensor_image.url}}'); background-size: contain; background-position: center;">
+                            </div>
+                            <label type="button" class="btn btn-dark btn-block btn-sm">
+                                Select Image<input type="file" class="uploadFile img"
+                                    style="width: 0px;height: 0px;overflow: hidden;" name="editSensorImage"
+                                    value="{{sensor.sensor_image.name}}">
+                            </label>
+                        </div>
+                    </center>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <!--Dropdow  Incident Type-->
+                            <div class="form-group">
+                                <small>Incident Type</small>
+                                <select class="form-control form-control-sm" name="editSensorIncidentType">
+                                    {% for type in incident_type %}
+                                    {% if type.0 == inputSensorType %}
+                                    <option value="{{type.0}}" selected>{{type.1}}</option>
+                                    {% else %}
+                                    <option value="{{type.0}}">{{type.1}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                    
+                                <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_sensorTypeEmpty}}</small>
+                            </div>
+
+                            <!--Input Product ID-->
+                            <div class="form-group">
+                                <small>Product ID</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorProductID"
+                                    placeholder="Product ID" value="{{inputSensorProductID}}">
+                                    
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorProductIDEmpty}}</small>
+                            </div>
+
+                            <!--Input Component Name-->
+                            <div class="form-group">
+                                <small>Sensor Name</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorName"
+                                    placeholder="Sensor Name" value="{{inputSensorName}}">
+                                    
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorNameEmpty}}</small>
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorNameFormat}}</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!--Input Data-->
+                            <div class="form-group">
+                                <small>Data</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorData"
+                                    placeholder="Data" value="{{inputSensorData}}">
+                                    
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorDataEmpty}}</small>
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorDataFormat}}</small>
+                            </div>
+
+                            <!--Input Voltage-->
+                            <div class="form-group">
+                                <small>Voltage</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorVoltage"
+                                    placeholder="Voltage" value="{{inputSensorVoltage}}">
+                                    
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorVoltageEmpty}}</small>
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorVoltageFormat}}</small>
+                            </div>
+
+                            <!--Input Link-->
+                            <div class="form-group">
+                                <small>Link to Manual/ Datasheet</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorLink"
+                                    placeholder="Link"  value="{{inputSensorLink}}">
+                                    
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorLinkEmpty}}</small>
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_sensorLinkFormat}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <button class="btn btn-dark float-right btn-sm mt-1" data-toggle="modal"
+                    data-target="#confirmEdit{{sensor.sensor_id}}" data-dismiss="modal"><i
+                        class="fas fa-save fa-sm mr-2 "></i>Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#sensorModal{{sensor.sensor_id}}').modal('show');
+</script>
+
+{% else %}
+<div class="modal fade" id="sensorModal{{sensor.sensor_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343A40;">
+                <div class="row ml-1">
+                    <!--Dropdown Actions-->
+                    {% if request.user.is_superuser %}
+                    <div class="dropdown sensorActions">
+                        <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"><i class="fas fa-align-justify fa-sm"></i></button>
+                        <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
+                            <button class="dropdown-item icon editSensorButton" style="border-radius: 0px;"
+                                type="button"><i class="far fa-edit mr-2"></i>Edit Sensor</button>
+                            <button class="dropdown-item icon" style="border-radius: 0px;" type="submit"
+                                data-toggle="modal" data-target="#confirmDelete{{sensor.sensor_id}}"
+                                data-dismiss="modal"><i class="fas fa-trash-alt fa-sm mr-2"></i>Delete Sensor</button>
+                            <form id="delete{{sensor.sensor_id}}" action=" {% url 'del_sensor' %} " method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="deleteSensorID" value="{{sensor.sensor_id}}"></input>
+
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <h5 class="text-light mt-2 ml-3"><b>{{sensor.sensor_id}}</b></h5>
+                </div>
+                <a href="{% url 'sensors' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body sensorDetails" style="border-radius:5px">
+                <div class="row m-2 ">
+                    <div class="col-5 mt-2">
+                        <center>
+                            <h6><b>{{sensor.sensor_name}}</b></h6>
+                        </center>
+                        <br>
+                        <center>
+                            <div class="modalImage" style="background-image: url('{{sensor.sensor_image.url}}');">
+                            </div>
+                        </center>
+                    </div>
+
+                    <div class="col ml-2" style="background-color: #EAEDED; border-radius: 5px;">
+                        <div class="my-3">
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Incident Type:</b></small>
+                                </div>
+                                <div class="col">
+                                    {% if sensor.sensor_type == 0 %}
+                                    <small>Earthquake</small>
+                                    {% elif sensor.sensor_type == 1 %}
+                                    <small>Fire</small>
+                                    {% elif sensor.sensor_type == 2 %}
+                                    <small>Flood</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Product ID:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_productID}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Data:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_data}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Voltage:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_voltage}} volts</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="position: absolute; bottom: 0;">
+                            <a href="{{sensor.sensor_link}}" class="btn btn-link btn-block btn-sm" target="_blank"><i
+                                    class="fas fa-link mr-2"></i>Link to Manual/
+                                Datasheet</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container my-3 hidden editSensorForm"
                 style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); width: 95%;">
 
                 <button class="btn btn-link text-dark float-left icon cancelEditSensorButton" title="Go Back">
@@ -1158,11 +1371,194 @@
                         </div>
                     </div>
                 </form>
-                <button class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                <button class="btn btn-dark float-right btn-sm mt-1" data-toggle="modal"
                     data-target="#confirmEdit{{sensor.sensor_id}}" data-dismiss="modal"><i
                         class="fas fa-save fa-sm mr-2 "></i>Save</button>
             </div>
         </div>
     </div>
 </div>
+{% endif %}
+
+{% else %}
+<div class="modal fade" id="sensorModal{{sensor.sensor_id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343A40;">
+                <div class="row ml-1">
+                    <!--Dropdown Actions-->
+                    {% if request.user.is_superuser %}
+                    <div class="dropdown sensorActions">
+                        <button class="btn btn-link icon text-light" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"><i class="fas fa-align-justify fa-sm"></i></button>
+                        <div class="dropdown-menu dropdown-menu-left mt-2" style="font-size: small;">
+                            <button class="dropdown-item icon editSensorButton" style="border-radius: 0px;"
+                                type="button"><i class="far fa-edit mr-2"></i>Edit Sensor</button>
+                            <button class="dropdown-item icon" style="border-radius: 0px;" type="submit"
+                                data-toggle="modal" data-target="#confirmDelete{{sensor.sensor_id}}"
+                                data-dismiss="modal"><i class="fas fa-trash-alt fa-sm mr-2"></i>Delete Sensor</button>
+                            <form id="delete{{sensor.sensor_id}}" action=" {% url 'del_sensor' %} " method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="deleteSensorID" value="{{sensor.sensor_id}}"></input>
+
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <h5 class="text-light mt-2 ml-3"><b>{{sensor.sensor_id}}</b></h5>
+                </div>
+                <a href="{% url 'sensors' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+            </div>
+            <div class="modal-body sensorDetails" style="border-radius:5px">
+                <div class="row m-2 ">
+                    <div class="col-5 mt-2">
+                        <center>
+                            <h6><b>{{sensor.sensor_name}}</b></h6>
+                        </center>
+                        <br>
+                        <center>
+                            <div class="modalImage" style="background-image: url('{{sensor.sensor_image.url}}');">
+                            </div>
+                        </center>
+                    </div>
+
+                    <div class="col ml-2" style="background-color: #EAEDED; border-radius: 5px;">
+                        <div class="my-3">
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Incident Type:</b></small>
+                                </div>
+                                <div class="col">
+                                    {% if sensor.sensor_type == 0 %}
+                                    <small>Earthquake</small>
+                                    {% elif sensor.sensor_type == 1 %}
+                                    <small>Fire</small>
+                                    {% elif sensor.sensor_type == 2 %}
+                                    <small>Flood</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Product ID:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_productID}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Data:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_data}}</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <small><b>Voltage:</b></small>
+                                </div>
+                                <div class="col">
+                                    <small>{{sensor.sensor_voltage}} volts</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="position: absolute; bottom: 0;">
+                            <a href="{{sensor.sensor_link}}" class="btn btn-link btn-block btn-sm" target="_blank"><i
+                                    class="fas fa-link mr-2"></i>Link to Manual/
+                                Datasheet</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container my-3 hidden editSensorForm"
+                style=" background-color:#EAEDED; padding: 20px; border-radius: 5px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); width: 95%;">
+
+                <button class="btn btn-link text-dark float-left icon cancelEditSensorButton" title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </button>
+
+                <!--Edit Sensor Form-->
+                <form class="mt-4" id="edit{{sensor.sensor_id}}" action="{% url 'edit_sensor' %}" method="POST"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="editSensorID" value="{{sensor.sensor_id}}">
+                    <center>
+                        <!--Upload Component Image-->
+                        <div class="imgUp">
+                            <div class="imagePreview"
+                                style="background-image: url('{{sensor.sensor_image.url}}'); background-size: contain; background-position: center;">
+                            </div>
+                            <label type="button" class="btn btn-dark btn-block btn-sm">
+                                Select Image<input type="file" class="uploadFile img"
+                                    style="width: 0px;height: 0px;overflow: hidden;" name="editSensorImage"
+                                    value="{{sensor.sensor_image.name}}">
+                            </label>
+                        </div>
+                    </center>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <!--Dropdow  Incident Type-->
+                            <div class="form-group">
+                                <small>Incident Type</small>
+                                <select class="form-control form-control-sm" name="editSensorIncidentType">
+                                    {% for type in incident_type %}
+                                    {% if type.0 == sensor.sensor_type %}
+                                    <option value="{{type.0}}" selected>{{type.1}}</option>
+                                    {% else %}
+                                    <option value="{{type.0}}">{{type.1}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!--Input Product ID-->
+                            <div class="form-group">
+                                <small>Product ID</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorProductID"
+                                    placeholder="Product ID" value="{{sensor.sensor_productID}}">
+                            </div>
+
+                            <!--Input Component Name-->
+                            <div class="form-group">
+                                <small>Sensor Name</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorName"
+                                    placeholder="Sensor Name" value="{{sensor.sensor_name}}">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!--Input Data-->
+                            <div class="form-group">
+                                <small>Data</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorData"
+                                    placeholder="Data" value="{{sensor.sensor_data}}">
+                            </div>
+
+                            <!--Input Voltage-->
+                            <div class="form-group">
+                                <small>Voltage</small>
+                                <input type="text" class="form-control form-control-sm" name="editSensorVoltage"
+                                    placeholder="Voltage" value="{{sensor.sensor_voltage}}">
+                            </div>
+
+                            <!--Input Link-->
+                            <div class="form-group">
+                                <small>Link to Manual/ Datasheet</small>
+                                <input type="url" class="form-control form-control-sm" name="editSensorLink"
+                                    placeholder="Link" value="{{sensor.sensor_link}}">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <button class="btn btn-dark float-right btn-sm mt-1" data-toggle="modal"
+                    data-target="#confirmEdit{{sensor.sensor_id}}" data-dismiss="modal"><i
+                        class="fas fa-save fa-sm mr-2 "></i>Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endfor %}

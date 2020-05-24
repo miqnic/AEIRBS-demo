@@ -43,7 +43,7 @@ class Device(models.Model):
     device_productID = models.CharField(max_length=50, default="Product ID")
     device_name = models.CharField(max_length=50)
     device_status = models.IntegerField(choices=STATUS, default=0)
-    mac_address = models.CharField(max_length=50)
+    port_number = models.CharField(max_length=50)
     floor_location = models.IntegerField(default=1, choices=FLOOR_LOCATIONS)
     device_link = models.CharField(max_length=100, default="Link")
     device_image = models.ImageField(upload_to='component_images')
@@ -57,7 +57,7 @@ class Device(models.Model):
 
 # Device-Sensor is the specific sensor that is mounted on a specific device.
 class Device_Sensor(models.Model):
-    device_sensor_id = models.CharField(max_length=10, unique=True)
+    device_sensor_id = models.CharField(max_length=10)
     device_id = models.ForeignKey(Device, on_delete=models.DO_NOTHING)
     sensor_id = models.ForeignKey(Sensor, on_delete=models.DO_NOTHING)
     sensor_status = models.IntegerField(choices=STATUS, default=0)

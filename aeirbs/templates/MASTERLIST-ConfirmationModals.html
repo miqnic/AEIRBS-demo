@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-ml" role="document">
         <div class="modal-content">
             <div class="modal-header" style="position:relative; background-color:#343a40;">
-                <h5 class="text-light mt-2 ml-3"><b>Delete User</b></h5>
+                <h5 class="text-light mt-2 ml-3"><b>Add User</b></h5>
 
                 <a href="{% url 'masterlist' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
                     style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
@@ -18,8 +18,7 @@
                     </div>
 
                     <div class="col-7 mt-3">
-                        Are you sure you want to
-                        <span>Delete <b>{{user.username}}?</b></span>
+                        Are you sure you want to Add this User?</b></span>
                     </div>
                     
                     <div class="col-1"></div>
@@ -28,8 +27,8 @@
 
             <div class="modal-footer">
                 <button type="button" data-add='User'
-                    class="btn btn-danger btn-sm confirmDeleteButton">
-                    Delete
+                    class="btn btn-dark btn-sm confirmAddButton">
+                    Submit
                 </button>
                 <a href="{% url 'masterlist' %}" class="btn btn-light btn-sm">Cancel</a>
             </div>
@@ -102,7 +101,7 @@
 
             <div class="modal-footer">
                 <button type="button" data-edit='{{user.username}}'
-                    class="btn btn-danger btn-sm confirmEditButton">
+                    class="btn btn-dark btn-sm confirmEditButton">
                     Save
                 </button>
                 <a href="{% url 'masterlist' %}" class="btn btn-light btn-sm">Cancel</a>

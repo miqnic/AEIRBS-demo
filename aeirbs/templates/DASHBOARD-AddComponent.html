@@ -39,18 +39,18 @@
 
             <ul class="nav nav-pills nav-fill" role="tablist">
                 <li class="nav-item">
-                    <a class="m-1 nav-link active" data-toggle="tab" href="#addDeviceForm" role="pill"
+                    <a class="m-1 nav-link" id="addDeviceTab" data-toggle="tab" href="#addDeviceForm" role="pill"
                         aria-controls="home" aria-selected="true"><i class="fas fa-microchip mr-3"
                             style="color:#FEC107;"></i>Device</a>
                 </li>
                 <li class="nav-item">
-                    <a class="m-1 nav-link" data-toggle="pill" href="#addSensorForm" role="tab" aria-controls="profile"
+                    <a class="m-1 nav-link" id="addSensorTab" data-toggle="pill" href="#addSensorForm" role="tab" aria-controls="profile"
                         aria-selected="false"><i class="fas fa-wifi mr-3" style="color:#FEC107;"></i>Sensor</a>
                 </li>
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="addDeviceForm" role="tabpanel" aria-labelledby="Device">
+                <div class="tab-pane fade show" id="addDeviceForm" role="tabpanel" aria-labelledby="Device">
 
                     <form id="addDevice" action="{% url 'add_device' %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -80,21 +80,34 @@
                                             <div class="form-group">
                                                 <small>Product ID</small>
                                                 <input type="text" class="form-control form-control-sm"
-                                                    name="addDeviceProductID" placeholder="Product ID">
+                                                    name="addDeviceProductID" placeholder="Product ID" value="{{inputDeviceProductID}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_deviceProductIDEmpty}}</small>
                                             </div>
 
                                             <!--Input Component Name-->
                                             <div class="form-group">
                                                 <small>Device Name</small>
                                                 <input type="text" class="form-control form-control-sm"
-                                                    name="addDeviceName" placeholder="Device Name">
+                                                    name="addDeviceName" placeholder="Device Name" value="{{inputDeviceName}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_deviceNameEmpty}}</small>
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_deviceNameFormat}}</small>
                                             </div>
 
-                                            <!--Input Mac Address-->
+                                            <!--Input Port Number-->
                                             <div class="form-group">
-                                                <small>Mac Address</small>
+                                                <small>Port Number</small>
                                                 <input type="text" class="form-control form-control-sm"
-                                                    name="addDeviceMacAddress" placeholder="Mac Address">
+                                                    name="addDevicePortNumber" placeholder="Port Number" value="{{inputDevicePortNumber}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_portNumberEmpty}}</small>
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_portNumberFormat}}</small>
                                             </div>
                                         </div>
                                         <div class="col">
@@ -105,22 +118,34 @@
                                                     name="addDeviceFloorLocation">
                                                     <option></option>
                                                     {% for floor in floor_locations %}
+                                                    {% if floor.0 == inputDeviceFloorLocation %}
+                                                    <option value="{{floor.0}}" selected>{{floor.1}}</option>
+                                                    {% else %}
                                                     <option value="{{floor.0}}">{{floor.1}}</option>
+                                                    {% endif %}
                                                     {% endfor %}
                                                 </select>
+                                    
+                                                <small class="float-right text-danger"
+                                                    style="font-size: xx-small;">{{errors.error_floorLocationEmpty}}</small>
                                             </div>
 
                                             <!--Input Link-->
                                             <div class="form-group">
                                                 <small>Link to Manual/ Datasheet</small>
                                                 <input type="url" class="form-control form-control-sm"
-                                                    name="addDeviceLink" placeholder="Link">
+                                                    name="addDeviceLink" placeholder="Link" value="{{inputDeviceLink}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_deviceLinkEmpty}}</small>
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_deviceLinkFormat}}</small>
                                             </div>
 
                                         </div>
                                     </div>
 
-                                    <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                                    <button type="button" class="btn btn-dark float-right btn-sm mt-1" data-toggle="modal"
                                         data-target="#confirmAddDevice"><i
                                             class="fas fa-paper-plane mr-2"></i>Submit</button>
                                 </div>
@@ -165,23 +190,38 @@
                                                     name="addSensorIncidentType">
                                                     <option></option>
                                                     {% for type in incident_type %}
+                                                    {% if type.0 == inputSensorType %}
+                                                    <option value="{{type.0}}" selected>{{type.1}}</option>
+                                                    {% else %}
                                                     <option value="{{type.0}}">{{type.1}}</option>
+                                                    {% endif %}
                                                     {% endfor %}
                                                 </select>
+                                    
+                                                <small class="float-right text-danger"
+                                                    style="font-size: xx-small;">{{errors.error_sensorTypeEmpty}}</small>
                                             </div>
 
                                             <!--Input Product ID-->
                                             <div class="form-group">
                                                 <small>Product ID</small>
                                                 <input type="text" class="form-control form-control-sm"
-                                                    name="addSensorProductID" placeholder="Product ID">
+                                                    name="addSensorProductID" placeholder="Product ID" value="{{inputSensorProductID}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorProductIDEmpty}}</small>
                                             </div>
 
                                             <!--Input Component Name-->
                                             <div class="form-group">
                                                 <small>Sensor Name</small>
                                                 <input type="text" class="form-control form-control-sm"
-                                                    name="addSensorName" placeholder="Component Name">
+                                                    name="addSensorName" placeholder="Sensor Name" value="{{inputSensorName}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorNameEmpty}}</small>
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorNameFormat}}</small>
                                             </div>
                                         </div>
                                         <div class="col">
@@ -189,26 +229,41 @@
                                             <div class="form-group">
                                                 <small>Data</small>
                                                 <input type="text" class="form-control form-control-sm"
-                                                    name="addSensorData" placeholder="Data">
+                                                    name="addSensorData" placeholder="Data" value="{{inputSensorData}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorDataEmpty}}</small>
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorDataFormat}}</small>
                                             </div>
 
                                             <!--Input Voltage-->
                                             <div class="form-group">
                                                 <small>Voltage</small>
                                                 <input type="text" class="form-control form-control-sm"
-                                                    name="addSensorVoltage" placeholder="Voltage">
+                                                    name="addSensorVoltage" placeholder="Voltage" value="{{inputSensorVoltage}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorVoltageEmpty}}</small>
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorVoltageFormat}}</small>
                                             </div>
 
                                             <!--Input Link-->
                                             <div class="form-group">
                                                 <small>Link to Manual/ Datasheet</small>
                                                 <input type="url" class="form-control form-control-sm"
-                                                    name="addSensorLink" placeholder="Link">
+                                                    name="addSensorLink" placeholder="Link" value="{{inputSensorLink}}">
+                                    
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorLinkEmpty}}</small>
+                                                    <small class="float-right text-danger"
+                                                        style="font-size: xx-small;">{{errors.error_sensorLinkFormat}}</small>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal"
+                                    <button type="button" class="btn btn-dark float-right btn-sm mt-1" data-toggle="modal"
                                         data-target="#confirmAddSensor"><i
                                             class="fas fa-paper-plane mr-2"></i>Submit</button>
                                 </div>
@@ -224,5 +279,16 @@
         </div>
     </div>
 </div>
+{% if addComponent == 'sensor' %}
+<script>
+    $('#addSensorTab').toggleClass("active");
+    $('#addSensorForm').toggleClass("active");
+</script>
+{% else %}
+<script>
+    $('#addDeviceTab').toggleClass("active");
+    $('#addDeviceForm').toggleClass("active");
+</script>
+{% endif %}
 {% include 'COMPONENTS-ConfirmationModals.html' %}
 {% endblock body %}

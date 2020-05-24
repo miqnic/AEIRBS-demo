@@ -86,7 +86,7 @@
             {% endif %}
             {% for device in all_devices %}
 
-            <div class="card card-layout border-0 m-2 component" data-toggle="modal"
+            <div class="card card-layout border-0 m-2 component {{device.device_id}}" data-toggle="modal"
                 data-target="#deviceModal{{device.device_id}}" data-component='{{device.device_id}}' style="display: inline-block;">
                 <div class="card-header border-0">
                     <b style="font-size: 16px;">{{device.device_id}}</b>
@@ -132,7 +132,7 @@
                             dataType: 'json',
                             success: function (result) {
                                 if (result.noise_level != 0) {
-                                    alert("message: " + result.noise_level);
+                                    //alert("message: " + result.noise_level);
 
                                     if (result.noise_level < 10 ){
                                         $(".alarm").show();
@@ -141,7 +141,7 @@
                                     }
                                 }
                                 else 
-                                    alert("message: " + result.noise_level + 
+                                   // alert("message: " + result.noise_level + 
                                     "\nNO ARDUINO PRESENT.");
                             },
                             error: function(data){

@@ -249,7 +249,6 @@ $(".filter").on('change', function () {
   $(".component").click(function () {
     var componentID = $(this).data("component");
     
-
     if ($(".status-switch" + componentID).is(":checked")) {
       $(".statusValue" + componentID).val(0);
       $(".status" + componentID).css("background-color", "rgb(30, 132, 73, 0.5)");

@@ -7,6 +7,181 @@
 <!--Add Admin Form-->
 {% for user in all_users%}
 {% if user.username == username %}
+{% if error == True %}
+<div class="container" style="padding:0 25px 25px 25px;">
+    <div class="container-fluid"
+        style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+
+        <div class="row">
+            <div class="col-1">
+                <a href="{% url 'masterlist' %}" class="btn btn-link text-dark icon" title="Go Back">
+                    <span><i class="fas fa-arrow-left"></i></span>
+                </a>
+            </div>
+            <div class="col">
+                <h3><b><b>{{user.username}}</b></b></h3>
+            </div>
+        </div>
+        <hr>
+
+
+        <form id="edit{{user.username}}" action="{% url 'edit_user' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <input type="hidden" name="username" value="{{username}}">
+            <div class="row my-5">
+                <!--Upload Component Image-->
+                <div class="col-3">
+                    <div style="padding:10px;">
+                        <center>
+                            <div class="imgUp">
+                                <div class="imagePreview"
+                                    style="background-image: url('{{user.profile.user_image.url}}'); background-size: contain; background-position: center;">
+                                </div>
+                                <label type="button" class="btn btn-dark btn-block btn-sm">
+                                    Select Image<input type="file" class="uploadFile img"
+                                        style="width: 0px;height: 0px;overflow: hidden;" name="editAdminImage">
+                                </label>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+
+                <div class="col" style="border-left: 3px solid #343A40;">
+                    <div style="padding:10px;">
+                        <div class="row">
+                            <!--Dropdown Access Role-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Access Role</small>
+                                    <select class="form-control form-control-sm" name="editAdminAccessRole">
+                                        {% if inputAccessRole == True %}
+                                        <option value="adminRole">Admin</option>
+                                        <option value="superRole" selected>Super Admin</option>
+                                        {% elif inputAccessRole == False %}
+                                        <option value="adminRole" selected>Admin</option>
+                                        <option value="superRole">Super Admin</option>
+                                        {% endif %}
+                                    </select>
+
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_accessRoleEmpty}}</small>
+                                </div>
+                            </div>
+
+                            <!--Input Employee ID-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Employee ID</small>
+                                    <input type="text" class="form-control form-control-sm" name="editAdminEmployeeID"
+                                        placeholder="Employee ID" value="{{inputEmployeeID}}">
+
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_employeeIDEmpty}}</small>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                            </div>
+                        </div>
+
+                        <!--Input First Name-->
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>First Name</small>
+                                    <input type="text" class="form-control form-control-sm" name="editAdminFirstName"
+                                        placeholder="First Name" value="{{inputFirstName}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_firstNameEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_firstNameFormat}}</small>
+                                </div>
+                            </div>
+
+                            <!--Input Middle Name-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Middle Name</small>
+                                    <input type="text" class="form-control form-control-sm" name="editAdminMiddleName"
+                                        placeholder="Middle Name" value="{{inputMiddleName}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_middleNameFormat}}</small>
+                                </div>
+                            </div>
+
+                            <!--Input last Name-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Last Name</small>
+                                    <input type="text" class="form-control form-control-sm" name="editAdminLastName"
+                                        placeholder="Last Name" value="{{inputLastName}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_lastNameEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_lastNameFormat}}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!--Input Job Position-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Job Position</small>
+                                    <input type="text" class="form-control form-control-sm" name="editAdminJobPosition"
+                                        placeholder="Job Position" value="{{inputJobPosition}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_jobPositionEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_jobPositionFormat}}</small>
+                                </div>
+                            </div>
+
+                            <!--Input Company Email-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Company Email</small>
+                                    <input type="email" class="form-control form-control-sm"
+                                        name="editAdminCompanyEmail" placeholder="Company Email"
+                                        value="{{inputCompanyEmail}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_companyEmailEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_companyEmailFormat}}</small>
+                                </div>
+                            </div>
+
+                            <!--Input Phone Number-->
+                            <div class="col">
+                                <div class="form-group">
+                                    <small>Mobile Number</small>
+                                    <input type="text" class="form-control form-control-sm" name="editAdminMobileNumber"
+                                        placeholder="Mobile Number" value="{{inputMobileNumber}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_mobileNumberEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_mobileNumberFormat}}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-dark float-right btn-sm mt-1" data-toggle="modal"
+                        data-target="#confirmEdit{{user.username}}"><i
+                                class="fas fa-save fa-sm mr-2 "></i>Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% else %}
 <div class="container" style="padding:0 25px 25px 25px;">
     <div class="container-fluid"
         style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
@@ -70,7 +245,7 @@
                                 <div class="form-group">
                                     <small>Employee ID</small>
                                     <input type="text" class="form-control form-control-sm" name="editAdminEmployeeID"
-                                        placeholder="Employee ID" value="{{request.user.username}}">
+                                        placeholder="Employee ID" value="{{user.username}}">
                                 </div>
                             </div>
 
@@ -146,6 +321,7 @@
         </form>
     </div>
 </div>
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endblock body %}

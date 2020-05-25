@@ -5,12 +5,19 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from reports.models import AuditLogs
-from .models import Profile, DEFAULT_IMAGE
+from .models import JobPosition, Profile, DEFAULT_IMAGE
 from django.core.files.storage import FileSystemStorage
 import django.contrib.auth.hashers
 
 from django.core.mail import EmailMessage
 from datetime import date
+
+from aeirbs.helper import format_input, with_letter, validate_stringFormat, validate_numberFormat, validate_emailFormat, validate_mobileNumber
+
+
+JOB_POSITIONS = []
+for position in JobPosition.objects.all():
+    JOB_POSITIONS.append(str(position))
 
 # auto-email
 def addadmin_mail(recipient, lastname, username):
@@ -130,6 +137,12 @@ def add_user(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
             context = {}
+            errors = {}
+            all_users = User.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+
+            #Get User Input
+            add_accessRole = request.POST.get("addAdminAccessRole")
             add_employeeID = request.POST.get("addAdminEmployeeID")
             add_firstName = request.POST.get("addAdminFirstName")
             add_middleName = request.POST.get("addAdminMiddleName")
@@ -139,10 +152,57 @@ def add_user(request):
             add_mobileNumber = request.POST.get("addAdminMobileNumber")
             add_userImage = request.FILES.get("addAdminImage")
 
-            if request.POST.get("addAdminAccessRole") == "adminRole":
-                is_super = False
+            print(add_accessRole)
+            print(add_jobPosition)
+            #Validate User Input
+            if not add_accessRole.strip():
+                errors["error_accessRoleEmpty"] = "Access Role is required."
+
+            if not add_employeeID.strip():
+                errors["error_employeeIDEmpty"] = "Employee ID is required."
+            
+            if not add_firstName.strip():
+                errors["error_firstNameEmpty"] = "First Name is required."
             else:
+                if not validate_stringFormat(add_firstName):
+                    errors["error_firstNameFormat"] = "Invalid, input should only contain letters."
+
+            if not validate_stringFormat(add_middleName):
+                errors["error_middleNameFormat"] = "Invalid, input should only contain letters."
+
+            if not add_lastName.strip():
+                errors["error_lastNameEmpty"] = "Last Name is required."
+            else:
+                if not validate_stringFormat(add_lastName):
+                    errors["error_lastNameFormat"] = "Invalid, input should only contain letters."
+
+            if not add_jobPosition.strip():
+                errors["error_jobPositionEmpty"] = "Job Position is required."
+            else:
+                if not validate_stringFormat(add_jobPosition):
+                    errors["error_jobPositionFormat"] = "Invalid, input should only contain letters."
+
+            if not add_companyEmail.strip():
+                errors["error_companyEmailEmpty"] = "Company Email is required."
+            else:
+                if not validate_emailFormat(add_companyEmail):
+                    errors["error_companyEmailFormat"] = "Invalid, please input a valid Email Address."
+            
+            if not add_mobileNumber.strip():
+                errors["error_mobileNumberEmpty"] = "Mobile Number is required."
+            else: 
+                if with_letter(add_mobileNumber):
+                    errors["error_mobileNumberFormat"] = "Invalid, please input a valid Mobile Number."
+                else:
+                    if not validate_mobileNumber(add_mobileNumber):
+                        errors["error_mobileNumberFormat"] = "Invalid, please input a valid Mobile Number."
+
+            if add_accessRole == "adminRole":
+                is_super = False
+            elif add_accessRole == "superRole":
                 is_super = True
+            else:
+                is_super = None
 
             context["inputAccessRole"] = is_super
             context["inputEmployeeID"] = add_employeeID
@@ -152,50 +212,189 @@ def add_user(request):
             context["inputJobPosition"] = add_jobPosition
             context["inputMobileNumber"] = add_mobileNumber
             context["inputCompanyEmail"] = add_companyEmail
+            context["errors"] = errors
+            context["job_positions"] = JOB_POSITIONS
 
-            if add_userImage == None:
-                add_userImage = DEFAULT_IMAGE
+            if len(errors) > 0:
+                messages.error(request, f'Invalid Input!')  
+                return render(request, 'MASTERLIST-AddAdmin.html',  context = context)
+            else:
+                #Format User Input
+                add_firstName = format_input(add_firstName)
+                add_middleName = format_input(add_middleName)
+                add_lastName = format_input(add_lastName)
+                add_jobPosition = format_input(add_jobPosition)
+                add_password = add_lastName + add_employeeID
+                if add_userImage == None:
+                    add_userImage = DEFAULT_IMAGE
 
+                isExisting = False
+                for user in all_users:
+                    if user.username == add_employeeID:
+                        isExisting = True
+                
+                if isExisting:
+                    messages.error(request, f'{add_employeeID} is already registered in the system!')  
+                    return render(request, 'MASTERLIST-AddAdmin.html', context = context)
+                else:
+                    #Add User
+                    add_admin = User.objects.create_user(
+                        username = add_employeeID,
+                        password= add_password,
+                        email = add_companyEmail,
+                        first_name = add_firstName,
+                        last_name = add_lastName,
+                        is_superuser = is_super,
+                        is_staff = is_super,
+                    )
+                    add_admin.save()
+                    add_admin.refresh_from_db()
+                    add_admin.profile.user_image = add_userImage
+                    add_admin.profile.middle_name = add_middleName
+                    add_admin.profile.job_position = add_jobPosition
+                    add_admin.profile.mobile_number = add_mobileNumber
+                    add_admin.save()
+
+                    #Generate Confirmation Email
+                    addadmin_mail(add_admin.email, add_admin.last_name, add_admin.username)
+
+                    #Create User Log
+                    add_log = AuditLogs.objects.create(
+                        log_id = "UL0" + str(all_userLogs + 1),
+                        activity = "Add User",
+                        username = request.user,
+                        audit_details = str(request.user) + " added " + add_employeeID + " to the system.",
+                        audit_type = 1
+                    )
+                    add_log.save()
+
+                    messages.success(request, f'Added user {add_employeeID} successfully!')
+                    return redirect('masterlist')
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+def edit_user(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            context = {}
+            errors = {}
             all_users = User.objects.all()
             all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
-            isExisting = False
-            for user in all_users:
-                if user.username == add_employeeID:
-                    isExisting = True
+
+            #Get User Input
+            employeeID = request.POST.get("username")
+            edit_accessRole = request.POST.get("editAdminAccessRole")
+            edit_employeeID = request.POST.get("editAdminEmployeeID")
+            edit_firstName = request.POST.get("editAdminFirstName")
+            edit_middleName = request.POST.get("editAdminMiddleName")
+            edit_lastName = request.POST.get("editAdminLastName")
+            edit_jobPosition = request.POST.get("editAdminJobPosition")
+            edit_companyEmail = request.POST.get("editAdminCompanyEmail")
+            edit_mobileNumber = request.POST.get("editAdminMobileNumber")
+            edit_userImage = request.FILES.get("editAdminImage")
+
+            #Validate User Input
+            if not edit_accessRole.strip():
+                errors["error_accessRoleEmpty"] = "Access Role is required."
+
+            if not edit_employeeID.strip():
+                errors["error_employeeIDEmpty"] = "Employee ID is required."
             
-            if isExisting:
-                messages.error(request, f'{add_employeeID} is already registered in the system!')  
-                return render(request, 'MASTERLIST-AddAdmin.html', context = context)
+            if not edit_firstName.strip():
+                errors["error_firstNameEmpty"] = "First Name is required."
             else:
-                add_admin = User.objects.create_user(
-                    username = add_employeeID,
-                    password= add_employeeID,
-                    email = add_companyEmail,
-                    first_name = add_firstName,
-                    last_name = add_lastName,
-                    is_superuser = is_super,
-                    is_staff = is_super,
-                )
-                add_admin.save()
-                add_admin.refresh_from_db()
-                add_admin.profile.user_image = add_userImage
-                add_admin.profile.middle_name = add_middleName
-                add_admin.profile.job_position = add_jobPosition
-                add_admin.profile.mobile_number = add_mobileNumber
-                add_admin.save()
+                if not validate_stringFormat(edit_firstName):
+                    errors["error_firstNameFormat"] = "Invalid, input should only contain letters."
 
-                addadmin_mail(add_admin.email, add_admin.last_name, add_admin.username)
+            if not validate_stringFormat(edit_middleName):
+                errors["error_middleNameFormat"] = "Invalid, input should only contain letters."
 
-                add_log = AuditLogs.objects.create(
-                    log_id = "UL0" + str(all_userLogs + 1),
-                    activity = "Add User",
-                    username = request.user,
-                    audit_details = str(request.user) + " added " + add_employeeID + " to the system.",
-                    audit_type = 1
-                )
-                add_log.save()
+            if not edit_lastName.strip():
+                errors["error_lastNameEmpty"] = "Last Name is required."
+            else:
+                if not validate_stringFormat(edit_lastName):
+                    errors["error_lastNameFormat"] = "Invalid, input should only contain letters."
 
-                messages.success(request, f'Added user {add_employeeID} successfully!')
+            if not edit_jobPosition.strip():
+                errors["error_jobPositionEmpty"] = "Job Position is required."
+            else:
+                if not validate_stringFormat(edit_jobPosition):
+                    errors["error_jobPositionFormat"] = "Invalid, input should only contain letters."
+
+            if not edit_companyEmail.strip():
+                errors["error_companyEmailEmpty"] = "Company Email is required."
+            else:
+                if not validate_emailFormat(edit_companyEmail):
+                    errors["error_companyEmailFormat"] = "Invalid, please input a valid Email Address."
+            
+            if not edit_mobileNumber.strip():
+                errors["error_mobileNumberEmpty"] = "Mobile Number is required."
+            else: 
+                if with_letter(edit_mobileNumber):
+                    errors["error_mobileNumberFormat"] = "Invalid, please input a valid Mobile Number."
+                else:
+                    if not validate_mobileNumber(edit_mobileNumber):
+                        errors["error_mobileNumberFormat"] = "Invalid, please input a valid Mobile Number."
+
+            if edit_accessRole == "adminRole":
+                is_super = False
+            elif edit_accessRole == "superRole":
+                is_super = True
+            else:
+                is_super = None
+
+            context["username"] = employeeID
+            context['all_users'] = all_users
+            context['error'] = True
+            context["inputAccessRole"] = is_super
+            context["inputEmployeeID"] = edit_employeeID
+            context["inputFirstName"] = edit_firstName
+            context["inputMiddleName"] = edit_middleName
+            context["inputLastName"] = edit_lastName
+            context["inputJobPosition"] = edit_jobPosition
+            context["inputMobileNumber"] = edit_mobileNumber
+            context["inputCompanyEmail"] = edit_companyEmail
+            context["errors"] = errors
+
+            if len(errors) > 0:
+                messages.error(request, f'Invalid Input!')  
+                return render(request, 'MASTERLIST-EditAdmin.html',  context = context)
+            else:
+                #Format User Input
+                edit_firstName = format_input(edit_firstName)
+                edit_middleName = format_input(edit_middleName)
+                edit_lastName = format_input(edit_lastName)
+                edit_jobPosition = format_input(edit_jobPosition)
+
+                #Update User
+                for user in all_users:
+                    if user.username == employeeID:
+                        if edit_userImage == None:
+                            edit_userImage = user.profile.user_image
+                        user.username = edit_employeeID
+                        user.first_name = edit_firstName
+                        user.profile.middle_name = edit_middleName
+                        user.last_name = edit_lastName
+                        user.email = edit_companyEmail
+                        user.profile.job_position = edit_jobPosition
+                        user.profile.mobile_number = edit_mobileNumber
+                        user.profile.user_image = edit_userImage
+                        user.save()
+
+                        #Create User Log
+                        add_log = AuditLogs.objects.create(
+                        log_id = "UL0" + str(all_userLogs + 1),
+                        activity = "Edit User",
+                        username = request.user,
+                        audit_details = str(request.user) + " updated user " + employeeID + "'s details.",
+                        audit_type = 1
+                        )
+                        add_log.save()
+
+                        messages.success(request, f'Updated user {employeeID} successfully!')
+                        return redirect('masterlist')
+                
+                messages.error(request, f'Cannot find {employeeID}.')
                 return redirect('masterlist')
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -212,70 +411,18 @@ def del_user(request):
                 if user.username == employeeID:
                     user.profile.is_deleted = True
                     user.is_active = False
-
                     deladmin_mail(user.email)
-
                     user.save()
 
                     add_log = AuditLogs.objects.create(
-                    log_id = "UL0" + str(all_userLogs + 1),
-                    activity = "Delete User",
-                    username = request.user,
-                    audit_details = str(request.user) + " deleted uder " + employeeID + " from the system.",
-                    audit_type = 1
+                        log_id = "UL0" + str(all_userLogs + 1),
+                        activity = "Delete User",
+                        username = request.user,
+                        audit_details = str(request.user) + " deleted user " + employeeID + " from the system.",
+                        audit_type = 1
                     )
-                    
-                    print("creating log")
                     add_log.save()
                     messages.success(request, f'Deleted user {employeeID} successfully!')
-                    return redirect('masterlist')
-            
-            messages.error(request, f'Cannot find {employeeID}.')
-            return redirect('masterlist')
-    else:
-        return render(request, 'AEIRBS-Login.html')
-
-def edit_user(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            employeeID = request.POST.get("username")
-            edit_accessRole = request.POST.get("editAdminAccessRole")
-            edit_employeeID = request.POST.get("editAdminEmployeeID")
-            edit_firstName = request.POST.get("editAdminFirstName")
-            edit_middleName = request.POST.get("editAdminMiddleName")
-            edit_lastName = request.POST.get("editAdminLastName")
-            edit_jobPosition = request.POST.get("editAdminJobPosition")
-            edit_companyEmail = request.POST.get("editAdminCompanyEmail")
-            edit_mobileNumber = request.POST.get("editAdminMobileNumber")
-            edit_userImage = request.FILES.get("editAdminImage")
-
-            all_users = User.objects.all()
-            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
-
-            for user in all_users:
-                if user.username == employeeID:
-                    if edit_userImage == None:
-                        edit_userImage = user.profile.user_image
-                    user.username = edit_employeeID
-                    user.first_name = edit_firstName
-                    user.profile.middle_name = edit_middleName
-                    user.last_name = edit_lastName
-                    user.email = edit_companyEmail
-                    user.profile.job_position = edit_jobPosition
-                    user.profile.mobile_number = edit_mobileNumber
-                    user.profile.user_image = edit_userImage
-                    user.save()
-
-                    add_log = AuditLogs.objects.create(
-                    log_id = "UL0" + str(all_userLogs + 1),
-                    activity = "Edit User",
-                    username = request.user,
-                    audit_details = str(request.user) + " updated user " + employeeID + "'s details.",
-                    audit_type = 1
-                    )
-                    add_log.save()
-
-                    messages.success(request, f'Updated user {employeeID} successfully!')
                     return redirect('masterlist')
             
             messages.error(request, f'Cannot find {employeeID}.')
@@ -290,14 +437,44 @@ def edit_admin(request):
             print(request.POST.get("username"))
             context['username'] = request.POST.get("username")
             context['all_users'] = User.objects.all()
+            context['job_positions'] = JOB_POSITIONS
         return render(request, 'MASTERLIST-EditAdmin.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
    
 def add_admin(request):
     if request.user.is_authenticated:
-        return render(request, 'MASTERLIST-AddAdmin.html')
+        return render(request, 'MASTERLIST-AddAdmin.html', {'job_positions': JOB_POSITIONS})
     else:
         return render(request, 'AEIRBS-Login.html')
+
+def delete_list(request):
+    if request.user.is_authenticated:
+
+        all_users = User.objects.all()
+        all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+
+        if request.method == 'POST':
+            admin_list = request.POST.get('delete_list')
+            for user in all_users:
+                if user.username in admin_list:
+                    user.profile.is_deleted = True
+                    user.is_active = False
+                    deladmin_mail(user.email)
+                    user.save()
+
+            add_log = AuditLogs.objects.create(
+                log_id = "UL0" + str(all_userLogs + 1),
+                activity = "Delete Users",
+                username = request.user,
+                audit_details = str(request.user) + " deleted users from the system.",
+                audit_type = 1
+            )
+            add_log.save()
+
+            messages.success(request, f'Users deleted successfully!')
+            return redirect('masterlist')
+            
+            
 
  

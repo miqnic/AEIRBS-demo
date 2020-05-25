@@ -47,18 +47,23 @@
                             <div class="col">
                                 <div class="form-group">
                                     <small>Access Role</small>
-                                    <select class="form-control form-control-sm" name="addAdminAccessRole">
-                                        <option></option>
-                                        <option value="adminRole">Admin</option>
-                                        <option value="superRole">Super Admin</option>
+                                    <select class="custom-select form-control form-control-sm"
+                                        name="addAdminAccessRole">
                                         {% if inputAccessRole == True %}
                                         <option value="adminRole">Admin</option>
                                         <option value="superRole" selected>Super Admin</option>
                                         {% elif inputAccessRole == False %}
                                         <option value="adminRole" selected>Admin</option>
                                         <option value="superRole">Super Admin</option>
+                                        {% else %}
+                                        <option value="">-----</option>
+                                        <option value="adminRole">Admin</option>
+                                        <option value="superRole">Super Admin</option>
                                         {% endif %}
                                     </select>
+                                    
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_accessRoleEmpty}}</small>
                                 </div>
                             </div>
 
@@ -68,6 +73,9 @@
                                     <small>Employee ID</small>
                                     <input type="text" class="form-control form-control-sm" name="addAdminEmployeeID"
                                         placeholder="Employee ID" value="{{inputEmployeeID}}">
+
+                                    <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_employeeIDEmpty}}</small>
                                 </div>
                             </div>
 
@@ -82,6 +90,11 @@
                                     <small>First Name</small>
                                     <input type="text" class="form-control form-control-sm" name="addAdminFirstName"
                                         placeholder="First Name" value="{{inputFirstName}}">
+                                        
+                                    <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_firstNameEmpty}}</small>
+                                    <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_firstNameFormat}}</small>
                                 </div>
                             </div>
 
@@ -91,6 +104,9 @@
                                     <small>Middle Name</small>
                                     <input type="text" class="form-control form-control-sm" name="addAdminMiddleName"
                                         placeholder="Middle Name" value="{{inputMiddleName}}">
+                                        
+                                    <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_middleNameFormat}}</small>
                                 </div>
                             </div>
 
@@ -100,6 +116,11 @@
                                     <small>Last Name</small>
                                     <input type="text" class="form-control form-control-sm" id="inputLastName"
                                         name="addAdminLastName" placeholder="Last Name" value="{{inputLastName}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_lastNameEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_lastNameFormat}}</small>
                                 </div>
                             </div>
                         </div>
@@ -109,8 +130,22 @@
                             <div class="col">
                                 <div class="form-group">
                                     <small>Job Position</small>
-                                    <input type="text" class="form-control form-control-sm" name="addAdminJobPosition"
-                                        placeholder="Job Position" value="{{inputJobPosition}}">
+                                    <select class="custom-select form-control form-control-sm"
+                                        name="addAdminJobPosition">
+                                        <option value="">-----</option>
+                                        {% for position in job_positions%}
+                                        {% if position == inputJobPosition %}
+                                        <option value="{{position}}" selected>{{position}}</option>
+                                        {% else %}
+                                        <option value="{{position}}">{{position}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_jobPositionEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_jobPositionFormat}}</small>
                                 </div>
                             </div>
 
@@ -118,8 +153,13 @@
                             <div class="col">
                                 <div class="form-group">
                                     <small>Company Email</small>
-                                    <input type="email" class="form-control form-control-sm" name="addAdminCompanyEmail"
-                                        placeholder="Company Email" value="{{InputCompanyEmail}}">
+                                    <input type="text" class="form-control form-control-sm" name="addAdminCompanyEmail"
+                                        placeholder="Company Email" value="{{inputCompanyEmail}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_companyEmailEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_companyEmailFormat}}</small>
                                 </div>
                             </div>
 
@@ -129,11 +169,17 @@
                                     <small>Mobile Number</small>
                                     <input type="text" class="form-control form-control-sm" name="addAdminMobileNumber"
                                         placeholder="Mobile Number" value="{{inputMobileNumber}}">
+                                        
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_mobileNumberEmpty}}</small>
+                                        <small class="float-right text-danger"
+                                        style="font-size: xx-small;">{{errors.error_mobileNumberFormat}}</small>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-dark float-right btn-sm" data-toggle="modal" data-target="#confirmAddUser" >Submit</button>
+                        <button type="button" class="btn btn-dark float-right btn-sm mt-1" data-toggle="modal"
+                            data-target="#confirmAddUser">Submit</button>
                     </div>
                 </div>
             </div>

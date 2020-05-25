@@ -2,7 +2,12 @@
 $(document).ready(function () {
     $('#masterlistTable').DataTable({
         "paging":false,
-        searching: false,
+        searching: false,    
+        "order": [],
+        'columnDefs': [{
+            "targets": [0],
+            "orderable": false
+        }]
     });
     $("label").css("font-size", "12px")
     $(".dataTables_info").css("font-size", "14px")

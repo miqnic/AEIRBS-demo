@@ -86,7 +86,7 @@
             {% endif %}
             {% for device in all_devices %}
 
-            <div class="card card-layout border-0 m-2 component" data-toggle="modal"
+            <div class="card card-layout border-0 m-2 component {{device.device_id}}" data-toggle="modal"
                 data-target="#deviceModal{{device.device_id}}" data-component='{{device.device_id}}' style="display: inline-block;">
                 <div class="card-header border-0">
                     <b style="font-size: 16px;">{{device.device_id}}</b>
@@ -101,11 +101,15 @@
                         </div>
                         <div class="col-8 mt-3" style="font-size: 14px;">
                             <h6 class="devdevdev">{{device.device_name}}</h6>
-                            {% for floor in floor_locations %}
-                            {% if floor.0 == device.floor_location %}
-                            <small>{{floor.1}}</small>
+                            {% if device.device_type == 0 %}
+                            <small>Universal</small>
+                            {% elif device.device_type == 1 %}
+                            <small>Earthquake</small>
+                            {% elif device.device_type == 2 %}
+                            <small>Fire</small>
+                            {% else %}
+                            <small>Flood</small>
                             {% endif %}
-                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -132,7 +136,7 @@
                             dataType: 'json',
                             success: function (result) {
                                 if (result.noise_level != 0) {
-                                    alert("message: " + result.noise_level);
+                                    //alert("message: " + result.noise_level);
 
                                     if (result.noise_level < 10 ){
                                         $(".alarm").show();
@@ -141,8 +145,8 @@
                                     }
                                 }
                                 else 
-                                    alert("message: " + result.noise_level + 
-                                    "\nNO ARDUINO PRESENT.");
+                                   // alert("message: " + result.noise_level + 
+                                    //"\nNO ARDUINO PRESENT.");
                             },
                             error: function(data){
                                 alert('error..');

@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 from components import views as components_views
 from accounts import views as accounts_views
@@ -45,6 +46,7 @@ urlpatterns = [
         
     path('generate-audit/', reports_views.generatePDF_audit, name='generatePDF_audit'),
     path('generate-incident/', reports_views.generatePDF_incident, name='generatePDF_incident'),
+    path('alarm-mailtemp/', components_views.autoalarm_mail, name='alarm_mailtemp'),
 
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
 
@@ -88,10 +90,12 @@ urlpatterns = [
 
     # ARDUINO
     path('ajax/getdata/', components_views.ajax_data, name='get_data'),
+    # path('ajax/connect/', components_views.dev_connection, name='connect_sensor'),
 
     # EMAIL
     path('alarm-mail/', components_views.autoalarm_mail, name='sendalarm_email'),
     path('addadmin-mail/', accounts_views.addadmin_mail, name='sendadmin_email'),
+    
 ] 
 
 if settings.DEBUG:

@@ -310,8 +310,11 @@
                                     <div class="mx-3" style="width:100%;">
                                         <div class="my-2">
                                             <small><b>Connectivity:</b></small><br>
+                                            {% if component.connectivity_status == 1 %}
                                             <small class="connectivity-connected">Connected</small>
+                                            {% else %}
                                             <small class="connectivity-disconnected">Disconnected</small>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -797,8 +800,11 @@
                             <div class="mx-3" style="width:100%;">
                                 <div class="my-2">
                                     <small><b>Connectivity:</b></small><br>
-                                    <small class="connectivity-connected">Connected</small>
-                                    <small class="connectivity-disconnected">Disconnected</small>
+                                    {% if device.device_status != 3 %}
+                                    <small>Connected</small>
+                                    {% else %}
+                                    <small>Disconnected</small>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

@@ -51,6 +51,7 @@ class Device(models.Model):
     last_maintained_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, default=None)
 
     device_isDeleted = models.BooleanField(default=False)
+    maxed_out = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.device_id)

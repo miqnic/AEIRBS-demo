@@ -84,10 +84,10 @@
             {% if count == 0 %}
             <b>No device available.</b>
             {% endif %}
-            {% for device in all_devices %}
 
+            {% for device in all_devices %}
             <div class="card card-layout border-0 m-2 component" data-toggle="modal"
-                data-target="#deviceModal{{device.device_id}}" data-component='{{device.device_id}}' style="display: inline-block;">
+                data-target="#deviceModal{{device.device_id}}" data-component='{{device.device_id}}' style="display: inline-block;" id="card{{device.device_id}}">
                 <div class="card-header border-0">
                     <b style="font-size: 16px;">{{device.device_id}}</b>
                 </div>
@@ -106,6 +106,10 @@
                             <small>{{floor.1}}</small>
                             {% endif %}
                             {% endfor %}
+                            <br>
+                            <small>(temp: <span id="arddata0-{{device.id}}"></span>)</small>
+                            <br>
+                            <small>(dist: <span id="arddata1-{{device.id}}"></span>)</small>
                         </div>
                     </div>
                 </div>
@@ -119,9 +123,10 @@
                 <div class="card-overlay inactive-card-overlay"></div>
                 {% endif %}
             </div>
-            {% endfor %}
+
             <script>
-                $(".card").click(function () {
+                $(document).ready (function () {
+                //$("#card{{device.device_id}}").click(function () {
                     ard_interval = setInterval(function() {
                         $.ajax({
                             type: 'POST',
@@ -129,28 +134,30 @@
                                 "X-CSRFTOKEN": "{{ csrf_token }}"
                             },
                             url: '/ajax/getdata/',
+                            data: {'componentID': '{{device.id}}', 'port': '{{device.mac_address}}'},
                             dataType: 'json',
                             success: function (result) {
-                                if (result.noise_level != 0) {
-                                    alert("message: " + result.noise_level);
+                                $('#arddata0-{{device.id}}').html(result.temp);
+                                $('#arddata1-{{device.id}}').html(result.dist);
 
-                                    if (result.noise_level < 10 ){
-                                        $(".alarm").show();
-                                        soundAlarm();
-                                        clearInterval(ard_interval);
-                                    }
+                                // alert("device id: {{device.device_id}}\n" + "message: " + result.temp + "\nmessage: " + result.dist);
+
+                                deviceID = '{{device.id}}';
+                                deviceFloor = '{{device.floor_location}}';
+
+                                if (result.alert == 1) {
+                                    $(".alarm").show();
+                                    soundAlarm();
                                 }
-                                else 
-                                    alert("message: " + result.noise_level + 
-                                    "\nNO ARDUINO PRESENT.");
                             },
                             error: function(data){
-                                alert('error..');
-                            }
+                                // alert("device id: {{device.device_id}}\n" + 'error..');
+                            },
                         });
-                    }, 3000);
+                    }, 5000);
                 });
               </script>
+            {% endfor %}
         </div>
     </div>
     {% include 'AEIRBS-ComponentModals.html' %}

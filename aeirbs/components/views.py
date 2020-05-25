@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
-from reports.models import AuditLogs
+from reports.models import AuditLogs, IncidentReport
 from django.db.models import Q
 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 import serial
 import json
@@ -16,32 +18,108 @@ from .models import Device, Sensor, Device_Sensor, FLOOR_LOCATIONS, INCIDENT_TYP
 
 # Create your views here.
  
-# Connect to Arduino through COM3 port
-def getArduinoData():
+# Arduino functions
+def getArduinoData(comp_port):
     try:
-        sr = serial.Serial("COM1",9600)
+        sr = serial.Serial(comp_port,9600)
         st = list(str(sr.readline(),'utf-8'))
         sr.close() 
-        print(int(str(''.join(st[:]))))
-        return int(str(''.join(st[:])))
+        return (str(''.join(st[:])).split())
     except:
-        return 0
+        print("goes here")
+        return [0, 0]
 
 def ajax_data(request):
-    ard = getArduinoData()
-    data = {'noise_level': ard}
-    json_data = json.dumps(data)
+    port = request.POST.get("port")
+    ard = getArduinoData(port)
+    # if device type = fire or flood
+    data = {'distance': float(ard[0]), 'temp': float(ard[1])}
+    # else
+    # data = {'distance': float(ard[0])}
+    componentID = request.POST.get("componentID")
+
+    all_components = Device_Sensor.objects.all()
+    all_devices = Device.objects.all()
+    alert = 0
+
+    # no arduino present
+    if float(ard[0]) == 0.0 and float(ard[1]) == 0.0:
+        # FR: ard[0]-temperature, ard[1]-gas
+        # FL: ard[0]-ultra, ard[1]-water
+        # eq: ard[0]-eq
+        for device in all_devices:
+            if device.id == int(componentID):
+                    device.device_status = 2
+                    device.save()
+                    for component in all_components:
+                        if component.device_id_id == int(componentID):
+                            print("went in EQ0")
+                            component.connectivity_status = 0
+                            component.sensor_status = 2
+                            component.save()
+
+        #add_mlog = AuditLogs.objects.create(    
+        #    log_id = "ML0" + str(all_userLogs + 1),
+        #    activity = "Update Sensor Status",
+        #    username = request.user,
+        #    audit_details = str(request.user) + " updated " + componentID + "'s status from " + current_status + " to " + new_status + ".",
+        #    audit_type = 2
+        #)
+        #add_mlog.save()
+
+    # arduino is present
+    else:
+        for device in all_devices:
+            if device.id == int(componentID):
+                    device.device_status = 0
+                    device.save()
+                    for component in all_components:
+                        if component.device_id_id == int(componentID):
+                            print("went in NEQ0")
+                            component.connectivity_status = 1
+                            component.sensor_status = 0
+                            component.save()
+
+        if float(ard[0]) < 10.0 or float(ard[1]) < 10.0:
+            alert = 1
+
+            #add_audlog = AuditLogs.objects.create(
+            #    log_id = "CL0" + str(all_userLogs + 1),
+            #    activity = "Add Connection",
+            #    username = request.user,
+            #    audit_details = str(request.user) + " connected sensor " + #    str(sensorID) + " to " + str(deviceID) + ".",
+            #    audit_type = 0
+            #)
+            #add_audlog.save()
+
+            #add_increp = IncidentReport.objects.create(
+            #    device_sensor_id = ,
+            #    incident_type = ,
+            #    incident_level = ,
+            #)
+            #add_increp.save()
+
+    data = {'alert': alert, 'temp': float(ard[1]), 'dist': float(ard[0])}
     return HttpResponse(json.dumps(data))
 
 # auto-email
 def autoalarm_mail(request):
     # TEMP - Mail content
-    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>Norwegian forest puma and bombay thai for british shorthair american bobtail. Ragdoll ocelot ocelot american shorthair, but savannah yet grimalkin. Cornish rex. Tom cornish rex. Siberian. Himalayan havana brown, yet bengal bobcat or havana brown and manx. Devonshire rex russian blue ocicat, kitten and siberian. Puma russian blue. Grimalkin egyptian mau burmese yet egyptian mau. Lion. Egyptian mau manx, or cornish rex. Donskoy leopard or tabby, grimalkin. Bombay turkish angora, abyssinian leopard tiger and tabby. Abyssinian himalayan for thai abyssinian , so russian blue for malkin for egyptian mau. Scottish fold bengal munchkin malkin cheetah but persian. Tiger mouser or malkin so manx tomcat, yet norwegian forest. Tom thai, yet malkin havana brown and british shorthair jaguar manx. Malkin leopard havana brown bobcat puma. Savannah ragdoll lion. Kitty maine coon himalayan british shorthair, but cheetah.</p><br>" + "<p>Devonshire rex. Tabby sphynx siberian. Malkin ocelot lynx. Grimalkin savannah for malkin but abyssinian for siberian so turkish angora. Tiger birman and manx american bobtail grimalkin for norwegian forest. Maine coon puma siberian, for sphynx bombay. Cornish rex maine coon. Kitten cornish rex cougar, jaguar thai russian blue. Abyssinian persian and leopard himalayan malkin american shorthair. American bobtail cheetah for turkish angora puma. Siberian ocelot kitten. Tiger sphynx. Cougar devonshire rex but american bobtail for turkish angora or tiger lynx. Egyptian mau ocicat puma, american bobtail, and cheetah, so ocicat.</p><br>" + "</div>"
 
-    email = EmailMessage("AEIRBS: EMERGENCY", mail_body, "damim526@gmail.com", ["damim526@gmail.com"])
+
+    # device_id = request.POST.get('device_id')
+    # device_floor = request.POST.get('device_floor')
+
+    # html_content = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></head><body style="background-color: #f5f9fc; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; line-height: 1.5rem; color: #212529; overflow-x:hidden; margin-top: 50px; margin-bottom: 50px;"><div style="width:100%; margin-right:auto; margin-left:auto;"></div><div style="position: relative; display: block; margin-top: 10px; margin-left: auto; margin-right: auto; width: 40%; max-height: 100%; padding: 30px 25px; background-color: white;"><div><h2 style="padding-bottom: 2px; text-align: center;">Penalty Fee Reminder</h2> <!--just change the word approved to declined--><div style="float: right;"><small>date</small></div><div style="padding-top: 30px;"><hr><div style="padding-top: 20px;"><small><b>Name:</b> NAME <br><b>Student Number:</b> AAAA <br><b>Penalty:</b> AA <br></small></div><div style="padding-top:30px; text-align: justify"><small>Please pay this before this semester ends to avoid deficiencies. Thank you!</small></div></div></div><footer style="width:100%; position: absolute; margin-top: 30px;"><div><table style="margin: 10px auto; padding-right: 25px;"><thead><th></th><th></th></thead><tbody><tr><td style="text-align: center;"><small style="margin-top: 0;">&copy;2019 <a href="http://www.iequip.com">iEQUIP</a> | <a href="http://www.iacademy.edu.ph">iACADEMY</a>. All rights reserved.</small></td></tr></tbody></table></div></footer></body></html>'
+
+    html_content = render_to_string('mail/mail_alarm.html')
+
+    mail_body = "ah"
+
+    email = EmailMessage("AEIRBS: EMERGENCY", html_content, "damim526@gmail.com", ["damim526@gmail.com"])
     email.content_subtype = 'html'
 
-    send_email = email.send()
+    send_email = msg.send()
     return HttpResponse('%s'%send_email)
 
 def sort_filter_components(request, incident_type, sort_by, filter_by, asc_desc):
@@ -739,13 +817,13 @@ def add_comp(request):
                 if sensor.sensor_id == add_sensorID:
                     if sensor.sensor_type == 0:
                         sensor_typeIndex = 0
-                        sensor_type = "FR"
+                        sensor_type = "EQ"
                     elif sensor.sensor_type == 1:
                         sensor_typeIndex = 1
-                        sensor_type = "FL"
+                        sensor_type = "FR"
                     else:
                         sensor_typeIndex = 2
-                        sensor_type = "EQ"
+                        sensor_type = "FL"
                     break
                 
             add_device_sensorID = "DS-" + sensor_type + "0" + str(floor_location) + "0"
@@ -1138,6 +1216,7 @@ def status(request):
             return redirect('earthquake_components')
     else:
         return render(request, 'AEIRBS-Login.html')
+
 def del_sensor(request):
     if request.user.is_authenticated:
         if request.method == 'POST':

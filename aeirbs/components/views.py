@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 
 from django.core.mail import EmailMessage
-from aeirbs.helper import format_input, format_portNumber, remove_whitespace
+from aeirbs.helper import format_input, format_portNumber, remove_whitespace, get_floorLocations
 from aeirbs.helper import validate_stringFormat, validate_emailFormat, validate_URLFormat, validate_portNumber, validate_voltage
 from aeirbs.helper import sort_filter_components
 
@@ -16,10 +16,10 @@ import serial
 import json
 import datetime
 
-from .models import Device, Sensor, Device_Sensor, FLOOR_LOCATIONS, INCIDENT_TYPE, STATUS, DEFAULT_IMAGE
+from .models import Device, Sensor, Device_Sensor, INCIDENT_TYPE, STATUS, DEFAULT_IMAGE
 
 # Create your views here.
- 
+FLOOR_LOCATIONS = get_floorLocations()
 # Connect to Arduino through COM3 port
 def getArduinoData():
     try:
@@ -189,9 +189,12 @@ def devices(request):
         context['filter'] = 1
         context['ascending_descending'] = 'asc'
         context['count'] =  Device.objects.filter(device_isDeleted=False).count()
-        context['floor_locations'] = FLOOR_LOCATIONS
+        context['floor_locations'] = get_floorLocations()
         context['incident_type'] = INCIDENT_TYPE
         context['status'] = STATUS
+
+        print(get_floorLocations())
+        print(FLOOR_LOCATIONS)
 
         context['sensor_reading'] = " "#getArduinoData()
 
@@ -279,8 +282,6 @@ def add_device(request):
 
             if not add_deviceFloorLocation.strip():
                 errors["error_floorLocationEmpty"] = "Floor Location is required."
-            else:
-                add_deviceFloorLocation = int(add_deviceFloorLocation)
             
             if not add_deviceName.strip():
                 errors["error_deviceNameEmpty"] = "Device Name is required."
@@ -473,24 +474,35 @@ def add_comp(request):
         if request.method == 'POST':
             all_devices = Device.objects.all()
             all_sensors = Sensor.objects.all()
+            all_components = Device_Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+            universal = False
+            sensor_connected = [] 
 
             #Get User Input
             add_deviceID = request.POST.get("addDeviceID")
             add_sensorID = request.POST.get("addSensorID")
 
+            #Validate User Input
+            for device in all_devices:
+                if device.device_id == add_deviceID:
+                    if device.device_type == 0:
+                        universal = True
+                    else:
+                        device_type = device.device_type - 1
+
+            for component in all_components:
+                if component.device_id.device_id == add_deviceID:
+                    sensor_connected.append(component.sensor_id.sensor_name)    
+
+            
             #Format User Input
             deviceID = Device.objects.filter(device_id = add_deviceID).first()
             sensorID = Sensor.objects.filter(sensor_id = add_sensorID).first()
-            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
-
-            for device in all_devices:
-                if device.device_id == add_deviceID:
-                    floor_location = device.floor_location
-                    break
 
             for sensor in all_sensors:
                 if sensor.sensor_id == add_sensorID:
-                    name = sensor.sensor_name
+                    name = format_input(sensor.sensor_name)
                     if sensor.sensor_type == 0:
                         sensor_typeIndex = 0
                         sensor_type = "EQ"
@@ -502,75 +514,193 @@ def add_comp(request):
                         sensor_type = "FL"
                     break
 
-            name = remove_whitespace(name)
-            name = name[0:5]
-            count = Device_Sensor.objects.filter(sensor_id__sensor_type__contains = sensor_typeIndex).count()
-            add_device_sensorID = sensor_type + "DS-"  + name + "-" + str(count + 1)
+            for device in all_devices:
+                if device.device_id == add_deviceID:
+                    floor_location = device.floor_location
+                    break
 
-            #Add Component
-            add_component = Device_Sensor.objects.create(
-                device_sensor_id = add_device_sensorID,
-                device_id = deviceID,
-                sensor_id = sensorID,
-            )
-            add_component.save()
+            if not universal:
+                if device_type == sensor_typeIndex and name not in sensor_connected:
+                    name = remove_whitespace(name)
+                    name = name[0:5].upper()
+                    count = Device_Sensor.objects.filter(sensor_id__sensor_type__contains = sensor_typeIndex).count()
+                    add_device_sensorID = sensor_type + "DS-"  + name + "-" + str(count + 1)
 
-            #Add Component Log
-            add_log = AuditLogs.objects.create(
-                log_id = "CL0" + str(all_userLogs + 1),
-                activity = "Add Connection",
-                username = request.user,
-                audit_details = str(request.user) + " connected sensor " + str(sensorID) + " to " + str(deviceID) + ".",
-                audit_type = 0
-            )
-            add_log.save()
+                    #Add Component
+                    add_component = Device_Sensor.objects.create(
+                        device_sensor_id = add_device_sensorID,
+                        device_id = deviceID,
+                        sensor_id = sensorID,
+                    )
+                    add_component.save()
 
-            messages.success(request, f'Connected sensor {sensorID} to {deviceID} successfully!')
-            return redirect('devices')
+                    device_count = Device_Sensor.objects.filter(device_id__device_id = add_deviceID, device_sensor_isDeleted = False).count()
+
+                    for device in all_devices:
+                        if device.device_id == add_deviceID:
+                            if device_count >= 2:
+                                device.device_maxedOut = True
+                            else:
+                                device.device_maxedOut = False
+                        device.save()
+
+                    #Create Component Log
+                    add_log = AuditLogs.objects.create(
+                        log_id = "CL0" + str(all_userLogs + 1),
+                        activity = "Connect Sensor",
+                        username = request.user,
+                        audit_details = str(request.user) + " connected sensor " + str(sensorID) + " to " + str(deviceID) + ".",
+                        audit_type = 0
+                    )
+                    add_log.save()
+
+                    messages.success(request, f'Connected sensor {sensorID} to {deviceID} successfully!')
+                    for sensor in all_sensors:
+                        if sensor.sensor_id == add_sensorID:
+                            if sensor.sensor_type == 0:
+                                return redirect('earthquake_components')
+                            elif sensor.sensor_type == 1:
+                                return redirect('fire_components')    
+                            else:
+                                return redirect('flood_components')
+                else:
+                    if not device_type == sensor_typeIndex:
+                        messages.error(request, f'Error connecting Sensor. Please connect according to Device Type')
+                        return redirect('devices')
+                    if name in sensor_connected:
+                        messages.error(request, f'Error connecting Sensor. Sensor is already connected in this Device.')
+                        return redirect('devices')
+            else:
+                name = remove_whitespace(name)
+                name = name[0:5].upper()
+                count = Device_Sensor.objects.filter(sensor_id__sensor_type__contains = sensor_typeIndex).count()
+                add_device_sensorID = sensor_type + "DS-"  + name + "-" + str(count + 1)
+                    
+                #Add Component
+                add_component = Device_Sensor.objects.create(
+                    device_sensor_id = add_device_sensorID,
+                    device_id = deviceID,
+                    sensor_id = sensorID,
+                )
+                add_component.save()
+
+                device_count = Device_Sensor.objects.filter(device_id__device_id = add_deviceID, device_sensor_isDeleted = False).count()
+
+                for device in all_devices:
+                    if device.device_id == add_deviceID:
+                        device.device_type = sensor_typeIndex + 1
+                        if device_count >= 2:
+                            device.device_maxedOut = True
+                        else:
+                            device.device_maxedOut = False
+                    device.save()
+
+                #Create Component Log
+                add_log = AuditLogs.objects.create(
+                    log_id = "CL0" + str(all_userLogs + 1),
+                    activity = "Connect Sensor",
+                    username = request.user,
+                    audit_details = str(request.user) + " connected sensor " + str(sensorID) + " to " + str(deviceID) + ".",
+                    audit_type = 0
+                )
+                add_log.save()
+
+                messages.success(request, f'Connected sensor {sensorID} to {deviceID} successfully!')
+                for sensor in all_sensors:
+                    if sensor.sensor_id == add_sensorID:
+                        if sensor.sensor_type == 0:
+                            return redirect('earthquake_components')
+                        elif sensor.sensor_type == 1:
+                            return redirect('fire_components')    
+                        else:
+                            return redirect('flood_components')
     else:
         return render(request, 'AEIRBS-Login.html')
 
 def edit_device(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            edit_deviceID = request.POST.get("editDeviceID")
+            context = {}
+            errors = {}
+            all_devices = Device.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+
+            deviceID = request.POST.get("editDeviceID")
             edit_deviceName = request.POST.get("editDeviceName")
             edit_deviceProductID = request.POST.get("editDeviceProductID")
-            edit_deviceMacAddress = request.POST.get("editDeviceMacAddress")
+            edit_devicePortNumber = request.POST.get("editDevicePortNumber")
             edit_deviceFloorLocation = request.POST.get("editDeviceFloorLocation")
             edit_deviceLink = request.POST.get("editDeviceLink")
             edit_deviceImage = request.FILES.get("editDeviceImage")
 
-            all_devices = Device.objects.all()
-            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+            #Validate User Input
+            if not edit_deviceProductID.strip():
+                errors["error_deviceProductIDEmpty"] = "Product ID is required."
 
-            for device in all_devices:
-                if device.device_id == edit_deviceID:
-                    if edit_deviceImage == None:
-                        edit_deviceImage = device.device_image
-                    device.device_id = edit_deviceID
-                    device.device_name = edit_deviceName
-                    device.device_productID = edit_deviceProductID
-                    device.mac_address = edit_deviceMacAddress
-                    device.floor_location = edit_deviceFloorLocation
-                    device.device_link = edit_deviceLink
-                    device.device_image = edit_deviceImage
-                    device.save()
+            if not edit_deviceFloorLocation.strip():
+                errors["error_floorLocationEmpty"] = "Floor Location is required."
+            
+            if not edit_deviceName.strip():
+                errors["error_deviceNameEmpty"] = "Device Name is required."
+            else: 
+                if not validate_stringFormat(edit_deviceName):
+                    errors["error_deviceNameFormat"] = "Invalid, input should only contain letters." 
 
-                    add_log = AuditLogs.objects.create(    
-                        log_id = "CL0" + str(all_userLogs + 1),
-                        activity = "Edit Device",
-                        username = request.user,
-                        audit_details = str(request.user) + " updated device " + edit_deviceID + "'s details.",
-                        audit_type = 0
-                    )
-                    add_log.save()
+            if not edit_deviceLink.strip():
+                errors["error_deviceLinkEmpty"] = "Link to Manual/ Datasheet is required."
+            else:
+                if not validate_URLFormat(edit_deviceLink):
+                    errors["error_deviceLinkFormat"] = "Invalid, please input a valid URL."
+            
+            if not edit_devicePortNumber.strip():
+                errors["error_portNumberEmpty"] = "Port Number is required."
+            else:
+                if not validate_portNumber(edit_devicePortNumber):
+                    errors["error_portNumberFormat"] = "Invalid, please input a valid Port Number."
                     
-                    messages.success(request, f'Updated {edit_deviceID} successfully!')
-                    return redirect('devices')
-           
-            messages.error(request, f'Device {edit_deviceID} not found!')
-            return redirect('devices')
+            context['error'] = True
+            context['deviceID'] = deviceID
+            context["inputDeviceProductID"] = edit_deviceProductID
+            context["inputDeviceFloorLocation"] = edit_deviceFloorLocation
+            context["inputDeviceName"] = edit_deviceName
+            context["inputDeviceLink"] = edit_deviceLink
+            context["inputDevicePortNumber"] = edit_devicePortNumber
+            context["errors"] = errors
+            context['all_devices'] =  Device.objects.filter(device_isDeleted=False).order_by('device_id')
+            context["floor_locations"] = FLOOR_LOCATIONS
+
+            if len(errors) > 0:
+                messages.error(request, f'Invalid Input!')  
+                return render(request, 'DASHBOARD-Devices.html',  context = context)
+            else:
+
+                for device in all_devices:
+                    if device.device_id == edit_deviceID:
+                        if edit_deviceImage == None:
+                            edit_deviceImage = device.device_image
+                        device.device_id = edit_deviceID
+                        device.device_name = edit_deviceName
+                        device.device_productID = edit_deviceProductID
+                        device.mac_address = edit_deviceMacAddress
+                        device.floor_location = edit_deviceFloorLocation
+                        device.device_link = edit_deviceLink
+                        device.device_image = edit_deviceImage
+                        device.save()
+
+                        add_log = AuditLogs.objects.create(    
+                            log_id = "CL0" + str(all_userLogs + 1),
+                            activity = "Edit Device",
+                            username = request.user,
+                            audit_details = str(request.user) + " updated device " + edit_deviceID + "'s details.",
+                            audit_type = 0
+                        )
+                        add_log.save()
+                        
+                        messages.success(request, f'Updated {edit_deviceID} successfully!')
+                        return redirect('devices')
+            
+                messages.error(request, f'Device {edit_deviceID} not found!')
+                return redirect('devices')
     else:
         return render(request, 'AEIRBS-Login.html')
 
@@ -727,38 +857,154 @@ def edit_sensor(request):
 def edit_comp(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
+            all_components = Device_Sensor.objects.all()
+            all_devices = Device.objects.all()
+            all_sensors = Sensor.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+            universal = False
+            sensor_connected = [] 
+
             componentID = request.POST.get("editComponentID")
             deviceID = request.POST.get("editComponentDeviceID")
-            edit_deviceID = Device.objects.filter(device_id = deviceID).first()
 
-            all_components = Device_Sensor.objects.all()
-            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
+            #Validate User Input
+            for device in all_devices:
+                if device.device_id == deviceID:
+                    if device.device_type == 0:
+                        universal = True
+                    else:
+                        device_type = device.device_type - 1
 
             for component in all_components:
-                print(component.device_sensor_id)
                 if component.device_sensor_id == componentID:
-                    component.device_id = edit_deviceID
-                    component.save()
+                    sensorID = component.sensor_id.sensor_id
+                if component.device_id.device_id == deviceID:
+                    sensor_connected.append(component.sensor_id.sensor_name)    
 
-                    add_log = AuditLogs.objects.create(    
-                        log_id = "CL0" + str(all_userLogs + 1),
-                        activity = "Edit Component",
-                        username = request.user,
-                        audit_details = str(request.user) + " updated component " + componentID + "'s details.",
-                        audit_type = 0
-                    )
-                    add_log.save()
+            #Format User Input
+            edit_deviceID = Device.objects.filter(device_id = deviceID).first()
 
-                    messages.success(request, f'Updated {componentID} successfully!')
-                    if component.sensor_id.sensor_type == 0:
-                        return redirect('fire_components')
-                    elif component.sensor_id.sensor_type == 1:
-                        return redirect('flood_components')
+            for sensor in all_sensors:
+                if sensor.sensor_id == sensorID:
+                    name = format_input(sensor.sensor_name)
+                    if sensor.sensor_type == 0:
+                        sensor_typeIndex = 0
+                        sensor_type = "EQ"
+                    elif sensor.sensor_type == 1:
+                        sensor_typeIndex = 1
+                        sensor_type = "FR"
                     else:
-                        return redirect('earthquake_components')
+                        sensor_typeIndex = 2
+                        sensor_type = "FL"
+                    break
 
-            messages.error(request, f'Component {componentID} not found!')
-            return redirect('earthquake_components')
+            if not universal:
+                if device_type == sensor_typeIndex and name not in sensor_connected:
+                    for component in all_components:
+                        if component.device_sensor_id == componentID:
+                            old_device = component.device_id.device_id
+                            component.device_id = edit_deviceID
+                            component.save()
+
+                            old_deviceCount = Device_Sensor.objects.filter(device_id__device_id = old_device, device_sensor_isDeleted = False).count()
+                            new_deviceCount = Device_Sensor.objects.filter(device_id__device_id = edit_deviceID, device_sensor_isDeleted = False).count()
+
+                            for device in all_devices:
+                                if device.device_id == old_device:
+                                    if old_deviceCount >= 2:
+                                        device.device_maxedOut = True
+                                    else:
+                                        device.device_maxedOut = False
+                                        if old_deviceCount == 0:
+                                            device.device_type = 0
+                                device.save()
+
+                            for device in all_devices:
+                                if device.device_id == edit_deviceID:
+                                    if new_deviceCount >= 2:
+                                        device.device_maxedOut = True
+                                    else:
+                                        device.device_maxedOut = False
+                                device.save()
+
+                            add_log = AuditLogs.objects.create(    
+                                log_id = "CL0" + str(all_userLogs + 1),
+                                activity = "Edit Component",
+                                username = request.user,
+                                audit_details = str(request.user) + " updated component " + componentID + "'s details.",
+                                audit_type = 0
+                            )
+                            add_log.save()
+
+                            messages.success(request, f'Updated {componentID} successfully!')
+                            if component.sensor_id.sensor_type == 0:
+                                return redirect('earthquake_components')
+                            elif component.sensor_id.sensor_type == 1:
+                                return redirect('fire_components')
+                            else:
+                                return redirect('flood_components')
+                else:
+                    if not device_type == sensor_typeIndex:
+                        messages.error(request, f'Error connecting Sensor. Please connect according to Device Type')
+                        return redirect('devices')
+                    if name in sensor_connected:
+                        for component in all_components:
+                            if component.device_sensor_id == componentID:
+                                old_device = component.device_id.device_id
+
+                                if old_device == deviceID:
+                                    messages.error(request, f'Sensor is already connected in this Device.')
+                                    return redirect('devices')
+                                else:
+                                    messages.error(request, f'Error connecting Sensor. Sensor is already connected in this Device.')
+                                    return redirect('devices')
+            
+            else:
+                 for component in all_components:
+                    if component.device_sensor_id == componentID:
+                        old_device = component.device_id.device_id
+                        component.device_id = edit_deviceID
+                        component.save()
+
+                        old_deviceCount = Device_Sensor.objects.filter(device_id__device_id = old_device, device_sensor_isDeleted = False).count()
+                        new_deviceCount = Device_Sensor.objects.filter(device_id__device_id = edit_deviceID, device_sensor_isDeleted = False).count()
+                        
+                        for device in all_devices:
+                            if device.device_id == old_device:
+                                if old_deviceCount >= 2:
+                                    device.device_maxedOut = True
+                                else:
+                                    device.device_maxedOut = False
+                                    if old_deviceCount == 0:
+                                        device.device_type = 0
+                            device.save()
+
+                        for device in all_devices: 
+                            if device.device_id == deviceID:
+                                print("CHANGE SENSOR TYPE")
+                                device.device_type = sensor_typeIndex + 1
+                                if new_deviceCount >= 2:
+                                    device.device_maxedOut = True
+                                else:   
+                                    device.device_maxedOut = False
+                            device.save()
+
+                        add_log = AuditLogs.objects.create(    
+                            log_id = "CL0" + str(all_userLogs + 1),
+                            activity = "Edit Component",
+                            username = request.user,
+                            audit_details = str(request.user) + " updated component " + componentID + "'s details.",
+                            audit_type = 0
+                        )
+                        add_log.save()
+
+                        messages.success(request, f'Updated {componentID} successfully!')
+                        if component.sensor_id.sensor_type == 0:
+                            return redirect('earthquake_components')
+                        elif component.sensor_id.sensor_type == 1:
+                            return redirect('fire_components')
+                        else:
+                            return redirect('flood_components')
     else:
         return render(request, 'AEIRBS-Login.html')
 
@@ -842,12 +1088,26 @@ def del_comp(request):
             delete_componentID = request.POST.get("deleteComponentID")
 
             all_components = Device_Sensor.objects.all()
+            all_devices = Device.objects.all()
             all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
             for component in all_components:
                 if component.device_sensor_id == delete_componentID:
+                    deviceID = component.device_id.device_id
                     component.device_sensor_isDeleted = True
                     component.save()
+
+                    device_count = Device_Sensor.objects.filter(device_id__device_id = deviceID, device_sensor_isDeleted = False).count()
+                    print(device_count)
+                    for device in all_devices:
+                        if device.device_id == deviceID:
+                            if device_count >= 2:
+                                device.device_maxedOut = True
+                                print("TRUE")
+                            else:
+                                device.device_maxedOut = False
+                                print("FALSE")
+                        device.save()
 
                     add_log = AuditLogs.objects.create(    
                         log_id = "CL0" + str(all_userLogs + 1),
@@ -860,11 +1120,11 @@ def del_comp(request):
 
                     messages.success(request, f'Deleted component {delete_componentID} successfully!')
                     if component.sensor_id.sensor_type == 0:
-                        return redirect('fire_components')
-                    elif component.sensor_id.sensor_type == 1:
-                        return redirect('flood_components')
-                    else:
                         return redirect('earthquake_components')
+                    elif component.sensor_id.sensor_type == 1:
+                        return redirect('fire_components')
+                    else:
+                        return redirect('flood_components')
           
             messages.error(request, f'Component {delete_componentID} not found!')
             return redirect('earthquake_components')

@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from reports.models import AuditLogs
-from .models import Profile, DEFAULT_IMAGE
+from .models import JobPosition, Profile, DEFAULT_IMAGE
 from django.core.files.storage import FileSystemStorage
 import django.contrib.auth.hashers
 
@@ -13,6 +13,11 @@ from django.core.mail import EmailMessage
 from datetime import date
 
 from aeirbs.helper import format_input, with_letter, validate_stringFormat, validate_numberFormat, validate_emailFormat, validate_mobileNumber
+
+
+JOB_POSITIONS = []
+for position in JobPosition.objects.all():
+    JOB_POSITIONS.append(str(position))
 
 # auto-email
 def addadmin_mail(recipient, lastname, username):
@@ -147,6 +152,8 @@ def add_user(request):
             add_mobileNumber = request.POST.get("addAdminMobileNumber")
             add_userImage = request.FILES.get("addAdminImage")
 
+            print(add_accessRole)
+            print(add_jobPosition)
             #Validate User Input
             if not add_accessRole.strip():
                 errors["error_accessRoleEmpty"] = "Access Role is required."
@@ -206,6 +213,7 @@ def add_user(request):
             context["inputMobileNumber"] = add_mobileNumber
             context["inputCompanyEmail"] = add_companyEmail
             context["errors"] = errors
+            context["job_positions"] = JOB_POSITIONS
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
@@ -403,20 +411,16 @@ def del_user(request):
                 if user.username == employeeID:
                     user.profile.is_deleted = True
                     user.is_active = False
-
                     deladmin_mail(user.email)
-
                     user.save()
 
                     add_log = AuditLogs.objects.create(
-                    log_id = "UL0" + str(all_userLogs + 1),
-                    activity = "Delete User",
-                    username = request.user,
-                    audit_details = str(request.user) + " deleted uder " + employeeID + " from the system.",
-                    audit_type = 1
+                        log_id = "UL0" + str(all_userLogs + 1),
+                        activity = "Delete User",
+                        username = request.user,
+                        audit_details = str(request.user) + " deleted user " + employeeID + " from the system.",
+                        audit_type = 1
                     )
-                    
-                    print("creating log")
                     add_log.save()
                     messages.success(request, f'Deleted user {employeeID} successfully!')
                     return redirect('masterlist')
@@ -433,14 +437,44 @@ def edit_admin(request):
             print(request.POST.get("username"))
             context['username'] = request.POST.get("username")
             context['all_users'] = User.objects.all()
+            context['job_positions'] = JOB_POSITIONS
         return render(request, 'MASTERLIST-EditAdmin.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
    
 def add_admin(request):
     if request.user.is_authenticated:
-        return render(request, 'MASTERLIST-AddAdmin.html')
+        return render(request, 'MASTERLIST-AddAdmin.html', {'job_positions': JOB_POSITIONS})
     else:
         return render(request, 'AEIRBS-Login.html')
+
+def delete_list(request):
+    if request.user.is_authenticated:
+
+        all_users = User.objects.all()
+        all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+
+        if request.method == 'POST':
+            admin_list = request.POST.get('delete_list')
+            for user in all_users:
+                if user.username in admin_list:
+                    user.profile.is_deleted = True
+                    user.is_active = False
+                    deladmin_mail(user.email)
+                    user.save()
+
+            add_log = AuditLogs.objects.create(
+                log_id = "UL0" + str(all_userLogs + 1),
+                activity = "Delete Users",
+                username = request.user,
+                audit_details = str(request.user) + " deleted users from the system.",
+                audit_type = 1
+            )
+            add_log.save()
+
+            messages.success(request, f'Users deleted successfully!')
+            return redirect('masterlist')
+            
+            
 
  

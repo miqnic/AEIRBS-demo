@@ -132,13 +132,19 @@
                             <div class="col">
                                 <div class="form-group">
                                     <small>Job Position</small>
-                                    <input type="text" class="form-control form-control-sm" name="editAdminJobPosition"
-                                        placeholder="Job Position" value="{{inputJobPosition}}">
+                                    <select class="custom-select form-control form-control-sm"
+                                        name="editAdminJobPosition">
+                                        {% for position in job_positions%}
+                                        {% if position == inputJobPosition %}
+                                        <option value="{{position}}" selected>{{position}}</option>
+                                        {% else %}
+                                        <option value="{{position}}">{{position}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
                                         
                                         <small class="float-right text-danger"
                                         style="font-size: xx-small;">{{errors.error_jobPositionEmpty}}</small>
-                                        <small class="float-right text-danger"
-                                        style="font-size: xx-small;">{{errors.error_jobPositionFormat}}</small>
                                 </div>
                             </div>
 
@@ -287,8 +293,16 @@
                             <div class="col">
                                 <div class="form-group">
                                     <small>Job Position</small>
-                                    <input type="text" class="form-control form-control-sm" name="editAdminJobPosition"
-                                        placeholder="Job Position" value="{{user.profile.job_position}}">
+                                    <select class="custom-select form-control form-control-sm"
+                                        name="editAdminJobPosition">
+                                        {% for position in job_positions%}
+                                        {% if position == user.profile.job_position %}
+                                        <option value="{{position}}" selected>{{position}}</option>
+                                        {% else %}
+                                        <option value="{{position}}">{{position}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
 

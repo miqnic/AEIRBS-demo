@@ -49,14 +49,15 @@
                                     <small>Access Role</small>
                                     <select class="custom-select form-control form-control-sm"
                                         name="addAdminAccessRole">
-                                        <option></option>
-                                        <option value="adminRole">Admin</option>
-                                        <option value="superRole">Super Admin</option>
                                         {% if inputAccessRole == True %}
                                         <option value="adminRole">Admin</option>
                                         <option value="superRole" selected>Super Admin</option>
                                         {% elif inputAccessRole == False %}
                                         <option value="adminRole" selected>Admin</option>
+                                        <option value="superRole">Super Admin</option>
+                                        {% else %}
+                                        <option value="">-----</option>
+                                        <option value="adminRole">Admin</option>
                                         <option value="superRole">Super Admin</option>
                                         {% endif %}
                                     </select>
@@ -129,8 +130,17 @@
                             <div class="col">
                                 <div class="form-group">
                                     <small>Job Position</small>
-                                    <input type="text" class="form-control form-control-sm" name="addAdminJobPosition"
-                                        placeholder="Job Position" value="{{inputJobPosition}}">
+                                    <select class="custom-select form-control form-control-sm"
+                                        name="addAdminJobPosition">
+                                        <option value="">-----</option>
+                                        {% for position in job_positions%}
+                                        {% if position == inputJobPosition %}
+                                        <option value="{{position}}" selected>{{position}}</option>
+                                        {% else %}
+                                        <option value="{{position}}">{{position}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
                                         
                                         <small class="float-right text-danger"
                                         style="font-size: xx-small;">{{errors.error_jobPositionEmpty}}</small>

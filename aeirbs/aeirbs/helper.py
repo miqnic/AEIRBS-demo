@@ -1,5 +1,5 @@
 
-from components.models import Device, Sensor, Device_Sensor
+from components.models import Device, Sensor, Device_Sensor, Floor
 
 import string
 import validators
@@ -137,6 +137,16 @@ def validate_emailFormat(input):
 def validate_mobileNumber(input):
     mobile_number = phonenumbers.parse(input, "PH")    
     return phonenumbers.is_valid_number(mobile_number)
+
+def get_floorLocations():
+    floor_locations = []
+    floors = Floor.objects.all()
+
+    for floor in floors:
+        temp = (floor.floor_identifier, floor.floor_description)
+        floor_locations.append(temp)
+
+    return floor_locations 
 
 def sort_filter_components(request, incident_type, sort_by, filter_by, asc_desc):
     if asc_desc == 'asc':

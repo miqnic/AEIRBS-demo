@@ -236,7 +236,6 @@ $(".filter").on('change', function () {
     $(type).submit();
   });
 
-  
   $(".confirmConnectSensorButton").click(function () {
     var connectID = "#connectSensor" + $(this).data("connect");
     $(connectID).submit();

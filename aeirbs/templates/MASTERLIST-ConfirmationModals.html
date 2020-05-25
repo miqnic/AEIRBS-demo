@@ -6,8 +6,8 @@
             <div class="modal-header" style="position:relative; background-color:#343a40;">
                 <h5 class="text-light mt-2 ml-3"><b>Add User</b></h5>
 
-                <a href="{% url 'masterlist' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
-                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                   style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="border-radius:5px">
                 <div class="row">
@@ -30,11 +30,49 @@
                     class="btn btn-dark btn-sm confirmAddButton">
                     Submit
                 </button>
-                <a href="{% url 'masterlist' %}" class="btn btn-light btn-sm">Cancel</a>
+                <button type="button" data-dismiss="modal" class="btn btn-light btn-sm">Cancel</button>
             </div>
         </div>
     </div>
 </div>
+
+<!--Delete User Selection-->
+<div class="modal fade" id="confirmDeleteList" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Delete User Selection</b></h5>
+
+                 <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                    style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to Delete selected users?</b></span>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-delete='List'
+                    class="btn btn-danger btn-sm confirmDeleteButton">
+                    Delete
+                </button>
+                <button type="button" data-dismiss="modal" class="btn btn-light btn-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% for user in all_users %}
 <!--Delete User-->
 <div class="modal fade" id="confirmDelete{{user.username}}" data-keyboard="false" data-backdrop="static">
@@ -43,8 +81,8 @@
             <div class="modal-header" style="position:relative; background-color:#343a40;">
                 <h5 class="text-light mt-2 ml-3"><b>Delete User</b></h5>
 
-                <a href="{% url 'masterlist' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
-                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                   style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="border-radius:5px">
                 <div class="row">
@@ -67,7 +105,7 @@
                     class="btn btn-danger btn-sm confirmDeleteButton">
                     Delete
                 </button>
-                <a href="{% url 'masterlist' %}" class="btn btn-light btn-sm">Cancel</a>
+                <button type="button" data-dismiss="modal" class="btn btn-light btn-sm">Cancel</button>
             </div>
         </div>
     </div>
@@ -80,8 +118,8 @@
             <div class="modal-header" style="position:relative; background-color:#343a40;">
                 <h5 class="text-light mt-2 ml-3"><b>Edit User</b></h5>
 
-                <a href="{% url 'masterlist' %}" class="btn btn-link text-light float-right btn-sm m-2 icon"
-                    style="position:absolute; right: 0; top:0;"><i class="fas fa-times"></i></a>
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                   style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body" style="border-radius:5px">
                 <div class="row">
@@ -104,7 +142,7 @@
                     class="btn btn-dark btn-sm confirmEditButton">
                     Save
                 </button>
-                <a href="{% url 'masterlist' %}" class="btn btn-light btn-sm">Cancel</a>
+                <button type="button" data-dismiss="modal" class="btn btn-light btn-sm">Cancel</button>
             </div>
         </div>
     </div>

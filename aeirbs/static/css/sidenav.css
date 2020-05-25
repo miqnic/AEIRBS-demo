@@ -6,11 +6,6 @@ a:focus {
     transition: all 0.3s;
 }
 
-.transition{
-    opacity: 1;
-    transition: opacity 1s ease-out;
-}
-
 .wrapper {
     display: flex;
     align-items: stretch;
@@ -19,13 +14,12 @@ a:focus {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    position: relative;
     top: 0;
     left: 0;
     height: auto;
     background: #343A40;
     color: #fff;
-    transition: all 0.3s;
+    transition: ease 0.5s;
 }
 
 #sidebar.active {
@@ -54,8 +48,6 @@ a:focus {
 #sidebar.active ul ul a {
     padding: 10px !important;
 }
-
-
 
 #sidebar .sidebar-header {
     padding: 20px;
@@ -105,7 +97,6 @@ ul ul a {
     display: block;
     bottom: 0;
 }
-
 
 /*Media Queries*/
 

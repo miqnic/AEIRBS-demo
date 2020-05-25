@@ -42,6 +42,7 @@ urlpatterns = [
     path('add-admin/', accounts_views.add_admin, name='add_admin'),
     path('add-user/', accounts_views.add_user, name='add_user'),
     path('del-user/', accounts_views.del_user, name='del_user'),
+    path('delete-list/', accounts_views.delete_list, name='delete_list'),
     path('edit-user/', accounts_views.edit_user, name='edit_user'),
         
     path('generate-audit/', reports_views.generatePDF_audit, name='generatePDF_audit'),
@@ -49,8 +50,6 @@ urlpatterns = [
     path('alarm-mailtemp/', components_views.autoalarm_mail, name='alarm_mailtemp'),
 
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
-
-
 
     # path('del-comp/', components_views.del_comp, name='del_comp'),
     # path('update-comp/', components_views.update_comp, name='update_comp'),
@@ -77,8 +76,6 @@ urlpatterns = [
     path('delete-device/', components_views.del_device, name='del_device'),
     path('delete-sensor/', components_views.del_sensor, name='del_sensor'),
     path('delete-comp/', components_views.del_comp, name='del_comp'),
-    # SEARCH Function
-    path('search-component/', components_views.search_component, name='search_component'),
 
 
     # AUDIT Logs

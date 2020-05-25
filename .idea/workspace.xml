@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f84719f6-f3bd-4f8d-b1f1-688864870371" name="Default Changelist" comment="" />
+    <list default="true" id="f84719f6-f3bd-4f8d-b1f1-688864870371" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/aeirbs/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/aeirbs/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aeirbs/components/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/aeirbs/components/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aeirbs/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/aeirbs/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aeirbs/static/js/home.js" beforeDir="false" afterPath="$PROJECT_DIR$/aeirbs/static/js/home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aeirbs/templates/MASTERLIST-AddAdmin.html" beforeDir="false" afterPath="$PROJECT_DIR$/aeirbs/templates/MASTERLIST-AddAdmin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aeirbs/templates/MASTERLIST-ConfirmationModals.html" beforeDir="false" afterPath="$PROJECT_DIR$/aeirbs/templates/MASTERLIST-ConfirmationModals.html" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +29,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -38,11 +46,10 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../SFLECT1/Penny Pincher (Python)" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">

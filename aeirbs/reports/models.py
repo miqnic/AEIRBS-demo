@@ -19,7 +19,7 @@ class AuditLogs(models.Model):
     audit_details = models.CharField(max_length=100, default='details')
     audit_type = models.IntegerField(choices=AUDIT_TYPE)
     audit_isDeleted = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return str(self.log_id)
 

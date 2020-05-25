@@ -91,7 +91,7 @@
             <b>No component available.</b>
             {% endif %}
             {% for fl in flood_components %}
-            <div class="card card-layout border-0 m-2 component floodComponent" data-toggle="modal"
+            <div class="card card-layout border-0 m-2 component {{fl.device_sensor_id}} floodComponent" data-toggle="modal"
                 data-target="#componentModal{{fl.device_sensor_id}}" data-component='{{fl.device_sensor_id}}'
                 style="display: inline-block;">
                 <div class="card-header border-0">
@@ -138,5 +138,6 @@
 <script>
     $(".dashboard").toggleClass("active");
     $(".flood").toggleClass("active");
+
 </script>
 {% endblock content %}

@@ -49,14 +49,21 @@
 
                 <div class="row">
                     <!--Page Labels-->
-                    <div class="col-7">
+                    <div class="col-4">
                         <h3 id="masterlistLabel"><b><b>ADMIN MASTERLIST</b></b>
                         </h3>
                     </div>
 
                     <!--Add Admin Button-->
                     {% if request.user.is_superuser %}
-                    <div class="col-2">
+                    <div class="col">
+                        <form id="deleteList" action="{% url 'delete_list' %}" method="POST">
+                            {% csrf_token %}
+                            <input id="deleteList_input" type="hidden" name="delete_list">
+                        </form>
+                        <button id="deleteSelectedUser" class="btn btn-danger btn btn-sm float-right mt-1 ml-2 hidden"
+                            data-toggle="modal" data-target="#confirmDeleteList"><i class="fas fa-trash-alt fa-sm mr-2"></i> Delete Admin</button>
+
                         <a href="{% url 'add_admin' %}" class="btn btn-dark float-right btn-sm mt-1">
                             <i class="fas fa-user-plus fa-sm mr-2"></i>Add Admin
                         </a>
@@ -83,7 +90,9 @@
                     style="width:100%; text-align:center; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
                     <thead class="table-header">
                         <tr>
-                            <th></th>
+                            <th>
+                                <input type="checkbox" class="deleteCheckboxHeader">
+                            </th>
                             <th>Employee ID</th>
                             <th>First Name</th>
                             <th>Middle Name</th>
@@ -95,7 +104,7 @@
                         {% if user.username != request.user.username %}
                         <tr class="table-row table-masterlist" data-username='{{user.username}}'>
                             <td>
-                                <input type="checkbox">
+                                <input type="checkbox" class="deleteCheckbox" data-delete='{{user.username}}'>
                             </td>
                             <td>{{user.username}}</td>
                             <td>{{user.first_name}}</td>
@@ -111,7 +120,7 @@
     </div>
 
     {% for user in all_users %}
-    <div class="right-padding hidden userDetails" id="userDetails{{user.username}}">
+    <div class=" right-padding hidden userDetails" id="userDetails{{user.username}}">
         <div class="container-fluid userDetailsContainer" id="userDetailsContainer" style="padding:0 25px 25px 12.5px;">
             <div class="container-fluid"
                 style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px; ">
@@ -133,11 +142,13 @@
                                 <input type="hidden" name="username" value="{{user.username}}"></input>
                                 <button class="dropdown-item icon" type="submit"
                                     style="border-radius: 0px; font-size: small;"><i
-                                        class="fas fa-user-edit fa-sm mr-2 "></i>Edit Admin</button>
+                                        class="fas fa-user-edit fa-sm mr-2 "></i>Edit
+                                    Admin</button>
                             </form>
                             <button class="dropdown-item icon" style="border-radius: 0px; font-size: small;"
                                 data-toggle="modal" data-target="#confirmDelete{{user.username}}"><i
-                                    class="fas fa-user-times fa-sm mr-2 "></i>Delete Admin</button>
+                                    class="fas fa-user-times fa-sm mr-2 "></i>Delete
+                                Admin</button>
                             <form id="delete{{user.username}}" action="{% url 'del_user' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="username" value="{{user.username}}"></input>
@@ -155,9 +166,11 @@
                         <div class="text-light mb-2">
                             <h3><b>{{user.get_full_name}}</b></h3>
                             <div class="mt-2 ">
-                                <h6><i class="fas fa-user fa-sm mr-2 "></i>{% if user.is_superuser%} Super- Admin
+                                <h6><i class="fas fa-user fa-sm mr-2 "></i>{% if user.is_superuser%}
+                                    Super- Admin
                                     {% else %} Admin {% endif %}</h6>
-                                <h6><i class="fas fa-envelope fa-sm mr-2 "></i>{{user.email}}</h6>
+                                <h6><i class="fas fa-envelope fa-sm mr-2 "></i>{{user.email}}
+                                </h6>
                             </div>
                         </div>
                     </div>
@@ -203,5 +216,55 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
     $(".masterlist").toggleClass("active");
+
+    //checkbox on-load (unchecked by default)
+    $(".deleteCheckboxHeader").prop("checked", false);
+    $('.deleteCheckbox').each(function (i, obj) {
+        $(this).prop("checked", false);
+    });
+
+    //checkbox header on change functions
+    $(".deleteCheckboxHeader").on('change', function () {
+        if ($(this).prop("checked") == true) {
+            $("#deleteSelectedUser").show();
+            $('.deleteCheckbox').each(function (i, obj) {
+                $(this).prop("checked", true);
+            });
+        } else {
+            $("#deleteSelectedUser").hide();
+            $('.deleteCheckbox').each(function (i, obj) {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+
+    //checkbox on change functions
+    $(".deleteCheckbox").on('change', function () {
+        var checked = false;
+        $('.deleteCheckbox').each(function (i, obj) {
+            if ($(this).prop("checked") == true) {
+                checked = true;
+            }
+        });
+
+        if (checked) {
+            $("#deleteSelectedUser").show();
+        } else {
+            $("#deleteSelectedUser").hide();
+        }
+    });
+
+    $("#deleteSelectedUser").click(function () {
+        var username_list = []
+        $('.deleteCheckbox').each(function (i, obj) {
+            if ($(this).prop("checked") == true) {
+                var deleteID = $(this).data("delete");
+                username_list.push(deleteID);
+            }
+        });
+        $('#deleteList_input').val(username_list);
+    });
+
+
 </script>
 {% endblock body %}

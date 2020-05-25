@@ -6,6 +6,13 @@ from django.contrib.auth.models import User
 
 # Profile is the proxy model that would be in a one-to-one relationship with the User. This will provide the other necessary details that the user might need.
 DEFAULT_IMAGE = "user_images\default.png"
+
+class JobPosition(models.Model):
+    job_position = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.job_position
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     user_image = models.ImageField(upload_to='user_images', default = DEFAULT_IMAGE)

@@ -240,12 +240,9 @@
                 {% block body %}{% endblock body %}
             </div>
 
-
-
-
             {% if messages %} {% for message in messages %} {% if message.tags == "error" %}
             <div class="alert alert-timer alert-danger" role="alert" aria-live="assertive" aria-atomic="true"
-                style="width: 20rem; position: fixed; bottom: 1rem; right: 1rem; z-index: 100;">
+                style="width: 20rem; position: fixed; bottom: 1rem; right: 1rem; z-index: 2000;">
 
                 <div class="toast-header">
                     <strong class="mr-auto">AEIRBS</strong>
@@ -254,7 +251,7 @@
                     data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <div class="toast-body">
+                <div class="mt-1 toast-body">
                     <small>{{message}}</small>
                     <div class="mt-4 fail-lenear-loader"></div>
                 </div>
@@ -262,7 +259,7 @@
 
             {% endif %} {% if message.tags == "success" %}
             <div class="alert alert-timer alert-success " role="alert" aria-live="assertive" aria-atomic="true"
-                style="width: 20rem; position: fixed; bottom: 1rem; right: 1rem; z-index: 100;">
+                style="width: 20rem; position: fixed; bottom: 1rem; right: 1rem; z-index: 2000;">
 
                 <div class="toast-header">
                     <strong class="mr-auto">AEIRBS</strong>
@@ -271,7 +268,7 @@
                     data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <div class="toast-body">
+                <div class="mt-1 toast-body">
                     <small>{{message}}</small>
                 </div>
                 <div class="mt-4 success-lenear-loader"></div>

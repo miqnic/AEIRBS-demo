@@ -1,0 +1,425 @@
+{% extends 'AEIRBS-Default.html' %}
+{% block title %}AEIRBS-Settings{% endblock title %}
+{% load static %}
+{% block body %}
+<style>
+    .nav-item .nav-link {
+        background-color: rgba(0, 0, 0, .08);
+        color: #343A40;
+    }
+
+    .nav-item .nav-link:hover {
+        background-color: rgba(0, 0, 0, .08);
+        color: #343A40;
+        font-size: 18px;
+        font-weight: bold;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-item .nav-link.active {
+        background-color: rgba(0, 0, 0, .08);
+        color: #343A40;
+        border-bottom: 5px solid !important;
+        font-size: 18px;
+        font-weight: bold;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .row-item:hover {
+        background-color: rgba(0, 0, 0, .08);
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+    }
+</style>
+
+<body>
+    {% if request.user.profile.logged == 0 %}
+    <script>
+        $('#changePassModal').modal({ backdrop: "static" });
+    </script>
+    {% endif %}
+
+    <div class="container-fluid" id="dashboardHeader" style="padding:0 25px 25px 25px;">
+        <div class="container-fluid"
+            style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+
+            <div class="row mt-2">
+                <!--Page Labels-->
+                <div class="col-4">
+                    <h3 id="dashboardLabel"><b><b>SETTINGS</b></b>
+                    </h3>
+                </div>
+
+                <!--Add Component Dropdown-->
+                <div class="col ">
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'add_component' %}" class="float-right btn btn-dark btn-sm addComponent">
+                        <i class="fas fa-plus-circle mr-2"></i>Add Component
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" id="componentContainer" style="padding:0 25px 25px 25px;">
+        <div class="container-fluid"
+            style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+
+            <ul class="nav nav-pills nav-fill" role="tablist">
+                <li class="nav-item">
+                    <a id="devicesLink" class="m-1 nav-link devices" href="{% url 'devices' %}"><i
+                            class="fas fa-microchip mr-3" style="color:#FEC107;"></i>Devices</a>
+                </li>
+                <li class="nav-item">
+                    <a id="sensorsLink" class="m-1 nav-link sensors" href="{% url 'sensors' %}"><i
+                            class="fas fa-wifi mr-3" style="color:#FEC107;"></i>Sensors</a>
+                </li>
+            </ul>
+
+            <div class="row ml-2 mb-1">
+                <div class="mr-3"><small><span type="checkbox"
+                            style="background-color:#1E8449; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+                            style="font-size: 10px;">&nbsp;&nbsp;Connected</span></small></div>
+                <div class="mr-3"><small><span
+                            style="background-color:#B7950B; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+                            style="font-size: 10px;">&nbsp;&nbsp;Under Maintenance</span></small></div>
+                <div class="mr-3"><small><span
+                            style="background-color:#922B21; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+                            style="font-size: 10px;">&nbsp;&nbsp;Needs Maintenance</span></small></div>
+                <div class=""><small><span
+                            style="background-color:#616A6B; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+                            style="font-size: 10px;">&nbsp;&nbsp;Inactive</span></small></div>
+            </div>
+            <div class="container-fluid"
+                style="background-color: rgba(0,0,0,.08); padding: 15px 25px 15px 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px; position: relative;">
+                {% block content %}{% endblock content %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" id="componentContainer" style="padding:0 12.5px 25px 25px; width: 50%; float: left;">
+
+        <div class="container-fluid"
+            style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+            <div class="row mb-2">
+                <!--Page Labels-->
+                <div class="col">
+                    <h3 id="dashboardLabel"><b><b>BROADCAST</b></b>
+                    </h3>
+                </div>
+            </div>
+            <!--Accordion-->
+            <div class="accordion" id="componentAccordion"
+                style="box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+                <!--Earthquake-->
+                <div class="card">
+                    <div id="earthquakeCategory"
+                        class="card-header accordion-header btn btn-link icon text-dark text-left float-left"
+                        style="text-decoration:none;  height: 3rem;" data-toggle="collapse"
+                        data-target="#collapseEarthquake" aria-expanded="true" aria-controls="collapseEarthquake">
+                        <div class="row">
+                            <div class="col-1">
+                                <i class="fas fa-globe" style="color:#E5BF9A;"></i>
+                            </div>
+                            <div class="col">
+                                <b style="font-size: 16px;">Earthquake Alarm</b>
+                            </div>
+                            <div class="col-2">
+                                <span id="earthquake-close" class="hidden"><i
+                                        class="fas fa-caret-up float-right"></i></span>
+                                <span id="earthquake-open"><i class="fas fa-caret-down float-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="collapseEarthquake" class="collapse" aria-labelledby="earthquakeHeading"
+                        data-parent="#componentAccordion">
+                        <button type="button" class="btn btn-link icon text-dark float-right m-2"><i
+                                class="far fa-edit fa-sm"></i></button>
+                        <div class="text-center m-5">
+
+                            {% for alarm in all_alarms %}
+                            {% if alarm.incident == 0 %}
+                            <span>{{alarm.announcement}}</span>
+                            <div class="hidden">
+                            <textarea class="form-control" placeholder="Earthquake Alarm" id="" rows="3">{{alarm.announcement}}</textarea>
+
+                            <small class="float-right text-danger"
+                                style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
+
+                            <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i class="far fa-save mr-2"></i>Save</button>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--Fire-->
+                <div class="card">
+                    <div id="fireCategory"
+                        class="card-header accordion-header btn btn-link icon text-dark text-left float-left"
+                        style="text-decoration:none;  height: 3rem;" data-toggle="collapse" data-target="#collapseFire"
+                        aria-expanded="true" aria-controls="collapseFire">
+                        <div class="row">
+                            <div class="col-1">
+                                <i class="fas fa-fire ml-1" style="color:#FF7E67;"></i>
+                            </div>
+                            <div class="col">
+                                <b style="font-size: 16px;">Fire Alarm</b>
+                            </div>
+                            <div class="col-2">
+                                <span id="fire-close" class="hidden"> <i class="fas fa-caret-up float-right"></i></span>
+                                <span id="fire-open"> <i class="fas fa-caret-down float-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="collapseFire" class="collapse" aria-labelledby="fireHeading"
+                        data-parent="#componentAccordion">
+                        <button type="button" class="btn btn-link icon text-dark float-right m-2"><i
+                                class="far fa-edit fa-sm"></i></button>
+                        <div class="text-center m-5">
+
+                            {% for alarm in all_alarms %}
+                            {% if alarm.incident == 1 %}
+                            <span>{{alarm.announcement}}</span>
+                            <div class="hidden">
+                            <textarea class="form-control" placeholder="Fire Alarm" id="" rows="3">{{alarm.announcement}}</textarea>
+
+                            <small class="float-right text-danger"
+                                style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
+
+                            <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i class="far fa-save mr-2"></i>Save</button>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--Flood-->
+                <div class="card">
+                    <div id="floodCategory"
+                        class="card-header accordion-header active show btn btn-link icon text-dark text-left float-left"
+                        style="text-decoration:none;  height: 3rem;" data-toggle="collapse" data-target="#collapseFlood"
+                        aria-expanded="true" aria-controls="collapseFlood">
+                        <div class="row">
+                            <div class="col-1">
+                                <i class="fas fa-tint ml-1" style="color:#A2D5F2;"></i>
+                            </div>
+                            <div class="col">
+                                <b style="font-size: 16px;">Flood Alarm</b>
+                            </div>
+                            <div class="col-2">
+                                <span id="flood-close" class="hidden"> <i
+                                        class="fas fa-caret-up float-right"></i></span>
+                                <span id="flood-open"> <i class="fas fa-caret-down float-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="collapseFlood" class="collapse" aria-labelledby="floodHeading"
+                        data-parent="#componentAccordion">
+                        <button type="button" class="btn btn-link icon text-dark float-right m-2 edit"><i
+                                class="far fa-edit fa-sm"></i></button>
+                        <div class="text-center m-5">
+
+                            {% for alarm in all_alarms %}
+                            {% if alarm.incident == 2 %}
+                            <span>{{alarm.announcement}}</span>
+                            <div class="hidden">
+                            <textarea class="form-control" placeholder="Flood Alarm" id="" rows="3">{{alarm.announcement}}</textarea>
+
+                            <small class="float-right text-danger"
+                                style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
+
+                            <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i class="far fa-save mr-2"></i>Save</button>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" id="componentContainer" style="padding:0 25px 25px 12.5px; width: 50%; float: right;">
+        <div class="container-fluid"
+            style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+            <div class="row mb-2">
+                <div class="col">
+                    <h3><b><b>JOB POSITIONS</b></b>
+                    </h3>
+                </div>
+
+                <!--Search Component-->
+                <div class="col">
+                    <form action="{% url 'devices' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <input type="text" name="keyword-jobPosition" class="input form-control form-control-sm"
+                                placeholder="Search Job Position">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container-fluid"
+                style="background-color: rgba(0,0,0,.08); padding: 15px 25px 15px 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px; position: relative;">
+
+                <div style="max-height: 50vh; height: auto; overflow-y: auto;">
+                    {% for position in all_positions %}
+                    {% if error == True %}
+                    {% if inputJobPositionID == position.id %}
+                    <div class="row row-item jobPosition{{position.id}} m-2"
+                        style="background-color: white; border-radius: 5px; padding: 3px; display: none;">
+                        <div class="col align-self-center">
+                            <span class=" align-self-center" style="font-size: 14px;">{{position.job_position}}</span>
+                        </div>
+                        <div class="col-3">
+                            <form id="delete{{position.id}}" action="{% url 'delete_position' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="deleteJobPositionID" value="{{position.id}}">
+                            </form>
+                            <button type="button" class="btn btn-link icon text-danger float-right m-1"
+                                data-toggle="modal" data-target="#confirmDelete{{position.id}}"><i
+                                    class="fas fa-trash-alt fa-sm"></i></button>
+
+                            <button type="button"
+                                class="btn btn-link icon text-dark float-right m-1 editJobPositionButton"
+                                data-job="{{position.id}}"><i class="far fa-edit fa-sm"></i></button>
+                        </div>
+                    </div>
+
+                    <div class=" row row-item editJobPosition{{position.id}} m-2"
+                        style="background-color: white; border-radius: 5px; padding: 10px;">
+                        <div class="col align-self-center">
+                            <form id="edit{{position.id}}" action="{% url 'edit_position'%}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="editJobPositionID" value="{{position.id}}">
+                                <input class="form-control form-control-sm" name="editJobPosition"
+                                    placeholder="Job Position" value="{{inputJobPosition}}">
+
+                                <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
+                                <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_editJobPositionFormat}}</small>
+                            </form>
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-dark btn-sm btn-block" data-toggle="modal"
+                                data-target="#confirmEdit{{position.id}}"><i class="far fa-save mr-2"></i>Save</button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="row row-item jobPosition{{position.id}} m-2"
+                        style="background-color: white; border-radius: 5px; padding: 3px;">
+                        <div class="col align-self-center">
+                            <span class=" align-self-center" style="font-size: 14px;">{{position.job_position}}</span>
+                        </div>
+                        <div class="col-3">
+                            <form id="delete{{position.id}}" action="{% url 'delete_position' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="deleteJobPositionID" value="{{position.id}}">
+                            </form>
+                            <button type="button" class="btn btn-link icon text-danger float-right m-1"
+                                data-toggle="modal" data-target="#confirmDelete{{position.id}}"><i
+                                    class="fas fa-trash-alt fa-sm"></i></button>
+
+                            <button type="button"
+                                class="btn btn-link icon text-dark float-right m-1 editJobPositionButton"
+                                data-job="{{position.id}}"><i class="far fa-edit fa-sm"></i></button>
+                        </div>
+                    </div>
+
+                    <div class=" row row-item editJobPosition{{position.id}} m-2"
+                        style="background-color: white; border-radius: 5px; padding: 10px; display: none;">
+                        <div class="col align-self-center">
+                            <form id="edit{{position.id}}" action="{% url 'edit_position'%}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="editJobPositionID" value="{{position.id}}">
+                                <input class="form-control form-control-sm" name="editJobPosition"
+                                    placeholder="Job Position" value="{{position.job_position}}">
+                            </form>
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-dark btn-sm btn-block" data-toggle="modal"
+                                data-target="#confirmEdit{{position.id}}"><i class="far fa-save mr-2"></i>Save</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="row row-item jobPosition{{position.id}} m-2"
+                        style="background-color: white; border-radius: 5px; padding: 3px;">
+                        <div class="col align-self-center">
+                            <span class=" align-self-center" style="font-size: 14px;">{{position.job_position}}</span>
+                        </div>
+                        <div class="col-3">
+                            <form id="delete{{position.id}}" action="{% url 'delete_position' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="deleteJobPositionID" value="{{position.id}}">
+                            </form>
+                            <button type="button" class="btn btn-link icon text-danger float-right m-1"
+                                data-toggle="modal" data-target="#confirmDelete{{position.id}}"><i
+                                    class="fas fa-trash-alt fa-sm"></i></button>
+
+                            <button type="button"
+                                class="btn btn-link icon text-dark float-right m-1 editJobPositionButton"
+                                data-job="{{position.id}}"><i class="far fa-edit fa-sm"></i></button>
+                        </div>
+                    </div>
+
+                    <div class=" row row-item editJobPosition{{position.id}} m-2"
+                        style="background-color: white; border-radius: 5px; padding: 10px; display: none;">
+                        <div class="col align-self-center">
+                            <form id="edit{{position.id}}" action="{% url 'edit_position'%}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="editJobPositionID" value="{{position.id}}">
+                                <input class="form-control form-control-sm" name="editJobPosition"
+                                    placeholder="Job Position" value="{{position.job_position}}">
+                            </form>
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-dark btn-sm btn-block" data-toggle="modal"
+                                data-target="#confirmEdit{{position.id}}"><i class="far fa-save mr-2"></i>Save</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="row mt-4 mx-2" style="border: 1px solid #343A40; padding: 10px; border-radius: 5px;">
+                    <div class="col">
+                        <form id="addJobPosition" action="{% url 'add_position' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="text" class=" form-control form-control-sm addJobPosition"
+                                name="addJobPosition" placeholder="Job Position" value="{{inputJobPosition}}"
+                                size="100%">
+
+                            <small class="float-right text-danger"
+                                style="font-size: xx-small;">{{errors.error_jobPositionEmpty}}</small>
+                            <small class="float-right text-danger"
+                                style="font-size: xx-small;">{{errors.error_jobPositionFormat}}</small>
+                        </form>
+                    </div>
+                    <div class="col-3">
+                        <button type="button" class="btn btn-block btn-sm btn-dark" data-toggle="modal"
+                            data-target="#confirmAddJobPosition"><i class="fas fa-plus-circle mr-2"></i>Add</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+</body>
+{% include 'SETTINGS-ConfirmationModals.html' %}
+
+<script src="{% static 'js/aeirbs-settings.js' %}"></script>
+{% endblock body %}

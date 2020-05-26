@@ -43,9 +43,18 @@ urlpatterns = [
     path('del-user/', accounts_views.del_user, name='del_user'),
     path('delete-list/', accounts_views.delete_list, name='delete_list'),
     path('edit-user/', accounts_views.edit_user, name='edit_user'),
+
+    path('settings/devices/', components_views.devices, name='devices'),
+    path('settings/sensors/', components_views.sensors, name='sensors'),
+    path('settings/add-position/', accounts_views.add_position, name='add_position'),
+    path('settings/edit-position/', accounts_views.edit_position, name='edit_position'),
+    path('settings/delete-position/', accounts_views.delete_position, name='delete_position'),
         
     path('generate-audit/', reports_views.generatePDF_audit, name='generatePDF_audit'),
+    path('generate-maintenance-report/', reports_views.generatePDF_maintenanceReport, name='generatePDF_maintenanceReport'),
     path('generate-incident/', reports_views.generatePDF_incident, name='generatePDF_incident'),
+    path('generate-incident-report/', reports_views.generatePDF_incidentReport, name='generatePDF_incidentReport'),
+    path('generate-summary/', reports_views.generatePDF_summary, name='generatePDF_summary'),
 
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
 
@@ -59,8 +68,6 @@ urlpatterns = [
     path('dashboard/earthquake-components/', components_views.earthquake_components, name='earthquake_components'),
     path('dashboard/fire-components/', components_views.fire_components, name='fire_components'),
     path('dashboard/flood-components/', components_views.flood_components, name='flood_components'),
-    path('dashboard/devices/', components_views.devices, name='devices'),
-    path('dashboard/sensors/', components_views.sensors, name='sensors'),
     # CRUD Actions
     path('add-device/', components_views.add_device, name='add_device'),
     path('add-sensor/', components_views.add_sensor, name='add_sensor'),

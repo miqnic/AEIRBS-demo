@@ -9,9 +9,10 @@ DEFAULT_IMAGE = "user_images\default.png"
 
 class JobPosition(models.Model):
     job_position = models.CharField(max_length=50)
+    position_isDeleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.job_position
+        return str(self.job_position)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

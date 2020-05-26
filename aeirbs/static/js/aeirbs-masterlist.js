@@ -1,6 +1,9 @@
 
 $(document).ready(function () {
-    $('#masterlistTable').DataTable({
+    
+    $(".masterlist").toggleClass("active");
+    
+    $('.masterlistTable').DataTable({
         "paging":false,
         searching: false,    
         "order": [],
@@ -11,31 +14,54 @@ $(document).ready(function () {
     });
     $("label").css("font-size", "12px")
     $(".dataTables_info").css("font-size", "14px")
-    //Add Image
-    $(".imgAdd").click(function() {
-        $(this).closest(".row").find('.imgAdd').before('<div class="col-sm-2 imgUp"><div class="imagePreview"></div><label class="btn btn-primary">Upload<input type="file" class="uploadFile img" value="Upload Photo" style="width:0px;height:0px;overflow:hidden;"></label><i class="fa fa-times del"></i></div>');
-    });
-    $(document).on("click", "i.del", function() {
-        $(this).parent().remove();
-    });
-    $(function() {
-        $(document).on("change", ".uploadFile", function() {
-            var uploadFile = $(this);
-            var files = !!this.files ? this.files : [];
-            if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
 
-            if (/^image/.test(files[0].type)) { // only image file
-                var reader = new FileReader(); // instance of the FileReader
-                reader.readAsDataURL(files[0]); // read the local file
+    //checkbox on-load (unchecked by default)
+    $(".deleteCheckboxHeader").prop("checked", false);
+    $('.deleteCheckbox').each(function (i, obj) {
+        $(this).prop("checked", false);
+    });
 
-                reader.onloadend = function() { // set image data as background of div
-                    //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
-                    uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url(" + this.result + ")");
-                }
+    //checkbox header on change functions
+    $(".deleteCheckboxHeader").on('change', function () {
+        if ($(this).prop("checked") == true) {
+            $("#deleteSelectedUser").show();
+            $('.deleteCheckbox').each(function (i, obj) {
+                $(this).prop("checked", true);
+            });
+        } else {
+            $("#deleteSelectedUser").hide();
+            $('.deleteCheckbox').each(function (i, obj) {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+
+    //checkbox on change functions
+    $(".deleteCheckbox").on('change', function () {
+        var checked = false;
+        $('.deleteCheckbox').each(function (i, obj) {
+            if ($(this).prop("checked") == true) {
+                checked = true;
             }
         });
+
+        if (checked) {
+            $("#deleteSelectedUser").show();
+        } else {
+            $("#deleteSelectedUser").hide();
+        }
     });
 
+    $("#deleteSelectedUser").click(function () {
+        var username_list = []
+        $('.deleteCheckbox').each(function (i, obj) {
+            if ($(this).prop("checked") == true) {
+                var deleteID = $(this).data("delete");
+                username_list.push(deleteID);
+            }
+        });
+        $('#deleteList_input').val(username_list);
+    });
 
     $(".table-masterlist").click(function() {
         if ($(".userDetails").is(':visible')){

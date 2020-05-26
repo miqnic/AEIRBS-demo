@@ -3,7 +3,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
-from reports.models import AuditLogs
 from django.db.models import Q
 from django.template.loader import render_to_string
 
@@ -12,11 +11,14 @@ from aeirbs.helper import format_input, format_portNumber, remove_whitespace, ge
 from aeirbs.helper import validate_stringFormat, validate_emailFormat, validate_URLFormat, validate_portNumber, validate_voltage
 from aeirbs.helper import sort_filter_components
 
+from .models import Alarm, Sensor, Device, Device_Sensor, INCIDENT_TYPE, STATUS, DEFAULT_IMAGE
+from accounts.models import JobPosition 
+from reports.models import AuditLogs
+
 import serial
 import json
 import datetime
 
-from .models import Device, Sensor, Device_Sensor, INCIDENT_TYPE, STATUS, DEFAULT_IMAGE
 
 # Create your views here.
 FLOOR_LOCATIONS = get_floorLocations()
@@ -53,7 +55,7 @@ def add_component(request):
         context['floor_locations'] = FLOOR_LOCATIONS
         context['incident_type'] = INCIDENT_TYPE
 
-        return render(request, 'DASHBOARD-AddComponent.html', context = context)
+        return render(request, 'SETTINGS-AddComponent.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
 
@@ -193,8 +195,8 @@ def devices(request):
         context['incident_type'] = INCIDENT_TYPE
         context['status'] = STATUS
 
-        print(get_floorLocations())
-        print(FLOOR_LOCATIONS)
+        context['all_alarms'] = Alarm.objects.all()
+        context['all_positions'] = JobPosition.objects.filter(position_isDeleted = False)
 
         context['sensor_reading'] = " "#getArduinoData()
 
@@ -203,6 +205,9 @@ def devices(request):
                 keyword = request.POST.get('keyword')
                 context['all_devices'] = Device.objects.filter(device_isDeleted=False, device_name__contains = keyword) | Device.objects.filter(device_isDeleted = False, device_id__contains = keyword)
                 context['count'] = (Device.objects.filter(device_isDeleted=False, device_name__contains = keyword) | Device.objects.filter(device_isDeleted = False, device_id__contains = keyword)).count()
+            elif request.POST.get('keyword-jobPosition'):
+                keyword = request.POST.get('keyword-jobPosition')
+                context['all_positions'] = JobPosition.objects.filter(position_isDeleted = False, job_position__contains = keyword)
             else:
                 sortBy = request.POST.get('sortComponent')
                 filterBy = int(request.POST.get('filterComponent'))
@@ -213,7 +218,7 @@ def devices(request):
                 context['filter'] = filterBy
                 context['ascending_descending'] = asc_desc
 
-        return render(request, 'DASHBOARD-Devices.html', context = context)
+        return render(request, 'SETTINGS-Devices.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
 
@@ -229,6 +234,9 @@ def sensors(request):
         context['count'] = Sensor.objects.filter(sensor_isDeleted=False).count()
         context['floor_locations'] = FLOOR_LOCATIONS
         context['incident_type'] = INCIDENT_TYPE
+
+        context['all_alarms'] = Alarm.objects.all()
+        context['all_positions'] = JobPosition.objects.filter(position_isDeleted = False)
 
         context['sensor_reading'] = " "#getArduinoData()
 
@@ -257,7 +265,7 @@ def sensors(request):
                 context['sort'] = sortBy
                 context['ascending_descending'] = asc_desc
 
-        return render(request, 'DASHBOARD-Sensors.html', context = context)
+        return render(request, 'SETTINGS-Sensors.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
 
@@ -312,7 +320,7 @@ def add_device(request):
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
-                return render(request, 'DASHBOARD-AddComponent.html',  context = context)
+                return render(request, 'SETTINGS-AddComponent.html',  context = context)
             else:
                 #Format User Input
                 add_deviceName = format_input(add_deviceName)
@@ -410,7 +418,7 @@ def add_sensor(request):
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
-                return render(request, 'DASHBOARD-AddComponent.html',  context = context)
+                return render(request, 'SETTINGS-AddComponent.html',  context = context)
             else:
                 #Format User Input
                 add_sensorName = format_input(add_sensorName)
@@ -671,17 +679,17 @@ def edit_device(request):
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
-                return render(request, 'DASHBOARD-Devices.html',  context = context)
+                return render(request, 'SETTINGS-Devices.html',  context = context)
             else:
 
                 for device in all_devices:
-                    if device.device_id == edit_deviceID:
+                    if device.device_id == deviceID:
                         if edit_deviceImage == None:
                             edit_deviceImage = device.device_image
-                        device.device_id = edit_deviceID
+                        device.device_id = deviceID
                         device.device_name = edit_deviceName
                         device.device_productID = edit_deviceProductID
-                        device.mac_address = edit_deviceMacAddress
+                        device.mac_address = edit_devicePortNumber
                         device.floor_location = edit_deviceFloorLocation
                         device.device_link = edit_deviceLink
                         device.device_image = edit_deviceImage
@@ -691,15 +699,15 @@ def edit_device(request):
                             log_id = "CL0" + str(all_userLogs + 1),
                             activity = "Edit Device",
                             username = request.user,
-                            audit_details = str(request.user) + " updated device " + edit_deviceID + "'s details.",
+                            audit_details = str(request.user) + " updated device " + deviceID + "'s details.",
                             audit_type = 0
                         )
                         add_log.save()
                         
-                        messages.success(request, f'Updated {edit_deviceID} successfully!')
+                        messages.success(request, f'Updated {deviceID} successfully!')
                         return redirect('devices')
             
-                messages.error(request, f'Device {edit_deviceID} not found!')
+                messages.error(request, f'Device {deviceID} not found!')
                 return redirect('devices')
     else:
         return render(request, 'AEIRBS-Login.html')
@@ -767,7 +775,7 @@ def edit_sensor(request):
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
-                return render(request, 'DASHBOARD-Sensors.html', context = context)
+                return render(request, 'SETTINGS-Sensors.html', context = context)
             else: 
                 #Format User Input
                 edit_sensorName = format_input(edit_sensorName)
@@ -1099,14 +1107,15 @@ def del_comp(request):
 
                     device_count = Device_Sensor.objects.filter(device_id__device_id = deviceID, device_sensor_isDeleted = False).count()
                     print(device_count)
+
                     for device in all_devices:
                         if device.device_id == deviceID:
                             if device_count >= 2:
                                 device.device_maxedOut = True
-                                print("TRUE")
                             else:
                                 device.device_maxedOut = False
-                                print("FALSE")
+                                if device_count == 0:
+                                    device.device_type = 0
                         device.save()
 
                     add_log = AuditLogs.objects.create(    
@@ -1137,6 +1146,7 @@ def status(request):
             componentID = request.POST.get("componentID")
             status = request.POST.get("statusValue")
             dateTime = datetime.datetime.now()
+            date_time = dateTime.strftime("%x %X")
             user = User.objects.filter(username = request.user.username).first()
 
             all_components = Device_Sensor.objects.all()
@@ -1233,56 +1243,4 @@ def status(request):
             return redirect('earthquake_components')
     else:
         return render(request, 'AEIRBS-Login.html')
-def del_sensor(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            delete_sensorID = request.POST.get("deleteSensorID")
-
-            all_sensors = Sensor.objects.all()
-            all_components = Device_Sensor.objects.all()
-            all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
-
-            for sensor in all_sensors:
-                if sensor.sensor_id == delete_sensorID:
-                    sensor.sensor_isDeleted = True
-                    sensor.save()
-                    
-                    print("sensor " + sensor.sensor_id + " deleted")
-
-                    for component in all_components:
-                        if component.sensor_id.sensor_id == sensor.sensor_id:
-                            component.device_sensor_isDeleted = True
-                            component.save()
-
-                    add_log = AuditLogs.objects.create(    
-                        log_id = "CL0" + str(all_userLogs + 1),
-                        activity = "Delete Sensor",
-                        username = request.user,
-                        audit_details = str(request.user) + " deleted senser " + delete_sensorID + " from the system.",
-                        audit_type = 0
-                    )
-                    add_log.save()
-
-                    messages.success(request, f'Deleted sensor {delete_sensorID} successfully!')
-                    return redirect('sensors')
-
-            messages.error(request, f'Sensor {delete_sensorID} not found!')
-            return redirect('sensors')
-    else:
-        return render(request, 'sensors')
-
-def search_component(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            search_keyword = request.POST.get("keyword")
-            component_classification = int(request.POST.get("classification"))
-            context = {}
-            
-            if component_classification == 2:
-                earthquake_components = Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = search_keyword)
-                context['earthquake_components'] = earthquake_components
-            return render(request, 'DASHBOARD-EarthquakeComponents.html', context = context)
-    else:
-        return render(request, 'AEIRBS-Login.html')
-
 

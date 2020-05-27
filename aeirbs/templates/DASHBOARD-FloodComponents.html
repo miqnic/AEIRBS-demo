@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <div class="container-fluid mt-5">
+    <div class="container-fluid" style="max-height: 75vh; height:auto; overflow-y: auto; padding: 25px;">
         <div class="text-center" style="margin-left: auto; margin-right: auto;">
             {% if count == 0 %}
             <b>No component available.</b>
@@ -138,6 +138,5 @@
 <script>
     $(".dashboard").toggleClass("active");
     $(".flood").toggleClass("active");
-
 </script>
 {% endblock content %}

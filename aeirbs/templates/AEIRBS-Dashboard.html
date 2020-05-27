@@ -24,22 +24,6 @@
         font-weight: bold;
         box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     }
-
-    .active-status {
-        border-bottom: 5px solid #1E8449;
-    }
-
-    .under-maintenance-status {
-        border-bottom: 5px solid #B7950B;
-    }
-
-    .needs-maintenance-status {
-        border-bottom: 5px solid #922B21;
-    }
-
-    .inactive-status {
-        border-bottom: 5px solid #616A6B;
-    }
 </style>
 
 <body>
@@ -58,15 +42,6 @@
                 <div class="col-4">
                     <h3 id="dashboardLabel"><b><b>DASHBOARD</b></b>
                     </h3>
-                </div>
-
-                <!--Add Component Dropdown-->
-                <div class="col ">
-                    {% if request.user.is_superuser %}
-                    <a href="{% url 'add_component' %}" class="float-right btn btn-dark btn-sm addComponent">
-                        <i class="fas fa-plus fa-sm mr-2"></i>Add Component
-                    </a>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -92,14 +67,6 @@
                             class="fas fa-tint mr-3" style="color:#A2D5F2;"></i>Flood <small><i
                                 class="fas fa-exclamation-circle ml-3 text-danger"></i></small></i></a>
                 </li>
-                <li class="nav-item">
-                    <a id="devicesLink" class="m-1 nav-link devices" href="{% url 'devices' %}"><i
-                            class="fas fa-microchip mr-3" style="color:#FEC107;"></i>Devices</a>
-                </li>
-                <li class="nav-item">
-                    <a id="sensorsLink" class="m-1 nav-link sensors" href="{% url 'sensors' %}"><i
-                            class="fas fa-wifi mr-3" style="color:#FEC107;"></i>Sensors</a>
-                </li>
             </ul>
 
             <div class="row ml-2 mb-1">
@@ -116,51 +83,12 @@
                             style="background-color:#616A6B; font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
                             style="font-size: 10px;">&nbsp;&nbsp;Inactive</span></small></div>
             </div>
-            <!--
-            <div class="row ml-3 mt-3 mb-2">
-                <div class="mr-3">
-                    <div class="form-check active-status">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                        <label class="form-check-label" for="defaultCheck1">
-                            Active
-                        </label>
-                    </div>
-                </div>
-                <div class="mr-3">
-                    <div class="form-check under-maintenance-status">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                        <label class="form-check-label" for="defaultCheck1">
-                            Under Maintenance
-                        </label>
-                    </div>
-                </div>
-                <div class="mr-3">
-                    <div class="form-check needs-maintenance-status">
-                        <input class="form-check-input " type="checkbox" value="" id="defaultCheck1">
-                        <label class="form-check-label" for="defaultCheck1">
-                            Needs Maintenance
-                        </label>
-                    </div>
-                </div>
-                <div class="mr-3">
-                    <div class="form-check inactive-status">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                        <label class="form-check-label" for="defaultCheck1">
-                            Inactive
-                        </label>
-                    </div>
-                </div>
-            </div>
--->
             <div class="container-fluid"
-                style=" background-color: rgba(0,0,0,.08); padding: 15px 25px 15px 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px; position: relative;">
+                style="background-color: rgba(0,0,0,.08); padding: 15px 25px 15px 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px; position: relative;">
                 {% block content %}{% endblock content %}
             </div>
         </div>
     </div>
-
-
-
 </body>
 
 {% endblock body %}

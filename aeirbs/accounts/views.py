@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from reports.models import AuditLogs
+from components.models import Device
 from .models import JobPosition, Profile, DEFAULT_IMAGE
 from django.core.files.storage import FileSystemStorage
 import django.contrib.auth.hashers
@@ -126,6 +127,7 @@ def masterlist(request):
     context = {}
     context['all_users'] = User.objects.all().filter(profile__is_deleted=False)
     context['all_logs'] = AuditLogs.objects.all()
+    context['all_devices'] = Device.objects.all()
 
     if request.method == 'POST':
         keyword = request.POST.get("keyword")
@@ -450,11 +452,9 @@ def add_admin(request):
 
 def delete_list(request):
     if request.user.is_authenticated:
-
-        all_users = User.objects.all()
-        all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
-
         if request.method == 'POST':
+            all_users = User.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
             admin_list = request.POST.get('delete_list')
             for user in all_users:
                 if user.username in admin_list:
@@ -474,7 +474,153 @@ def delete_list(request):
 
             messages.success(request, f'Users deleted successfully!')
             return redirect('masterlist')
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+def add_position(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            context = {}
+            errors = {}
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+            all_positions = JobPosition.objects.filter(position_isDeleted = False)
+
+            #Get User Input
+            add_jobPosition = request.POST.get("addJobPosition")
+
+            #Validate User Input
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+            if not add_jobPosition.strip():
+                errors["error_jobPositionEmpty"] = "Job Position is required."
+            else:
+                if not validate_stringFormat(add_jobPosition):
+                    errors["error_jobPositionFormat"] = "Invalid, input should only contain letters."
+
+            context['all_positions'] = all_positions
+            context['inputJobPosition'] = add_jobPosition
+            context['errors'] = errors
+
+            if len(errors) > 0:
+                messages.error(request, f'Invalid Input!')  
+                return render(request, 'SETTINGS-Devices.html',  context = context)
+            else:
+                #Format User Input
+                add_jobPosition = format_input(add_jobPosition)
+
+                #Add Job Position
+                position = JobPosition.objects.create(
+                    job_position = add_jobPosition
+                )
+                position.save()
+
+                #Create User Log
+                add_log = AuditLogs.objects.create(
+                    log_id = "UL0" + str(all_userLogs + 1),
+                    activity = "Add Job Position",
+                    username = request.user,
+                    audit_details = str(request.user) + " add new job position.",
+                    audit_type = 1
+                )
+                add_log.save()
+
+                messages.success(request, f'Job Position added successfully!')
+                return redirect('devices')
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+def edit_position(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            context = {}
+            errors = {}
+
+            all_positions = JobPosition.objects.filter(position_isDeleted = False)
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+
+            #Get User Input
+            edit_jobPositionID = int(request.POST.get("editJobPositionID"))
+            edit_jobPosition = format_input(request.POST.get("editJobPosition"))
+
+            #Validate User Input
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+            if not edit_jobPosition.strip():
+                errors["error_editJobPositionEmpty"] = "Job Position is required."
+            else:
+                if not validate_stringFormat(edit_jobPosition):
+                    errors["error_editJobPositionFormat"] = "Invalid, input should only contain letters."
+
+            context['all_positions'] = all_positions
+            context['inputJobPositionID'] = edit_jobPositionID
+            context['inputJobPosition'] = edit_jobPosition
+            context['errors'] = errors
+            context['error'] = True
+
+            if len(errors) > 0:
+                messages.error(request, f'Invalid Input!')  
+                return render(request, 'SETTINGS-Devices.html',  context = context)
+            else:
+                #Format User Input
+                edit_jobPosition = format_input(edit_jobPosition)
+
+                #Update Job Position
+                for position in all_positions:
+                    if position.id == edit_jobPositionID:
+                        jobPosition = position.job_position
+                        position.job_position = edit_jobPosition
+                        position.save()
+
+                        #Create User Log
+                        add_log = AuditLogs.objects.create(
+                            log_id = "UL0" + str(all_userLogs + 1),
+                            activity = "Edit Job Position",
+                            username = request.user,
+                            audit_details = str(request.user) + " updated " + jobPosition + " to " + edit_jobPosition + ".",
+                            audit_type = 1
+                        )
+                        add_log.save()
+
+                        messages.success(request, f'Updated {jobPosition} to {edit_jobPosition} successfully!')
+                        return redirect('devices')
             
+                messages.error(request, f'Job Position not found!')
+                return redirect('devices')
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+def delete_position(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            all_positions = JobPosition.objects.all()
+            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+
+            #Get User Input
+            delete_jobPosition = int(request.POST.get("deleteJobPositionID"))
+
+            #Delete Job Position
+            for position in all_positions:
+                if position.id == delete_jobPosition:
+                    jobPosition = position.job_position
+                    position.position_isDeleted = True
+                    position.save()
+
+                    #Create User Log
+                    add_log = AuditLogs.objects.create(
+                        log_id = "UL0" + str(all_userLogs + 1),
+                        activity = "Delete Job Position",
+                        username = request.user,
+                        audit_details = str(request.user) + " deleted " + jobPosition + ".",
+                        audit_type = 1
+                        )
+                    add_log.save()
+
+                    messages.success(request, f'Deleted {jobPosition} successfully!')
+                    return redirect('devices')
+
+        messages.error(request, f'Job Position not found!')
+        return redirect('devices')
+    else:
+        return render(request, 'AEIRBS-Login.html')
+ 
             
 
  

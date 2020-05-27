@@ -46,6 +46,10 @@
                 placeholder="Date Range" required>
             </div>
           </div>
+          <div class="col-2">
+            <button type="submit" class="btn btn-dark btn-sm float-left" id="generateReportButton"><i
+                class="fas fa-sync-alt fa-sm mr-2"></i>Generate</button>
+          </div>
         </div>
       </form>
 
@@ -57,7 +61,7 @@
       </div>
 
       <script>
-        var ctx = document.getElementById('myChart').getContext('2d');
+        var ctx = document.getElementById('summary-chart').getContext('2d');
         var myChart = new Chart(ctx, {
           type: 'line',
           data: {
@@ -140,7 +144,7 @@
           </div>
 
           <script>
-            var ctx1 = document.getElementById('myChart1').getContext('2d');
+            var ctx1 = document.getElementById('eq-chart').getContext('2d');
             var myChart1 = new Chart(ctx1, {
               type: 'bar',
               data: {
@@ -187,7 +191,7 @@
           </div>
 
           <script>
-            var ctx2 = document.getElementById('myChart2').getContext('2d');
+            var ctx2 = document.getElementById('fr-chart').getContext('2d');
             var myChart2 = new Chart(ctx2, {
               type: 'bar',
               data: {
@@ -234,7 +238,7 @@
           </div>
 
           <script>
-            var ctx3 = document.getElementById('myChart3').getContext('2d');
+            var ctx3 = document.getElementById('fl-chart').getContext('2d');
             var myChart3 = new Chart(ctx3, {
               type: 'bar',
               data: {
@@ -278,188 +282,6 @@
 
   </div>
 </body>
-<script>
-
-  var ctx = document.getElementById('summary-chart').getContext('2d');
-  var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-      datasets: [{
-        label: 'Earthquake',
-        data: [],
-        lineTension: 0,
-        backgroundColor: 'rgb(229, 191, 154, 0.3)',
-        borderColor: 'rgb(229, 191, 154)',
-        borderWidth: 3,
-        pointBorderColor: 'rgb(229, 191, 154)',
-        pointBackgroundColor: 'rgb(229, 191, 154, 0.8)',
-        pointRadius: 3,
-        pointHoverBackgroundColor: 'rgb(254, 193, 7)',
-        pointHoverBorderColor: 'rgb(254, 193, 7)',
-        pointHoverRadius: 5,
-      }, {
-        label: 'Fire',
-        data: [{% for data in summary%} {{data}}, {%endfor%} ],
-        lineTension: 0,
-        backgroundColor: 'rgba(255, 126, 103, 0.3)',
-        borderColor: 'rgba(255, 126, 103)',
-        borderWidth: 3,
-        pointBorderColor: 'rgba(255, 126, 103)',
-        pointBackgroundColor: 'rgba(255, 126, 103, 0.8)',
-        pointRadius: 3,
-        pointHoverBackgroundColor: 'rgb(254, 193, 7)',
-        pointHoverBorderColor: 'rgb(254, 193, 7)',
-        pointHoverRadius: 5,
-      }, {
-        label: 'Flood',
-        data: [],
-        lineTension: 0,
-        lineTension: 0,
-        backgroundColor: 'rgba(162, 213, 242, 0.3)',
-        borderColor: 'rgba(162, 213, 242)',
-        borderWidth: 3,
-        pointBorderColor: 'rgba(162, 213, 242)',
-        pointBackgroundColor: 'rgba(162, 213, 242, 0.8)',
-        pointRadius: 3,
-        pointHoverBackgroundColor: 'rgb(254, 193, 7)',
-        pointHoverBorderColor: 'rgb(254, 193, 7)',
-        pointHoverRadius: 5,
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'Number of Occurrence',
-            fontFamily: 'Montserrat',
-            fontStyle: 'bold',
-          }
-        }],
-        xAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'Month',
-            fontFamily: 'Montserrat',
-            fontStyle: 'bold',
-          }
-        }],
-      }
-    }
-  });
-
-  var ctx1 = document.getElementById('eq-chart').getContext('2d');
-  var myChart1 = new Chart(ctx1, {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-      datasets: [{
-        label: 'Earthquake',
-        data: [],
-        backgroundColor: 'rgb(229, 191, 154, 0.3)',
-        borderColor: 'rgb(229, 191, 154, 1)',
-        borderWidth: 3
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'Y Label',
-            fontFamily: 'Montserrat',
-            fontSize: 8,
-            fontStyle: 'bold',
-          }
-        }],
-        xAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'X Label',
-            fontFamily: 'Montserrat',
-            fontSize: 8,
-            fontStyle: 'bold',
-          }
-        }],
-      }
-    }
-  });
-
-  var ctx2 = document.getElementById('fr-chart').getContext('2d');
-  var myChart2 = new Chart(ctx2, {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-      datasets: [{
-        label: 'Fire',
-        data: [],
-        backgroundColor: 'rgba(255, 126, 103, 0.3)',
-        borderColor: 'rgba(255, 126, 103, 1)',
-        borderWidth: 3
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'Y Label',
-            fontFamily: 'Montserrat',
-            fontSize: 8,
-            fontStyle: 'bold',
-          }
-        }],
-        xAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'X Label',
-            fontFamily: 'Montserrat',
-            fontSize: 8,
-            fontStyle: 'bold',
-          }
-        }],
-      }
-    }
-  });
-
-  var ctx3 = document.getElementById('fl-chart').getContext('2d');
-  var myChart3 = new Chart(ctx3, {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-      datasets: [{
-        label: 'Flood',
-        data: [],
-        backgroundColor: 'rgba(162, 213, 242, 0.3)',
-        borderColor: 'rgba(162, 213, 242, 1)',
-        borderWidth: 3
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'Y Label',
-            fontFamily: 'Montserrat',
-            fontSize: 8,
-            fontStyle: 'bold',
-          }
-        }],
-        xAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: 'X Label',
-            fontFamily: 'Montserrat',
-            fontSize: 8,
-            fontStyle: 'bold',
-          }
-        }],
-      }
-    }
-  });
-</script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <!--Date Range Picker-->

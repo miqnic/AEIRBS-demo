@@ -359,6 +359,8 @@ def generate_summary(request):
 
         context = {'months':months, 'eq_lvls': eq_lvls, 'eq_cntlvl': eq_cntlvl, 'eq_months': eq_months, 'eq_total': eq_total, 'fr_lvls': fr_lvls, 'fr_cntlvl': fr_cntlvl, 'fr_months': fr_months,'fr_total': fr_total, 'fl_lvls': fl_lvls, 'fl_cntlvl': fl_cntlvl, 'fl_months': fl_months, 'fl_total': fl_total}
 
+        print(context)
+
         context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
         return render(request, "AEIRBS-Summary.html", context = context)

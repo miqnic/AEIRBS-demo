@@ -128,32 +128,7 @@
                 {% endif %}
             </div>
             {% endfor %}
-            <script>
-                $(".card").click(function () {
-                    ard_interval = setInterval(function() {
-                        $.ajax({
-                            type: 'POST',
-                            headers: {
-                                "X-CSRFTOKEN": "{{ csrf_token }}"
-                            },
-                            url: '/ajax/getdata/',
-                            dataType: 'json',
-                            success: function (result) {
-                                if (result.noise_level != 0) {
-                                    if (result.noise_level < 10 ){
-                                        $(".alarm").show();
-                                        soundAlarm();
-                                        clearInterval(ard_interval);
-                                    }
-                                }
-                            },
-                            error: function(data){
-                                alert('error..');
-                            }
-                        });
-                    }, 3000);
-                });
-              </script>
+            
         </div>
     </div>
     {% include 'AEIRBS-DeviceModals.html' %}

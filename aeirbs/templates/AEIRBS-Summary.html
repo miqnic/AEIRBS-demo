@@ -20,29 +20,6 @@
           <h3 id="dashboardLabel"><b><b>SUMMARY REPORT</b></b></h3>
         </div>
 
-        <!--
-                <div class="col-2">
-                <form  action="#" method="post">
-                <div class="input-group" id="searchAdmin">
-                <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              </div>
-              <input type="text" class="form-control" name="date" placeholder="Start Date">
-            </div>
-          </form>
-        </div>
-
-        <div class="col-2">
-        <form  action="#" method="post">
-        <div class="input-group" id="searchAdmin">
-        <div class="input-group-prepend">
-        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-      </div>
-      <input type="text" class="form-control" name="date" placeholder="End Date">
-    </div>
-  </form>
-  </div>
-  -->
         <!--Download PDF-->
         <div class="col-2">
           <form action="" method="POST">
@@ -60,7 +37,8 @@
       style=" background-color: rgba(52, 58, 64,.1); padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
 
       <!--Date Range Form-->
-      <form action="#" method="post">
+      <form action="{% url 'gen_sum' %}" method="post">
+        {% csrf_token %}
         <div class="row" style="padding-left:25px;">
           <div class="col-3">
             <div class="input-group">
@@ -68,16 +46,17 @@
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
               <input type="text" class="input form-control form-control-sm datefilter" name="dateRange"
-                placeholder="Date Range">
+                placeholder="Date Range" required>
             </div>
           </div>
           <div class="col-2">
-            <button type="button" class="btn btn-dark btn-sm float-left" id="generateReportButton"><i
+            <button type="submit" class="btn btn-dark btn-sm float-left" id="generateReportButton"><i
                 class="fas fa-sync-alt fa-sm mr-2"></i>Generate</button>
           </div>
         </div>
       </form>
-
+      
+      <!-- OCCURENCES GRAPH -->
       <div class="container-fluid mt-4" style="padding:0 25px 25px 25px;">
         <div class="container-fluid"
           style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
@@ -85,26 +64,222 @@
         </div>
       </div>
 
+      <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [{% for mos in months %}'{{mos}}',{% endfor %}],
+            datasets: [
+              {
+                label: 'Earthquake',
+                data: [{% for eq in eq_total %}'{{eq}}',{% endfor %}], 
+                lineTension: 0,
+                backgroundColor: 'rgb(229, 191, 154, 0.3)',
+                borderColor: 'rgb(229, 191, 154)',
+                borderWidth: 3,
+                pointBorderColor: 'rgb(229, 191, 154)',
+                pointBackgroundColor: 'rgb(229, 191, 154, 0.8)',
+                pointRadius: 3,
+                pointHoverBackgroundColor: 'rgb(254, 193, 7)',
+                pointHoverBorderColor: 'rgb(254, 193, 7)',
+                pointHoverRadius: 5,
+              }, {
+                label: 'Fire',
+                data: [{% for fr in fr_total %}'{{fr}}',{% endfor %}],
+                lineTension: 0,
+                backgroundColor: 'rgba(255, 126, 103, 0.3)',
+                borderColor: 'rgba(255, 126, 103)',
+                borderWidth: 3,
+                pointBorderColor: 'rgba(255, 126, 103)',
+                pointBackgroundColor: 'rgba(255, 126, 103, 0.8)',
+                pointRadius: 3,
+                pointHoverBackgroundColor: 'rgb(254, 193, 7)',
+                pointHoverBorderColor: 'rgb(254, 193, 7)',
+                pointHoverRadius: 5,
+              }, {
+                label: 'Flood',
+                data: [{% for fl in fl_total %}'{{fl}}',{% endfor %}],
+                lineTension: 0,
+                lineTension: 0,
+                backgroundColor: 'rgba(162, 213, 242, 0.3)',
+                borderColor: 'rgba(162, 213, 242)',
+                borderWidth: 3,
+                pointBorderColor: 'rgba(162, 213, 242)',
+                pointBackgroundColor: 'rgba(162, 213, 242, 0.8)',
+                pointRadius: 3,
+                pointHoverBackgroundColor: 'rgb(254, 193, 7)',
+                pointHoverBorderColor: 'rgb(254, 193, 7)',
+                pointHoverRadius: 5,
+              }
+            ]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Number of Occurrence',
+                  fontFamily: 'Montserrat',
+                  fontStyle: 'bold',
+                }
+              }],
+              xAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Month',
+                  fontFamily: 'Montserrat',
+                  fontStyle: 'bold',
+                }
+              }],
+            }
+          }
+        });
+      </script>
+
       <div class="container-fluid" style="padding:0 25px 25px 25px;">
         <div class="row">
+          <!-- EARTHQUAKE LEVELS -->
           <div class="col-4">
             <div class="container-fluid"
               style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
               <center><canvas id="myChart1" width="100%" height="70%"></canvas></center>
             </div>
           </div>
+
+          <script>
+            var ctx1 = document.getElementById('myChart1').getContext('2d');
+            var myChart1 = new Chart(ctx1, {
+              type: 'bar',
+              data: {
+                labels: [{% for lvl in eq_lvls %}'{{lvl}}',{% endfor %}],
+                datasets: [{
+                  label: 'Earthquake',
+                  data: [{% for eq in eq_cntlvl %}'{{eq}}',{% endfor %}],
+                  backgroundColor:'rgb(229, 191, 154, 0.3)',
+                  borderColor:'rgb(229, 191, 154, 1)',
+                  borderWidth: 3
+                }]
+              },
+              options: {
+                scales: {
+                  yAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Number of Occurences',
+                      fontFamily: 'Montserrat',
+                      fontSize: 8,
+                      fontStyle: 'bold',
+                    }
+                  }],
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Incident Levels',
+                      fontFamily: 'Montserrat',
+                      fontSize: 8,
+                      fontStyle: 'bold',
+                    }
+                  }],
+                }
+              }
+            });
+          </script>
+
+          <!-- FIRE LEVELS -->
           <div class="col-4">
             <div class="container-fluid"
               style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
               <center><canvas id="myChart2" width="100%" height="70%"></canvas></center>
             </div>
           </div>
+
+          <script>
+            var ctx2 = document.getElementById('myChart2').getContext('2d');
+            var myChart2 = new Chart(ctx2, {
+              type: 'bar',
+              data: {
+                labels: [{% for lvl in fr_lvls %}'{{lvl}}',{% endfor %}],
+                datasets: [{
+                  label: 'Fire',
+                  data: [{% for fr in fr_cntlvl %}'{{fr}}',{% endfor %}],
+                  backgroundColor:'rgba(255, 126, 103, 0.3)',
+                  borderColor:'rgba(255, 126, 103, 1)',
+                  borderWidth: 3
+                }]
+              },
+              options: {
+                scales: {
+                  yAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Y Label',
+                      fontFamily: 'Montserrat',
+                      fontSize: 8,
+                      fontStyle: 'bold',
+                    }
+                  }],
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'X Label',
+                      fontFamily: 'Montserrat',
+                      fontSize: 8,
+                      fontStyle: 'bold',
+                    }
+                  }],
+                }
+              }
+            });
+          </script>
+
+          <!-- FLOOD LEVELS -->
           <div class="col-4">
             <div class="container-fluid"
               style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
               <center><canvas id="myChart3" width="100%" height="70%"></canvas></center>
             </div>
           </div>
+
+          <script>
+            var ctx3 = document.getElementById('myChart3').getContext('2d');
+            var myChart3 = new Chart(ctx3, {
+              type: 'bar',
+              data: {
+                labels: [{% for lvl in fl_lvls %}'{{lvl}}',{% endfor %}],
+                datasets: [{
+                  label: 'Flood',
+                  data: [{% for fl in fl_cntlvl %}'{{fl}}',{% endfor %}],
+                  backgroundColor:'rgba(162, 213, 242, 0.3)',
+                  borderColor:'rgba(162, 213, 242, 1)',
+                  borderWidth: 3
+                }]
+              },
+              options: {
+                scales: {
+                  yAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Y Label',
+                      fontFamily: 'Montserrat',
+                      fontSize: 8,
+                      fontStyle: 'bold',
+                    }
+                  }],
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'X Label',
+                      fontFamily: 'Montserrat',
+                      fontSize: 8,
+                      fontStyle: 'bold',
+                    }
+                  }],
+                }
+              }
+            });
+
+          </script>
         </div>
       </div>
     </div>

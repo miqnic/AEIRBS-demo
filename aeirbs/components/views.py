@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
-from reports.models import AuditLogs, IncidentReport
+from reports.models import AuditLogs, IncidentReport, Incident
 from django.db.models import Q
 from django.template.loader import render_to_string
 
@@ -28,80 +28,178 @@ def getArduinoData(comp_port):
         sr.close() 
         return (str(''.join(st[:])).split())
     except:
-        print("goes here")
         return [0, 0]
 
 def ajax_data(request):
     port = request.POST.get("port")
     ard = getArduinoData(port)
-    # if device type = fire or flood
     data = {'distance': float(ard[0]), 'temp': float(ard[1])}
-    # else
-    # data = {'distance': float(ard[0])}
     componentID = request.POST.get("componentID")
 
     all_components = Device_Sensor.objects.all()
     all_devices = Device.objects.all()
+    all_incidents = Incident.objects.all()
+    all_userLogs = AuditLogs.objects.filter(audit_type = 2).count()
+
     alert = 0
+    current_device = None
+    current_incident = None
+
+    for device in all_devices:
+        if device.id == int(componentID):
+            current_device = device
+            break
+    
+    for incident in all_incidents:
+        #print(current_device, incident.id)
+        #print(current_device, current_device.device_type)
+        if incident.id == current_device.device_type:
+            current_incident = incident
+    
+    #print(current_device, current_incident)
+
 
     # no arduino present
     if float(ard[0]) == 0.0 and float(ard[1]) == 0.0:
-        # FR: ard[0]-temperature, ard[1]-gas
-        # FL: ard[0]-ultra, ard[1]-water
-        # eq: ard[0]-eq
-        for device in all_devices:
-            if device.id == int(componentID):
-                    device.device_status = 2
-                    device.save()
-                    for component in all_components:
-                        if component.device_id_id == int(componentID):
-                            print("went in EQ0")
-                            component.connectivity_status = 0
-                            component.sensor_status = 2
-                            component.save()
+        # check if it's a new disconnection
+        if current_device.device_status != 2:
+            current_device.device_status = 2
+            current_device.save()
 
-        #add_mlog = AuditLogs.objects.create(    
-        #    log_id = "ML0" + str(all_userLogs + 1),
-        #    activity = "Update Sensor Status",
-        #    username = request.user,
-        #    audit_details = str(request.user) + " updated " + componentID + "'s status from " + current_status + " to " + new_status + ".",
-        #    audit_type = 2
-        #)
-        #add_mlog.save()
+            add_mlog = AuditLogs.objects.create(    
+                log_id = "ML0" + str(all_userLogs + 1),
+                activity = "Disconnected Device",
+                username = request.user,
+                audit_details = current_device.device_id + " is disconnected from the system",
+                audit_type = 2
+            )
+            add_mlog.save()
+
+        for component in all_components:
+            if component.device_id_id == current_device.id:
+                #print("went in EQ0")
+                component.connectivity_status = 0
+                component.sensor_status = 2
+                component.save()
 
     # arduino is present
     else:
-        for device in all_devices:
-            if device.id == int(componentID):
-                    device.device_status = 0
-                    device.save()
-                    for component in all_components:
-                        if component.device_id_id == int(componentID):
-                            print("went in NEQ0")
-                            component.connectivity_status = 1
-                            component.sensor_status = 0
-                            component.save()
+        current_device.device_status = 0
+        current_device.save()
 
-        if float(ard[0]) < 10.0 or float(ard[1]) < 10.0:
-            alert = 1
+        current_devsens = []
 
-            #add_audlog = AuditLogs.objects.create(
-            #    log_id = "CL0" + str(all_userLogs + 1),
-            #    activity = "Add Connection",
-            #    username = request.user,
-            #    audit_details = str(request.user) + " connected sensor " + #    str(sensorID) + " to " + str(deviceID) + ".",
-            #    audit_type = 0
-            #)
-            #add_audlog.save()
+        for component in all_components:
+            if component.device_id_id == current_device.id:
+                #print("went in NEQ0")
+                current_devsens.append(component)
+                component.connectivity_status = 1
+                component.sensor_status = 0
+                component.save()
 
-            #add_increp = IncidentReport.objects.create(
-            #    device_sensor_id = ,
-            #    incident_type = ,
-            #    incident_level = ,
-            #)
-            #add_increp.save()
+        # check earthquake threshold
+        # ard[0] - Triple Axis Accelerometer
+        print(current_device.device_type)
+        if current_device.device_type == 1:
+            if float(ard[0]) >= 5.0:
+                print('earthquake happening')
+                alert = 1
 
-    data = {'alert': alert, 'temp': float(ard[1]), 'dist': float(ard[0])}
+                # print(current_device, current_incident)
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "EQ_I",
+                )
+                add_increp.save()
+        
+        # check fire threshold
+        # ard[0] - MQ2 Gas Sensor
+        # ard[1] - Temperature Sensor
+        if current_device.device_type == 2:
+            print(ard[0])
+            print(float(ard[1]) >=10.0)
+            # check if a sensor is disconnected
+            if float(ard[0]) == 0.0:
+                current_devsens[0].connectivity_status = 0
+                current_devsens[0].sensor_status = 2
+
+                add_mlog = AuditLogs.objects.create(    
+                    log_id = "ML0" + str(all_userLogs + 1),
+                    activity = "Disconnected Sensor",
+                    username = request.user,
+                    audit_details = current_devsens[0].device_sensor_id + " is disconnected from the system",
+                    audit_type = 2
+                )
+                add_mlog.save()
+            elif float(ard[1]) == 0.0:
+                current_devsens[1].connectivity_status = 0
+                current_devsens[1].sensor_status = 2
+
+                add_mlog = AuditLogs.objects.create(    
+                    log_id = "ML0" + str(all_userLogs + 1),
+                    activity = "Disconnected Sensor",
+                    username = request.user,
+                    audit_details = current_devsens[1].device_sensor_id + " is disconnected from the system",
+                    audit_type = 2
+                )
+                add_mlog.save()
+            # used OR because MQ2 Gas Sensor is not available
+            if (float(ard[0]) >= 300.0) or (float(ard[1]) >= 35.0):
+                print('fire happening')
+                alert = 1
+
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "FR_FIRST",
+                )
+                add_increp.save()
+
+        # check flood threshold
+        # ard[0] - Ultrasonic Transducer
+        # ard[1] - Water sensor 
+        if current_device.device_type == 3:
+            # check if a sensor is disconnected
+            if float(ard[0]) == 0.0:
+                current_devsens[0].connectivity_status = 0
+                current_devsens[0].sensor_status = 2
+
+                add_mlog = AuditLogs.objects.create(    
+                    log_id = "ML0" + str(all_userLogs + 1),
+                    activity = "Disconncted Sensor",
+                    username = request.user,
+                    audit_details = current_devsens[0].device_sensor_id + " is disconnected from the system",
+                    audit_type = 2
+                )
+                add_mlog.save()
+
+            elif float(ard[1]) == 0.0:
+                current_devsens[1].connectivity_status = 0
+                current_devsens[1].sensor_status = 2
+
+                add_mlog = AuditLogs.objects.create(    
+                    log_id = "ML0" + str(all_userLogs + 1),
+                    activity = "Disconncted Sensor",
+                    username = request.user,
+                    audit_details = current_devsens[1].device_sensor_id + " is disconnected from the system",
+                    audit_type = 2
+                )
+                add_mlog.save()
+
+            # used AND because it is a complete module
+            if float(ard[0]) < 10.0 and float(ard[1]) == 1.0:
+                print('flood happening')
+                alert = 1
+                
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "FL_GUTTER",
+                )
+                add_increp.save()
+
+    data = {'alert': alert, 'temp': float(ard[1]), 'dist': float(ard[0]), 'floor_locations': FLOOR_LOCATIONS, 'dev_id': current_device.device_id, 'dev_name': current_device.device_name}
     return HttpResponse(json.dumps(data))
 
 # auto-email

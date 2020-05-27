@@ -110,7 +110,6 @@
                             {% else %}
                             <small>Flood</small>
                             {% endif %}
-                            {% endfor %}
                             <br>
                             <small>(temp: <span id="arddata0-{{device.id}}"></span>)</small>
                             <br>
@@ -128,40 +127,6 @@
                 <div class="card-overlay inactive-card-overlay"></div>
                 {% endif %}
             </div>
-
-            <script>
-                $(document).ready (function () {
-                //$("#card{{device.device_id}}").click(function () {
-                    ard_interval = setInterval(function() {
-                        $.ajax({
-                            type: 'POST',
-                            headers: {
-                                "X-CSRFTOKEN": "{{ csrf_token }}"
-                            },
-                            url: '/ajax/getdata/',
-                            data: {'componentID': '{{device.id}}', 'port': '{{device.mac_address}}'},
-                            dataType: 'json',
-                            success: function (result) {
-                                $('#arddata0-{{device.id}}').html(result.temp);
-                                $('#arddata1-{{device.id}}').html(result.dist);
-
-                                // alert("device id: {{device.device_id}}\n" + "message: " + result.temp + "\nmessage: " + result.dist);
-
-                                deviceID = '{{device.id}}';
-                                deviceFloor = '{{device.floor_location}}';
-
-                                if (result.alert == 1) {
-                                    $(".alarm").show();
-                                    soundAlarm();
-                                }
-                            },
-                            error: function(data){
-                                // alert("device id: {{device.device_id}}\n" + 'error..');
-                            },
-                        });
-                    }, 5000);
-                });
-              </script>
             {% endfor %}
         </div>
     </div>

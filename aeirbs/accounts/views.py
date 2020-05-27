@@ -9,6 +9,8 @@ from .models import JobPosition, Profile, DEFAULT_IMAGE
 from django.core.files.storage import FileSystemStorage
 import django.contrib.auth.hashers
 
+from components.models import Device
+
 from django.core.mail import EmailMessage
 from datetime import date
 
@@ -126,7 +128,9 @@ def masterlist(request):
     context = {}
     context['all_users'] = User.objects.all().filter(profile__is_deleted=False)
     context['all_logs'] = AuditLogs.objects.all()
+    context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
+    print(context['all_users'])
     if request.method == 'POST':
         keyword = request.POST.get("keyword")
         context['all_users'] = User.objects.filter(profile__is_deleted=False, username__contains = keyword) | User.objects.filter(profile__is_deleted=False, first_name__contains = keyword) | User.objects.filter(profile__is_deleted=False, profile__middle_name__contains = keyword) | User.objects.filter(profile__is_deleted=False, last_name__contains = keyword)
@@ -214,6 +218,7 @@ def add_user(request):
             context["inputCompanyEmail"] = add_companyEmail
             context["errors"] = errors
             context["job_positions"] = JOB_POSITIONS
+            context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
@@ -438,6 +443,7 @@ def edit_admin(request):
             context['username'] = request.POST.get("username")
             context['all_users'] = User.objects.all()
             context['job_positions'] = JOB_POSITIONS
+            context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
         return render(request, 'MASTERLIST-EditAdmin.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')

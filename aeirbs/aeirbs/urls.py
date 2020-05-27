@@ -82,6 +82,8 @@ urlpatterns = [
     path('audit/component-logs/', reports_views.component_logs, name='component_logs'),
     path('audit/user-logs/', reports_views.user_logs, name='user_logs'),
     path('audit/maintenance-logs/', reports_views.maintenance_logs, name='maintenance_logs'),
+
+    path('summary/generate/', reports_views.generate_summary, name='gen_sum'),
     
     path('audit/clear-logs/', reports_views.clear_logs, name='clear_logs'),
 

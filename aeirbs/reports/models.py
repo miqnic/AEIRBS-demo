@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-from components.models import Device_Sensor
+from components.models import Device_Sensor, Device
 from .utils import IncidentCombinations, IncidentLevels
 
 # Create your models here.
@@ -34,7 +34,7 @@ class Incident(models.Model):
         return self.incident_type
 
 class IncidentReport(models.Model):
-    device_sensor_id = models.ForeignKey(Device_Sensor, on_delete=models.DO_NOTHING)
+    device_sensor_id = models.ForeignKey(Device, on_delete=models.DO_NOTHING)
     incident_type = models.ForeignKey(Incident, on_delete=models.DO_NOTHING)
     incident_date_time = models.DateTimeField(auto_now_add=True)
     incident_level = models.CharField(

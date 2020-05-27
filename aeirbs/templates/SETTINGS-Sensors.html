@@ -1,4 +1,4 @@
-{% extends 'AEIRBS-Dashboard.html' %}
+{% extends 'AEIRBS-Settings.html' %}
 {% load static %}
 {% block content %}
 
@@ -44,7 +44,7 @@
         </li>
     </ul>
 
-    <div class="container-fluid mt-5">
+    <div class="container-fluid mt-5" style="max-height: 75vh; height:auto; overflow-y: auto; padding: 25px;">
         <div class="text-center" style="margin-left: auto; margin-right: auto;">
             {% if count == 0 %}
             <b>No sensor available.</b>
@@ -78,12 +78,12 @@
             {% endfor %}
         </div>
     </div>
-    {% include 'AEIRBS-ComponentModals.html' %}
+    {% include 'AEIRBS-SensorModals.html' %}
     {% include 'COMPONENTS-ConfirmationModals.html' %}
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-        $(".dashboard").toggleClass("active");
+        $(".settings").toggleClass("active");
         $("#sensorsLink").toggleClass("active");
     </script>
 </body>

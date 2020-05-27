@@ -19,16 +19,7 @@ import calendar
 import pandas as pd
 from datetime import date, timedelta
 # Create your views here.
-
-def renderPDF(template_src, context_dict={}):
-	template = get_template(template_src)
-	html  = template.render(context_dict)
-	result = BytesIO()
-	pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
-	if not pdf.err:
-		return HttpResponse(result.getvalue(), content_type='application/pdf')
-	return None
-
+#Load Report Pages
 def audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
         context = {}
@@ -37,7 +28,23 @@ def audit(request):
         return render(request, "AEIRBS-Audit.html", context=context)
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
+def incident(request):
+    if request.user.is_authenticated:
+        incident_reports = IncidentReport.objects.all()
+        return render(request, "AEIRBS-Incident.html", {'incident_reports': incident_reports})
+    else:
+        return render(request, 'AEIRBS-Login.html')
 
+def summary(request):
+    if request.user.is_authenticated:
+        context = {}
+        context["summary"] = [1,2,3,4,5,1]
+        return render(request, "AEIRBS-Summary.html", context = context)
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+#Audit Logs
 def component_logs(request):
     if request.user.is_authenticated and request.user.is_superuser:
         context = {}
@@ -136,6 +143,16 @@ def clear_logs(request):
     else:
         return render(request, 'AEIRBS-Login.html')
 
+#PDF Creation
+def renderPDF(template_src, context_dict={}):
+	template = get_template(template_src)
+	html  = template.render(context_dict)
+	result = BytesIO()
+	pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+	if not pdf.err:
+		return HttpResponse(result.getvalue(), content_type='application/pdf')
+	return None
+
 def generatePDF_audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':
@@ -154,8 +171,8 @@ def generatePDF_audit(request):
             pdf = renderPDF('reports/generatePDF-audit.html', context)
             if pdf:
                 response = HttpResponse(pdf, content_type='application/pdf')
-                filename = "Audit-Reports-%s.pdf" %(dateTime)
-                content = "inline; filename='%s'" %(filename)
+                filename = 'AuditLogs(' + str(date) + '-' + str(time) +  ').pdf' 
+                content = "inline; filename=%s" %(filename)
                 response['Content-Disposition'] = content
                 return response
             return HttpResponse("Not Found")    
@@ -168,8 +185,32 @@ def incident(request):
         context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
         context['incident_reports'] = IncidentReport.objects.all()
         return render(request, "AEIRBS-Incident.html", context = context)
+        
+def generatePDF_maintenanceReport(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        if request.method == 'POST':
+            auditID = request.POST.get("auditID")
+            audit = AuditLogs.objects.filter(log_id = auditID)
+            dateTime = datetime.datetime.now()
+            date = dateTime.strftime("%x")
+            time = dateTime.strftime("%X")
+            context = {}
+
+            context['auditID'] = auditID
+            context['audit'] = audit
+            context['date'] = date
+            context['time'] = time
+            
+            pdf = renderPDF('reports/generatePDF-maintenanceReport.html', context)
+            if pdf:
+                response = HttpResponse(pdf, content_type='application/pdf')
+                filename = 'MaintenanceReport(' + str(date) + '-' + str(time) +  ').pdf' 
+                content = "inline; filename=%s" %(filename)
+                response['Content-Disposition'] = content
+                return response
+            return HttpResponse("Not Found")    
     else:
-        return render(request, 'AEIRBS-Login.html')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def generatePDF_incident(request):
     if request.user.is_authenticated and request.user.is_superuser:
@@ -190,8 +231,8 @@ def generatePDF_incident(request):
         pdf = renderPDF('reports/generatePDF-incident.html', context)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Incident-Reports-%s.pdf" %(dateTime)
-            content = "inline; filename='%s'" %(filename)
+            filename = 'IncidentLogs(' + str(date) + '-' + str(time) +  ').pdf' 
+            content = "inline; filename=%s" %(filename)
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Not Found")    
@@ -326,3 +367,56 @@ def generate_summary(request):
 
         
         
+def generatePDF_incidentReport(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        incident_id = request.POST.get("download_incident")
+        incident_reports = IncidentReport.objects.filter(id=incident_id)
+        dateTime = datetime.datetime.now()
+        date = dateTime.strftime("%x")
+        time = dateTime.strftime("%X")
+        context = {}
+
+        context['incident_reports'] = incident_reports
+        context['date'] = date
+        context['time'] = time
+
+        for report in incident_reports:
+            print(report.incident_type)
+        
+        pdf = renderPDF('reports/generatePDF-incidentReport.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = 'IncidentReport(' + str(date) + '-' + str(time) +  ').pdf' 
+            content = "inline; filename=%s" %(filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not Found")    
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def generatePDF_summary(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        incident_id = request.POST.get("download_incident")
+        incident_reports = IncidentReport.objects.filter(id=incident_id)
+        dateTime = datetime.datetime.now()
+        date = dateTime.strftime("%x")
+        time = dateTime.strftime("%X")
+        context = {}
+
+        context['incident_reports'] = incident_reports
+        context['date'] = date
+        context['time'] = time
+
+        for report in incident_reports:
+            print(report.incident_type)
+        
+        pdf = renderPDF('reports/generatePDF-summary.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = 'SummaryReport(' + str(date) + '-' + str(time) +  ').pdf' 
+            content = "inline; filename=%s" %(filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not Found")    
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

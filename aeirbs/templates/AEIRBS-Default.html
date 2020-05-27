@@ -39,14 +39,22 @@
     <link rel="stylesheet" href="{% static 'css/summary.css' %}">
 
     <!--Audio-->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 
     <script type="text/javascript" src="{% static 'js/say.js'%}"></script>
     <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 
     <title>{% block title %}{% endblock title %}</title>
 </head>
@@ -179,7 +187,7 @@
                 style="border: 2px solid #343A40; padding: 25px; border-radius: 5px;">
 
                 <div class="toast-header">
-                        <strong class="text-dark" style="font-size:xx-large;"><b><b>ALERT!</b></b></strong>
+                    <strong class="text-dark" style="font-size:xx-large;"><b><b>ALERT!</b></b></strong>
                 </div>
                 <div class="toast-body mt-2">
                     A sensor located in <b id="alarm_floor"></b> has been triggered!
@@ -220,10 +228,10 @@
                         </button>
                         <button type="button" class="btn btn-dark btn-sm false-alarm">Cancel</button>
                         <div class="mt-4 warning-lenear-loader"></div>
-                
-                <div class="m-2" style="font-size:x-small; position: absolute; bottom: 0; right: 0;">
-                    Note: Public Announcement will be triggered automatically after 5 minutes.
-                </div>
+
+                        <div class="m-2" style="font-size:x-small; position: absolute; bottom: 0; right: 0;">
+                            Note: Public Announcement will be triggered automatically after 5 minutes.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -329,10 +337,8 @@
 <script src="{% static 'js/sidenav-js.js' %}"></script>
 <script src="{% static 'js/topnav-js.js' %}"></script>
 <script src="{% static 'js/home.js' %}"></script>
-<script src="{% static 'js/aeirbs-masterlist-js.js' %}"></script>
 <script src="{% static 'js/aeirbs-audit.js' %}"></script>
-<script src="{% static 'js/incident-js.js' %}"></script>
-
+<script src="{% static 'js/aeirbs-incident.js' %}"></script>
 <script src="{% static 'js/profile-js.js' %}"></script>
 
 <!--Data Tables Semantic UI-->
@@ -341,10 +347,31 @@
     src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" charset="utf8"
     src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <script>
-        window.setTimeout(function () {
-            $(".alert-timer").fadeTo(500, 0).slideUp(500, function () {
-                $(this).remove();
+<script>
+    window.setTimeout(function () {
+        $(".alert-timer").fadeTo(500, 0).slideUp(500, function () {
+            $(this).remove();
+        });
+    }, 4000);
+
+        timer = setTimeout(function () {
+            audio = say('Alert! Alert! An emergency has been detected!');
+            synth = audio[0];
+            msg = audio[1];
+
+            email = $.ajax({
+                headers: {
+                    "X-CSRFTOKEN": "{{ csrf_token }}"
+                },
+                url: '/alarm-mail',
+                success: function () {
+                    // TEMP - for debugging
+                    alert('success');
+                },
+                error: function (data) {
+                    // TEMP - for debugging
+                    alert('error..');
+                }
             });
         }, 4000);
 

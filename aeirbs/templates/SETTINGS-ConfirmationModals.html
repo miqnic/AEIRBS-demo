@@ -1,0 +1,112 @@
+<!--Job Position-->
+<div class="modal fade" id="confirmAddJobPosition" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Add Job Position</b></h5>
+
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                   style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to Add this Job Position?</b></span>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-add='JobPosition'
+                    class="btn btn-dark btn-sm confirmAddButton">
+                    Submit
+                </button>
+                <button type="button" data-dismiss="modal" class="btn btn-light btn-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for position in all_positions %}
+<!--Delete Job Position-->
+<div class="modal fade" id="confirmDelete{{position.id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Delete Job Position</b></h5>
+
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                   style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to Delete <b>{{position.job_position}}?</b>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-delete='{{position.id}}'
+                    class="btn btn-danger btn-sm confirmDeleteButton">
+                    Delete
+                </button>
+                <button type="button" data-dismiss="modal" class="btn btn-light btn-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Edit Job Position-->
+<div class="modal fade" id="confirmEdit{{position.id}}" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-ml" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="position:relative; background-color:#343a40;">
+                <h5 class="text-light mt-2 ml-3"><b>Edit Job Position</b></h5>
+
+                <button type="button" class="btn btn-link text-light float-right btn-sm m-2 icon"
+                   style="position:absolute; right: 0; top:0;" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="border-radius:5px">
+                <div class="row">
+                    <div class="col-1"></div>
+
+                    <div class="col-3">
+                        <i class="fas fa-question-circle fa-5x" style="color:#FEC107"></i>
+                    </div>
+
+                    <div class="col-7 mt-3">
+                        Are you sure you want to Save Changes for <b>{{position.job_position}}?</b>
+                    </div>
+                    
+                    <div class="col-1"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-edit='{{position.id}}'
+                    class="btn btn-dark btn-sm confirmEditButton">
+                    Save
+                </button>
+                <button type="button" data-dismiss="modal" class="btn btn-light btn-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

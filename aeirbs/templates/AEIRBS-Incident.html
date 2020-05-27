@@ -37,10 +37,9 @@
             </div>
 
             <!--IncidentReports Table-->
-            <table id="IncidentTable" class="table dataTable table-striped table-borderless" style="width:100%; text-align:center; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
+            <table class="table incidentTable table-striped table-borderless" style="width:100%; text-align:center; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
                 <thead class="table-header">
                     <tr>
-                        <th>Incident ID</th>
                         <th>Type</th>
                         <th>Level</th>
                         <th>Date and Time</th>
@@ -50,10 +49,9 @@
                 <tbody>
                     {% for report in incident_reports %}
                     <tr>
-                        <td>{{report.id}}</td>
                         <td>{{report.incident_type}}</td>
                         <td>{{report.incident_level}}</td>
-                        <td>{{report.incident_date_time}}</td>
+                        <td>{{report.incident_date_time|date:"d/m/Y H:i:s"}}</td>
                         <td>
                             {% if request.user.is_superuser %}
                             <form action="{% url 'generatePDF_incident' %} " method="post">

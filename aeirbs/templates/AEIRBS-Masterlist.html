@@ -86,7 +86,7 @@
                 </div>
 
                 <!--Masterlist Table-->
-                <table id="masterlistTable" class="table table-striped table-borderless"
+                <table id="" class="table masterlistTable table-striped table-borderless"
                     style="width:100%; text-align:center; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
                     <thead class="table-header">
                         <tr>
@@ -214,59 +214,6 @@
 
     <script>console.log(all_devices)</script>
 </body>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
-    $(".masterlist").toggleClass("active");
+<script src="{% static 'js/aeirbs-masterlist.js' %}"></script>
 
-    //checkbox on-load (unchecked by default)
-    $(".deleteCheckboxHeader").prop("checked", false);
-    $('.deleteCheckbox').each(function (i, obj) {
-        $(this).prop("checked", false);
-    });
-
-    //checkbox header on change functions
-    $(".deleteCheckboxHeader").on('change', function () {
-        if ($(this).prop("checked") == true) {
-            $("#deleteSelectedUser").show();
-            $('.deleteCheckbox').each(function (i, obj) {
-                $(this).prop("checked", true);
-            });
-        } else {
-            $("#deleteSelectedUser").hide();
-            $('.deleteCheckbox').each(function (i, obj) {
-                $(this).prop("checked", false);
-            });
-        }
-    });
-
-    //checkbox on change functions
-    $(".deleteCheckbox").on('change', function () {
-        var checked = false;
-        $('.deleteCheckbox').each(function (i, obj) {
-            if ($(this).prop("checked") == true) {
-                checked = true;
-            }
-        });
-
-        if (checked) {
-            $("#deleteSelectedUser").show();
-        } else {
-            $("#deleteSelectedUser").hide();
-        }
-    });
-
-    $("#deleteSelectedUser").click(function () {
-        var username_list = []
-        $('.deleteCheckbox').each(function (i, obj) {
-            if ($(this).prop("checked") == true) {
-                var deleteID = $(this).data("delete");
-                username_list.push(deleteID);
-            }
-        });
-        $('#deleteList_input').val(username_list);
-    });
-
-
-</script>
 {% endblock body %}

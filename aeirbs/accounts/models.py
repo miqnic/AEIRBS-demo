@@ -12,7 +12,7 @@ class JobPosition(models.Model):
     position_isDeleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.job_position
+        return str(self.job_position)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

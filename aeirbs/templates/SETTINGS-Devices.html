@@ -1,4 +1,4 @@
-{% extends 'AEIRBS-Dashboard.html' %}
+{% extends 'AEIRBS-Settings.html' %}
 {% load static %}
 {% block content %}
 
@@ -79,8 +79,8 @@
         </div>
     </div>
 
-    <div class="container-fluid mt-5">
-        <div class="text-center" style="margin-left: auto; margin-right: auto;">
+    <div class="container-fluid" style="max-height: 75vh; height:auto; overflow-y: auto; padding: 25px;"> 
+        <div class="text-center">
             {% if count == 0 %}
             <b>No device available.</b>
             {% endif %}
@@ -128,14 +128,38 @@
                 {% endif %}
             </div>
             {% endfor %}
+            <script>
+                $(".card").click(function () {
+                    ard_interval = setInterval(function() {
+                        $.ajax({
+                            type: 'POST',
+                            headers: {
+                                "X-CSRFTOKEN": "{{ csrf_token }}"
+                            },
+                            url: '/ajax/getdata/',
+                            dataType: 'json',
+                            success: function (result) {
+                                if (result.noise_level != 0) {
+                                    if (result.noise_level < 10 ){
+                                        $(".alarm").show();
+                                        soundAlarm();
+                                        clearInterval(ard_interval);
+                                    }
+                                }
+                            },
+                            error: function(data){
+                                alert('error..');
+                            }
+                        });
+                    }, 3000);
+                });
+              </script>
         </div>
     </div>
-    {% include 'AEIRBS-ComponentModals.html' %}
-    {% include 'COMPONENTS-ConfirmationModals.html' %}
-    {% include 'MASTERLIST-ConfirmationModals.html' %}
+    {% include 'AEIRBS-DeviceModals.html' %}
 </body>
 <script>
-    $(".dashboard").toggleClass("active");
+    $(".settings").toggleClass("active");
     $(".devices").toggleClass("active");
 </script>
 

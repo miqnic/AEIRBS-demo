@@ -63,7 +63,11 @@
                         <tr class="table-row table-auditlist" data-auditid='{{log.id}}'>
                             <td>{{log.log_id}}</td>
                             <td>{{log.activity}}</td>
+                            {% if log.is_auto == 0%}
                             <td>{{log.username.first_name}} {{log.username.last_name}}</td>
+                            {% else %}
+                            <td>AEIRBS</td>
+                            {% endif %}
                             <td>{{log.date_time|date:"d/m/Y H:i:s" }}</td>
                         </tr>
                         {% endfor %}

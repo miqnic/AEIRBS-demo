@@ -72,7 +72,7 @@ def ajax_data(request):
             add_mlog = AuditLogs.objects.create(    
                 log_id = "ML0" + str(all_userLogs + 1),
                 activity = "Disconnected Device",
-                username = request.user,
+                is_auto = True,
                 audit_details = current_device.device_id + " is disconnected from the system",
                 audit_type = 2
             )
@@ -130,7 +130,7 @@ def ajax_data(request):
                 add_mlog = AuditLogs.objects.create(    
                     log_id = "ML0" + str(all_userLogs + 1),
                     activity = "Disconnected Sensor",
-                    username = request.user,
+                    is_auto = True,
                     audit_details = current_devsens[0].device_sensor_id + " is disconnected from the system",
                     audit_type = 2
                 )
@@ -142,7 +142,7 @@ def ajax_data(request):
                 add_mlog = AuditLogs.objects.create(    
                     log_id = "ML0" + str(all_userLogs + 1),
                     activity = "Disconnected Sensor",
-                    username = request.user,
+                    is_auto = True,
                     audit_details = current_devsens[1].device_sensor_id + " is disconnected from the system",
                     audit_type = 2
                 )
@@ -171,7 +171,7 @@ def ajax_data(request):
                 add_mlog = AuditLogs.objects.create(    
                     log_id = "ML0" + str(all_userLogs + 1),
                     activity = "Disconncted Sensor",
-                    username = request.user,
+                    is_auto = True,
                     audit_details = current_devsens[0].device_sensor_id + " is disconnected from the system",
                     audit_type = 2
                 )
@@ -184,7 +184,7 @@ def ajax_data(request):
                 add_mlog = AuditLogs.objects.create(    
                     log_id = "ML0" + str(all_userLogs + 1),
                     activity = "Disconncted Sensor",
-                    username = request.user,
+                    is_auto = True,
                     audit_details = current_devsens[1].device_sensor_id + " is disconnected from the system",
                     audit_type = 2
                 )

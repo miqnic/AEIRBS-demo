@@ -338,7 +338,8 @@ $(".filter").on('change', function () {
         $(".status-underMaintenance" + componentID).hide();
         $(".maintenance-underMaintenance" + componentID).prop("checked", false);
       }
-      else if ($(this).prop("checked") == false) {
+      if ($(this).prop("checked") == false) {
+        $(".statusValue" + componentID).val(3);
         $(".status" + componentID).css("background-color", "rgb(97, 106, 107,0.5)");
         $('.status-switch' + componentID).prop('checked', false);
         $(".switch" + componentID).show();
@@ -366,6 +367,7 @@ $(".filter").on('change', function () {
         $(".maintenance-needsMaintenance" + componentID).prop("checked", false);
       }
       else if ($(this).prop("checked") == false) {
+        $(".statusValue" + componentID).val(3);
         $(".status" + componentID).css("background-color", "rgb(97, 106, 107,0.5)");
         $('.status-switch' + componentID).prop('checked', false);
         $(".switch" + componentID).show();

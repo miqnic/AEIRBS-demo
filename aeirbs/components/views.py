@@ -1315,6 +1315,8 @@ def status(request):
             date_time = dateTime.strftime("%x %X")
             user = User.objects.filter(username = request.user.username).first()
 
+            print(status)
+
             all_components = Device_Sensor.objects.all()
             all_devices = Device.objects.all()
             all_userLogs = AuditLogs.objects.filter(audit_type = 2).count()

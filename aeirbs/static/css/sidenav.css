@@ -36,7 +36,7 @@ a:focus {
 }
 
 #sidebar.active ul li a {
-    padding: 20px 10px;
+    padding: 10px 10px;
     text-align: center;
 }
 
@@ -125,11 +125,7 @@ ul ul a {
     }
     #sidebar.active {
         margin-left: 0 !important;
-    }
-    #sidebar .sidebar-header h3,
-    #sidebar .CTAs {
-        display: none;
-    }
+    }x
     #sidebar .sidebar-header strong {
         display: block;
         transition: opacity 1s ease-out;

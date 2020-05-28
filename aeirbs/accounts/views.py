@@ -79,16 +79,18 @@ def login_action(request):
 
             login(request, user)
 
-            # Log: Logged In - Valid User
-            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
-            add_log = AuditLogs.objects.create(
-                log_id = "UL0" + str(all_userLogs + 1),
-                activity = "Login",
-                username = request.user,
-                audit_details = str(request.user) + " logged in to the system.",
-                audit_type = 1
-            )
-            add_log.save()
+                # added comment
+
+                # Log: Logged In - Valid User
+                all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+                add_log = AuditLogs.objects.create(
+                    log_id = "UL0" + str(all_userLogs + 1),
+                    activity = "Login",
+                    username = request.user,
+                    audit_details = str(request.user) + " logged in to the system.",
+                    audit_type = 1
+                )
+                add_log.save()
 
             messages.success(request, f'Logged in successfully!')
             return redirect('earthquake_components')

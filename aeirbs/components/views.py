@@ -104,7 +104,34 @@ def ajax_data(request):
         # ard[0] - Triple Axis Accelerometer
         print(current_device.device_type)
         if current_device.device_type == 1:
-            if float(ard[0]) >= 5.0:
+            # EQ 3
+            if float(ard[0]) >= 15.0:
+                print('earthquake happening')
+                alert = 1
+
+                # print(current_device, current_incident)
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "EQ_I",
+                )
+                add_increp.save()
+
+            # EQ 2
+            if float(ard[0]) >= 10.0 and 15 > float(ard[0]):
+                print('earthquake happening')
+                alert = 1
+
+                # print(current_device, current_incident)
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "EQ_I",
+                )
+                add_increp.save()
+
+
+            if float(ard[0]) >= 5.0 and 10 > float(ard[0]):
                 print('earthquake happening')
                 alert = 1
 
@@ -148,7 +175,32 @@ def ajax_data(request):
                 )
                 add_mlog.save()
             # used OR because MQ2 Gas Sensor is not available
-            if (float(ard[0]) >= 300.0) or (float(ard[1]) >= 35.0):
+            # FR_THIRD
+            if ((float(ard[0]) >= 400.0) or (float(ard[1]) >= 35.0)) and ((float(ard[0]) < 450.0) or (float(ard[1]) < 40.0)):
+                print('fire happening')
+                alert = 1
+
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "FR_THIRD",
+                )
+                add_increp.save()
+            
+            #FR_SECOND
+            if ((float(ard[0]) >= 350.0) or (float(ard[1]) >= 30.0)) and ((float(ard[0]) < 400.0) or (float(ard[1]) < 35.0)):
+                print('fire happening')
+                alert = 1
+
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "FR_SECOND",
+                )
+                add_increp.save()
+
+            #FR_FIRST
+            if ((float(ard[0]) >= 300.0) or (float(ard[1]) >= 25.0)) and ((float(ard[0]) < 350.0) or (float(ard[1]) < 25.0)):
                 print('fire happening')
                 alert = 1
 
@@ -191,7 +243,35 @@ def ajax_data(request):
                 add_mlog.save()
 
             # used AND because it is a complete module
-            if float(ard[0]) < 10.0 and float(ard[1]) == 1.0:
+            # FL_HALFTIRE
+            print(float(ard[0]))
+            print(5.0 <= float(ard[0]))
+            print(float(ard[0]) < 10.0)
+            if (5.0 <= float(ard[0]) and float(ard[0]) < 10.0) and float(ard[1]) == 1.0:
+                print('flood happening')
+                alert = 1
+                
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "FL_HALFTIRE",
+                )
+                add_increp.save()
+
+            # FL_HALFKNEE
+            if (10.0 <= float(ard[0]) and float(ard[0]) < 15.0) and float(ard[1]) == 1.0:
+                print('flood happening')
+                alert = 1
+                
+                add_increp = IncidentReport.objects.create(
+                    device_sensor_id = current_device,
+                    incident_type_id = current_incident.id,
+                    incident_level = "FL_HALFKNEE",
+                )
+                add_increp.save()
+
+            # FL_GUTTER
+            if (15.0 <= float(ard[0]) and float(ard[0]) < 20.0) and float(ard[1]) == 1.0:
                 print('flood happening')
                 alert = 1
                 
@@ -208,11 +288,24 @@ def ajax_data(request):
 # auto-email
 def autoalarm_mail(request):
     # TEMP - Mail content
-    mail_body = render_to_string('emails/autoalarm.html')
+    context = {}
+    context['deviceID'] = request.POST.get('device_id')
+    deviceType = request.POST.get('device_type')
+
+    if deviceType == 1:
+        context['deviceType'] = "Earthquake"
+    elif deviceType == 2:
+        context['deviceType'] = "Fire"
+    else:
+        context['deviceType'] = "Flood"
+    
+    context['deviceFloor'] = request.POST.get('device_floor')
+    print(context)
+    mail_body = render_to_string('mail/mail_alarm.html', context = context)
     email = EmailMessage("AEIRBS: EMERGENCY", mail_body, "damim526@gmail.com", ["damim526@gmail.com"])
     email.content_subtype = 'html'
 
-    send_email = msg.send()
+    send_email = email.send()
     return HttpResponse('%s'%send_email)
 
 def add_component(request):

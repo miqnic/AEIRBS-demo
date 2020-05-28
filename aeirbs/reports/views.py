@@ -299,17 +299,49 @@ def generate_summary(request):
         fr_cntlvl = []
         fl_cntlvl = []
 
+        eq_alllvls = ['EQ_I','EQ_II','EQ_III','EQ_IV','EQ_V','EQ_VI','EQ_VII','EQ_VIII','EQ_IX','EQ_X']
+        fr_alllvls = ['FR_FIRST','FR_SECOND','FR_THIRD','FR_FOURTH','FR_FIFTH','FR_TFALPHA','FR_TFBRAVO','FR_TFCHARLIE','FR_TFDELTA','FR_TFECHO','FR_GENERAL']
+        fl_alllvls = ['FL_GUTTER','FL_HALFKNEE','FL_HALFTIRE','FL_KNEE','FL_TIRES','FL_WAIST','FL_CHEST']
+
+        eq_cntall = []
+        fr_cntall = []
+        fl_cntall = []        
+
         for eqlvl in eqlvl_query:
             eq_lvls.append(eqlvl['incident_level'])
             eq_cntlvl.append(eqlvl['count'])
         
+        intctr = 0
+        for eqlvl in eq_alllvls:
+            if eqlvl in eq_lvls:
+                intctr = eq_lvls.index(eqlvl)
+                eq_cntall.append(eq_cntlvl[intctr])
+            else:
+                eq_cntall.append(0)
+        
         for frlvl in frlvl_query:
             fr_lvls.append(frlvl['incident_level'])
             fr_cntlvl.append(frlvl['count'])
+        
+        intctr = 0
+        for frlvl in fr_alllvls:
+            if frlvl in fr_lvls:
+                intctr = fr_lvls.index(frlvl)
+                fr_cntall.append(fr_cntlvl[intctr])
+            else:
+                fr_cntall.append(0)
 
         for fllvl in fllvl_query:
             fl_lvls.append(fllvl['incident_level'])
             fl_cntlvl.append(fllvl['count'])
+        
+        intctr = 0
+        for fllvl in fl_alllvls:
+            if fllvl in fl_lvls:
+                intctr = fl_lvls.index(fllvl)
+                fl_cntall.append(fl_cntlvl[intctr])
+            else:
+                fl_cntall.append(0)
 
         for all in all_query:
             months.append(calendar.month_abbr[all['month']] + " " + str(all['year']))
@@ -357,9 +389,8 @@ def generate_summary(request):
 
         
 
-        context = {'months':months, 'eq_lvls': eq_lvls, 'eq_cntlvl': eq_cntlvl, 'eq_months': eq_months, 'eq_total': eq_total, 'fr_lvls': fr_lvls, 'fr_cntlvl': fr_cntlvl, 'fr_months': fr_months,'fr_total': fr_total, 'fl_lvls': fl_lvls, 'fl_cntlvl': fl_cntlvl, 'fl_months': fl_months, 'fl_total': fl_total}
+        context = {'months':months, 'eq_lvls': eq_alllvls, 'eq_cntlvl': eq_cntall, 'eq_months': eq_months, 'eq_total': eq_total, 'fr_lvls': fr_alllvls, 'fr_cntlvl': fr_cntall, 'fr_months': fr_months,'fr_total': fr_total, 'fl_lvls': fl_alllvls, 'fl_cntlvl': fl_cntall, 'fl_months': fl_months, 'fl_total': fl_total}
 
-        print(context)
 
         context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 

@@ -65,6 +65,7 @@ urlpatterns = [
     path('login/', accounts_views.login_action, name='login_action'),
     path('login-newpass/', accounts_views.login_changepass, name='login_newpass'),
     path('logout/', accounts_views.logout_action, name='logout_action'),
+    path('forgotpass/', accounts_views.forgot_password, name='forgot_password'),
 
     # DASHBOARD Components
     path('dashboard/earthquake-components/', components_views.earthquake_components, name='earthquake_components'),
@@ -100,7 +101,9 @@ urlpatterns = [
 
     # EMAIL
     path('alarm-mail/', components_views.autoalarm_mail, name='sendalarm_email'),
-    path('addadmin-mail/', accounts_views.addadmin_mail, name='sendadmin_email'),
+    path('addadmin-mail/', accounts_views.addadmin_mail, name='sendadd_email'),
+    path('deladmin-mail/', accounts_views.deladmin_mail, name='senddel_email'),
+    path('changepass-mail/', accounts_views.changepass_mail, name='changepass_email'),
     
 ] 
 

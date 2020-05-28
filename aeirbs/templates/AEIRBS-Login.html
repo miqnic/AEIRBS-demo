@@ -45,25 +45,43 @@
         </center>
         <div class="container col-5 login-form">
             {% if messages %} {% for message in messages %}
-            <div class="alert alert-danger" role="alert">
+            {% if message.tag == 'error'%}
+                <div class="alert alert-danger" role="alert">
+                    {{message}}
+                </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
                 {{message}}
             </div>
+            {% endif %}
             {% endfor %} {% endif %}
             <!--Login Form-->
             {% if new == 1 %}
                 <script>
                     $(document).ready(function(){
-                        console.log('1');
-                        $('#loginForm').hide();
-                        $('#changePassForm').show();
+                         console.log('1');
+                        $('#loginForm').css('display', 'none');
+                        $('#changePassForm').css('display', 'block');
+                        $('#forgotPassForm').css('display', 'none');
                     });
+                </script>
+            {% elif new == 2 %}
+                <script>
+                    $(document).ready(function(){
+                         console.log('2');
+                        $('#changePassForm').css('display', 'none');
+                        $('#loginForm').css('display', 'none');
+                        $('#forgotPassForm').css('display', 'block');
+                    });
+                    
                 </script>
             {% else %}
                 <script>
                     $(document).ready(function(){
-                        console.log('2');
-                        $('#changePassForm').hide();
-                        $('#loginForm').show();
+                         console.log('0');
+                        $('#changePassForm').css('display', 'none');
+                        $('#loginForm').css('display', 'block');
+                        $('#forgotPassForm').css('display', 'none');
                     });
                     
                 </script>
@@ -86,8 +104,9 @@
                 </div>
 
                 <div class="text-center">
-                    <center><button type="submit" name="forgotPassword" class="btn btn-link" data-dismiss="modal"
-                            style="color:#CD6155; font-size:10px;">Forgot Password?</button></center>
+                    <center><button name="forgotPassword" type="submit" class="btn btn-link"
+                            style="color:#CD6155; font-size:10px;">Forgot Password?</button>
+                        </center>
                     <center><button type="submit" name="login" class="btn btn-sm btn-warning mt-2">LOGIN</button>
                     </center>
                 </div>
@@ -112,7 +131,23 @@
                     <input type="hidden" id="username" name="username" value="{{username}}">
                 </div>
                 <div class="text-center">
-                    <center><button type="submit" name="login" class="btn btn-sm btn-warning mt-2">SUBMIT</button>
+                    <center><button type="submit" name="updatepass" class="btn btn-sm btn-warning mt-2">SUBMIT</button>
+                    </center>
+                </div>
+            </form>
+
+            <!-- Change password form -->
+            <form action="{% url 'forgot_password' %}" method="post" id="forgotPassForm">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><img src="{% static 'icons/flat/user.png' %}" height="23"></span>
+                    </div>
+                    <input type="text" name="company_id" class="form-control form-control-sm" placeholder="Username">
+                </div>
+
+                <div class="text-center">
+                    <center><button type="submit" name="forgotpass" class="btn btn-sm btn-warning mt-2">SUBMIT</button>
                     </center>
                 </div>
             </form>

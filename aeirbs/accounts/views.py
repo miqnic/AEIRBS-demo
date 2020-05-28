@@ -9,6 +9,7 @@ from components.models import Device
 from .models import JobPosition, Profile, DEFAULT_IMAGE
 from django.core.files.storage import FileSystemStorage
 import django.contrib.auth.hashers
+from django.template.loader import render_to_string
 
 from components.models import Device
 
@@ -17,31 +18,78 @@ from datetime import date
 
 from aeirbs.helper import format_input, with_letter, validate_stringFormat, validate_numberFormat, validate_emailFormat, validate_mobileNumber
 
-
-JOB_POSITIONS = []
-for position in JobPosition.objects.all():
-    JOB_POSITIONS.append(str(position))
-
 # auto-email
 def addadmin_mail(recipient, lastname, username):
     # TEMP - Mail content
-    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>Default Password is: " + username + "</p><br>" + "</div>"
-
-    email = EmailMessage("AEIRBS: Admin Details", mail_body, "damim526@gmail.com", [recipient])
+    context = {}
+    context['username'] = username
+    context['lastname'] = username
+    context['now'] = date.today().strftime("%d/%m/%Y")
+    
+    mail_body = render_to_string('mail/mail_adduser.html', context = context)
+    email = EmailMessage("AEIRBS: Account Creation", mail_body, "damim526@gmail.com", [recipient])
     email.content_subtype = 'html'
 
     send_email = email.send()
+    return HttpResponse('%s'%send_email)
 
 def deladmin_mail(recipient):
     # TEMP - Mail content
-    now = date.today().strftime("%d/%m/%Y")
-
-    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>YOUR ACCOUNT HAS BEEN TERMINATED AS OF "+ now +"</p><br>" + "</div>"
-
+    context = {}
+    context['now'] = date.today().strftime("%d/%m/%Y")
+    
+    mail_body = render_to_string('mail/mail_deluser.html', context = context)
     email = EmailMessage("AEIRBS: Account termination", mail_body, "damim526@gmail.com", [recipient])
     email.content_subtype = 'html'
 
     send_email = email.send()
+    return HttpResponse('%s'%send_email)
+
+def changepass_mail(username, email, fname, lname):
+    all_ithead = User.objects.all().filter(profile__job_position="It Head")
+    # TEMP - Mail content
+    context = {}
+    context['username'] = username
+    context['email'] = email
+    context['fname'] = fname
+    context['lname'] = lname
+    it_emails = []
+
+    for it in all_ithead:
+        it_emails.append(it.email)
+    
+    mail_body = render_to_string('mail/mail_changepass.html', context = context)
+    email = EmailMessage("AEIRBS: Forgot Password", mail_body, "damim526@gmail.com", it_emails)
+    email.content_subtype = 'html'
+
+    send_email = email.send()
+    return HttpResponse('%s'%send_email)
+
+# forgotten password
+def forgot_password(request):
+    employeeID = request.POST.get("company_id")
+
+    all_users = User.objects.all()
+    all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+
+    for user in all_users:
+        if user.username == employeeID:
+            add_log = AuditLogs.objects.create(
+                log_id = "UL0" + str(all_userLogs + 1),
+                activity = "Forgotten password",
+                username = user,
+                audit_details = str(user) + " has forgotten their password.",
+                audit_type = 1
+            )
+            add_log.save()
+
+            changepass_mail(user.username, user.email, user.first_name, user.last_name)
+
+            messages.success(request, f'Successfully sent an email to the IT Head. Please wait for their response email.')
+            return redirect('earthquake_components')
+
+    messages.error(request, f'Invalid username')
+    return render(request, 'AEIRBS-Login.html', {'new': 0})
 
 # first login - change password
 def login_changepass(request):
@@ -70,38 +118,42 @@ def login_changepass(request):
             messages.success(request, f'Updated user {employeeID} successfully!')
             return redirect('earthquake_components')
 
-    return render(request, 'AEIRBS-Login.html')
+    return render(request, 'AEIRBS-Login.html', {'new':0})
 
 # login 
 def login_action(request):
     if request.method == 'POST':
-        username = request.POST.get("company_id")
-        password = request.POST.get("password")
-        user = authenticate(username=username, password=password)
+        if request.POST.get("login"):
+            username = request.POST.get("company_id")
+            password = request.POST.get("password")
+            user = authenticate(username=username, password=password)
 
-        if user:
-            # check if user is a new user
-            if user.profile.logged == 0:
-                return render(request, 'AEIRBS-Login.html', {'new': 1, 'username': username})
+            if user:
+                # check if user is a new user
+                if user.profile.logged == 0:
+                    return render(request, 'AEIRBS-Login.html', {'new': 1, 'username': username})
 
-            login(request, user)
+                login(request, user)
 
-            # Log: Logged In - Valid User
-            all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
-            add_log = AuditLogs.objects.create(
-                log_id = "UL0" + str(all_userLogs + 1),
-                activity = "Login",
-                username = request.user,
-                audit_details = str(request.user) + " logged in to the system.",
-                audit_type = 1
-            )
-            add_log.save()
+                # Log: Logged In - Valid User
+                all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+                add_log = AuditLogs.objects.create(
+                    log_id = "UL0" + str(all_userLogs + 1),
+                    activity = "Login",
+                    username = request.user,
+                    audit_details = str(request.user) + " logged in to the system.",
+                    audit_type = 1
+                )
+                add_log.save()
 
-            messages.success(request, f'Logged in successfully!')
-            return redirect('earthquake_components')
+                messages.success(request, f'Logged in successfully!')
+                return redirect('earthquake_components')
+            else:
+                messages.error(request, f'Invalid credentials.')
+                return redirect('login_page')
         else:
-            messages.error(request, f'Invalid credentials.')
-            return redirect('login_page')
+            return render(request, 'AEIRBS-Login.html', {'new': 2})
+
 
 def logout_action(request):
     # Log: Logged Out
@@ -218,11 +270,11 @@ def add_user(request):
             context["inputMobileNumber"] = add_mobileNumber
             context["inputCompanyEmail"] = add_companyEmail
             context["errors"] = errors
-            context["job_positions"] = JOB_POSITIONS
             context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
+                context['job_positions'] = JobPosition.objects.all()
                 return render(request, 'MASTERLIST-AddAdmin.html',  context = context)
             else:
                 #Format User Input
@@ -451,6 +503,7 @@ def edit_admin(request):
    
 def add_admin(request):
     if request.user.is_authenticated:
+        JOB_POSITIONS = JobPosition.objects.all()
         return render(request, 'MASTERLIST-AddAdmin.html', {'job_positions': JOB_POSITIONS})
     else:
         return render(request, 'AEIRBS-Login.html')

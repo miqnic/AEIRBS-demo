@@ -303,13 +303,14 @@
                     success: function (result) {
                         $('#arddata0-{{device.id}}').html(result.temp);
                         $('#arddata1-{{device.id}}').html(result.dist);
-
+                        
+                        deviceID = '{{device.device_id}}';
                         deviceType = '{{device.device_type}}';
                         deviceFloor = '{{device.floor_location}}';
 
                         if (result.alert == 1) {
                             $(".alarm").show();
-                            soundAlarm(deviceType, deviceFloor, result.floor_locations, result.dev_id, result.dev_name);
+                            soundAlarm(deviceType, deviceFloor, result.floor_locations, result.dev_id, result.dev_name, deviceID);
                         }
                     },
                     error: function(data){
@@ -356,7 +357,7 @@
         timer = setTimeout(function () {
             audio = say('Alert! Alert! An emergency has been detected!');
             synth = audio[0];
-            msg = audio[1];
+            //msg = audio[1];
 
             /*email = $.ajax({
                 headers: {
@@ -374,17 +375,18 @@
             });*/
         }, 4000);
 
-        function alarm_alert(timer) {
+        function alarm_alert(timer, deviceID, deviceFloor, deviceType) {
             audio = say('Alert! Alert! An emergency has been detected!');
             synth = audio[0];
             msg = audio[1];
-
-            /*email = $.ajax({
+            
+            email = $.ajax({
+                type: 'POST',
                 headers: {
                     "X-CSRFTOKEN": "{{ csrf_token }}"
                 },
-                // data: {'device_id': deviceID, 'device_floor': deviceFloor},
-                url: '/alarm-mail',
+                data: {'device_id': deviceID, 'device_floor': deviceFloor, 'device_type': deviceType},
+                url: '/alarm-mail/',
                 success: function () {
                     // TEMP - for debugging
                     // alert('success');
@@ -393,7 +395,7 @@
                     // TEMP - for debugging
                     // alert('error..');
                 }
-            });*/
+            });
 
             var refreshID = setInterval(function interval() {
                 synth.speak(msg);
@@ -410,7 +412,7 @@
             }  
         };
 
-        function soundAlarm(deviceType, deviceFloor, floor_locations, tripped_sen_id, tripped_sen_name) {
+        function soundAlarm(deviceType, deviceFloor, floor_locations, tripped_sen_id, tripped_sen_name, deviceID) {
             for (floor in floor_locations) {
                 if (floor_locations[floor][0] == deviceFloor) {
                     $('#alarm_floor').html(floor_locations[floor][1]);
@@ -432,7 +434,7 @@
             
             // timer = 20000;
 
-            var timer = setTimeout(alarm_alert(timer), 3000);
+            var timer = setTimeout(alarm_alert(timer, deviceID, deviceFloor, deviceType), 3000);
         }
 
         $(".false-alarm").click(function () {

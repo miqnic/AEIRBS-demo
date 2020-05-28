@@ -135,6 +135,8 @@ def login_action(request):
 
                 login(request, user)
 
+                # added comment
+
                 # Log: Logged In - Valid User
                 all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
                 add_log = AuditLogs.objects.create(

@@ -16,20 +16,20 @@
                     <div class="col">
 
                         {% if request.user.is_superuser %}
-                        <button class="btn btn-danger btn btn-sm float-right" data-toggle="modal"
-                            data-target="#confirmClearMaintenanceLogs"><i class="fas fa-trash-alt fa-sm mr-2"></i>Clear
-                            Logs</button>
                         <form id="clearMaintenanceLogs" action="{% url 'clear_logs' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="clearAuditType" value="2">
                         </form>
+                        <button type="button" class="btn btn-danger btn btn-sm ml-3 float-right" data-toggle="modal"
+                            data-target="#confirmClearMaintenanceLogs"><i class="fas fa-trash-alt fa-sm mr-2"></i>Clear
+                            Logs</button>
+                        {% endif %}
                         <form action="{% url 'generatePDF_audit' %} " method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="auditType" value="2">
-                            <button type="submit" class="btn btn-dark btn mr-3 float-right btn-sm"
+                            <button type="submit" class="btn btn-dark btn float-right btn-sm"
                                 id="generatePDFButton"><i class="fas fa-download fa-sm mr-2"></i>Download</button>
                         </form>
-                        {% endif %}
                     </div>
 
                     <!--Search Component-->
@@ -88,10 +88,10 @@
                         style="color:white; position:absolute; right: 0; "><i class="fas fa-times fa-sm "></i></button>
 
                         <div class="row" style="color: white; padding: 3vh; padding-top: 6vh; text-align: left;">
-                            <div class="col-5" style="border-right: 2px solid white; text-align: center;">
-                                <h1><b>{{log.log_id}}</b></h1>
+                            <div class="col-5 align-self-center" style="text-align: center;">
+                                <h2 class="align-self-center"><b>{{log.log_id}}</b></h2>
                             </div>
-                            <div class="col ml-2">
+                            <div class="col ml-2" style="border-left: 2px solid white; ">
                                 <div class="row">
                                     <div class="col-2">
                                         <h5><b><i class="fas fa-info-circle"></i></b></h5>
@@ -128,6 +128,7 @@
                                         <b>Employee ID:</b>
                                     </div>
                                     <div class="col">
+                                        
                                         {{log.username.username}}
                                     </div>
                                 </div>
@@ -162,11 +163,30 @@
 </body>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{% static 'js/aeirbs-audit.js' %}"></script>
 <script>
     $('#pageSubmenu').show();
     $('.reports').toggleClass("dropdownActive");
     $('.audit').toggleClass("active");
     $('.maintenanceLogs').toggleClass("active");
 
+    $(".table-auditlist").click(function () {
+        if ($(".auditDetails").is(':visible')) {
+            $(".auditDetails").hide();
+
+            var auditid = $(this).data("auditid");
+            var id = "#auditDetails" + auditid;
+            $(".left-padding").width("65%");
+            $(".auditContainer").css("padding", "0 12.5px 25px 25px");
+            $(id).show();
+        }
+        else {
+            var auditid = $(this).data("auditid");
+            var id = "#auditDetails" + auditid;
+            $(".left-padding").width("65%");
+            $(".auditContainer").css("padding", "0 12.5px 25px 25px");
+            $(id).show();
+        }
+    });
 </script>
 {% endblock content %}

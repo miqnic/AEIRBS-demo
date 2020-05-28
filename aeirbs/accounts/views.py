@@ -15,11 +15,6 @@ from datetime import date
 
 from aeirbs.helper import format_input, with_letter, validate_stringFormat, validate_numberFormat, validate_emailFormat, validate_mobileNumber
 
-
-JOB_POSITIONS = []
-for position in JobPosition.objects.all():
-    JOB_POSITIONS.append(str(position))
-
 # auto-email
 def addadmin_mail(recipient, lastname, username):
     # TEMP - Mail content
@@ -126,7 +121,7 @@ def login_page(request):
 def masterlist(request):
     context = {}
     context['all_users'] = User.objects.all().filter(profile__is_deleted=False)
-    context['all_logs'] = AuditLogs.objects.all()
+    context['all_logs'] = AuditLogs.objects.filter(audit_isDeleted=False).order_by('-date_time')
     context['all_devices'] = Device.objects.all()
 
     if request.method == 'POST':
@@ -215,7 +210,7 @@ def add_user(request):
             context["inputMobileNumber"] = add_mobileNumber
             context["inputCompanyEmail"] = add_companyEmail
             context["errors"] = errors
-            context["job_positions"] = JOB_POSITIONS
+            context["job_positions"] = JobPosition.objects.all()
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
@@ -439,13 +434,14 @@ def edit_admin(request):
             print(request.POST.get("username"))
             context['username'] = request.POST.get("username")
             context['all_users'] = User.objects.all()
-            context['job_positions'] = JOB_POSITIONS
+            context['job_positions'] = JobPosition.objects.all()
         return render(request, 'MASTERLIST-EditAdmin.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
    
 def add_admin(request):
     if request.user.is_authenticated:
+        JOB_POSITIONS = JobPosition.objects.all()
         return render(request, 'MASTERLIST-AddAdmin.html', {'job_positions': JOB_POSITIONS})
     else:
         return render(request, 'AEIRBS-Login.html')

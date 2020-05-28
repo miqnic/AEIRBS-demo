@@ -98,6 +98,7 @@
         </div>
     </div>
 
+    {% if request.user.is_superuser %}
     <div class="container-fluid" id="componentContainer" style="padding:0 12.5px 25px 25px; width: 50%; float: left;">
 
         <div class="container-fluid"
@@ -143,12 +144,14 @@
                             {% if alarm.incident == 0 %}
                             <span>{{alarm.announcement}}</span>
                             <div class="hidden">
-                            <textarea class="form-control" placeholder="Earthquake Alarm" id="" rows="3">{{alarm.announcement}}</textarea>
+                                <textarea class="form-control" placeholder="Earthquake Alarm" id=""
+                                    rows="3">{{alarm.announcement}}</textarea>
 
-                            <small class="float-right text-danger"
-                                style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
+                                <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
 
-                            <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i class="far fa-save mr-2"></i>Save</button>
+                                <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i
+                                        class="far fa-save mr-2"></i>Save</button>
                             </div>
                             {% endif %}
                             {% endfor %}
@@ -187,12 +190,14 @@
                             {% if alarm.incident == 1 %}
                             <span>{{alarm.announcement}}</span>
                             <div class="hidden">
-                            <textarea class="form-control" placeholder="Fire Alarm" id="" rows="3">{{alarm.announcement}}</textarea>
+                                <textarea class="form-control" placeholder="Fire Alarm" id=""
+                                    rows="3">{{alarm.announcement}}</textarea>
 
-                            <small class="float-right text-danger"
-                                style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
+                                <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
 
-                            <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i class="far fa-save mr-2"></i>Save</button>
+                                <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i
+                                        class="far fa-save mr-2"></i>Save</button>
                             </div>
                             {% endif %}
                             {% endfor %}
@@ -232,12 +237,14 @@
                             {% if alarm.incident == 2 %}
                             <span>{{alarm.announcement}}</span>
                             <div class="hidden">
-                            <textarea class="form-control" placeholder="Flood Alarm" id="" rows="3">{{alarm.announcement}}</textarea>
+                                <textarea class="form-control" placeholder="Flood Alarm" id=""
+                                    rows="3">{{alarm.announcement}}</textarea>
 
-                            <small class="float-right text-danger"
-                                style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
+                                <small class="float-right text-danger"
+                                    style="font-size: xx-small;">{{errors.error_editJobPositionEmpty}}</small>
 
-                            <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i class="far fa-save mr-2"></i>Save</button>
+                                <button type="button" class="mt-3 btn btn-dark btn-sm float-right"><i
+                                        class="far fa-save mr-2"></i>Save</button>
                             </div>
                             {% endif %}
                             {% endfor %}
@@ -360,7 +367,7 @@
                     <div class="row row-item jobPosition{{position.id}} m-2"
                         style="background-color: white; border-radius: 5px; padding: 3px;">
                         <div class="col align-self-center">
-                            <span class=" align-self-center" style="font-size: 14px;">{{position.job_position}}</span>
+                            <span style="font-size: 14px;">{{position.job_position}}</span>
                         </div>
                         <div class="col-3">
                             <form id="delete{{position.id}}" action="{% url 'delete_position' %}" method="POST">
@@ -418,6 +425,7 @@
 
             </div>
         </div>
+        {% endif %}
 </body>
 {% include 'SETTINGS-ConfirmationModals.html' %}
 

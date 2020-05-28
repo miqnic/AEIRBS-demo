@@ -13,29 +13,48 @@
                 style="background-color:#343A40; height: auto; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);  border-radius: 5px; padding: 25px;">
 
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-2 align-self-center ml-3">
                         <div class="imagePreview"
                             style="background-image: url('{{user.profile.user_image.url}}'); background-size: contain; background-position: center; border: 5px solid white;">
                         </div>
                     </div>
 
                     <div class="col text-light" style="position: relative;">
-                        <form action="{% url 'edit_admin' %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="username" value="{{user.username}}"></input>
-                            <button class="btn btn-outline-light btn-sm float-right" title="Edit Profile" type="submit">
-                                <i class="fas fa-user-edit fa-sm mr-2"></i>Edit Profile</button>
-                        </form>
 
-                        <div class="mb-3" style="position: absolute; bottom: 0;">
+                        <div class="mb-2" style="position: absolute; bottom: 0;">
                             <h3><b>{{user.get_full_name}}</b></h3>
                             <div class="mt-2">
-                                <h6><i class="fas fa-user fa-sm mr-2 "></i>{% if user.is_superuser%} Super- Admin
-                                    {% else %} Admin {% endif %}</h6>
+                                <h6><i class="fas fa-briefcase fa-sm mr-2 "></i>{{user.profile.job_position}}</h6>
                                 <h6><i class="fas fa-envelope fa-sm mr-2 "></i>{{user.email}}</h6>
+                                <h6><i class="fas fa-mobile-alt fa-sm mr-2 "></i>{{user.profile.mobile_number}}</h6>
                             </div>
                         </div>
                     </div>
+                    <div class="col-3 align-self-center mr-5">
+                        <ul class="nav justify-content-end">
+                            <li class="nav-item mr-4">
+                                <button class="btn btn-link icon text-light btn-sm table-masterlist"
+                                    data-username='{{user.username}}' title="Activities" style="text-decoration: none;">
+                                    <i class="fas fa-list-alt fa-2x my-3 mx-2"></i>
+                                    <br>
+                                    <span class="text-light">Activities</span>
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <form action="{% url 'edit_admin' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="username" value="{{user.username}}"></input>
+                                    <button class="btn btn-link icon text-light btn-sm" title="Edit Profile"
+                                        type="submit" style="text-decoration: none;">
+                                        <i class="fas fa-user-edit fa-2x my-3 mx-2"></i>
+                                        <br>
+                                        <span class="text-light">Edit Profile</span></button>
+                                </form>
+                            </li>
+                        </ul>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -49,26 +68,25 @@
 
                 <div class="row">
                     <!--Page Labels-->
-                    <div class="col-4">
+                    <div class="col">
                         <h3 id="masterlistLabel"><b><b>ADMIN MASTERLIST</b></b>
                         </h3>
                     </div>
 
                     <!--Add Admin Button-->
-                    {% if request.user.is_superuser %}
                     <div class="col">
                         <form id="deleteList" action="{% url 'delete_list' %}" method="POST">
                             {% csrf_token %}
                             <input id="deleteList_input" type="hidden" name="delete_list">
                         </form>
                         <button id="deleteSelectedUser" class="btn btn-danger btn btn-sm float-right mt-1 ml-2 hidden"
-                            data-toggle="modal" data-target="#confirmDeleteList"><i class="fas fa-trash-alt fa-sm mr-2"></i> Delete Admin</button>
+                            data-toggle="modal" data-target="#confirmDeleteList"><i
+                                class="fas fa-trash-alt fa-sm mr-2"></i> Delete Admin</button>
 
                         <a href="{% url 'add_admin' %}" class="btn btn-dark float-right btn-sm mt-1">
                             <i class="fas fa-user-plus fa-sm mr-2"></i>Add Admin
                         </a>
                     </div>
-                    {% endif %}
 
                     <!--Search Admin-->
                     <div class="col-3 mt-1">
@@ -86,7 +104,7 @@
                 </div>
 
                 <!--Masterlist Table-->
-                <table id="" class="table masterlistTable table-striped table-borderless"
+                <table class="table masterlistTable table-striped table-borderless"
                     style="width:100%; text-align:center; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);">
                     <thead class="table-header">
                         <tr>
@@ -111,7 +129,7 @@
                             <td>{{user.profile.middle_name}}</td>
                             <td>{{user.last_name}}</td>
                         </tr>
-                        {% endif %}
+                        {% endif %} 
                         {% endfor %}
                     </tbody>
                 </table>
@@ -131,7 +149,6 @@
                             class="fas fa-times fa-sm "></i></button>
 
 
-                    {% if request.user.is_superuser %}
                     <div class="dropdown" style="position:absolute; top:0; left: 0;">
                         <button type="submit " class="btn btn-link icon m-2 userActions" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false"><i class="fas fa-align-justify fa-sm"
@@ -154,7 +171,6 @@
                                 <input type="hidden" name="username" value="{{user.username}}"></input>
                             </form>
                         </div>
-                        {% endif %}
                     </div>
                     <div class=" mb-2" style="padding-top: 6vh;">
                         <div class="mb-3">
@@ -166,36 +182,34 @@
                         <div class="text-light mb-2">
                             <h3><b>{{user.get_full_name}}</b></h3>
                             <div class="mt-2 ">
-                                <h6><i class="fas fa-user fa-sm mr-2 "></i>{% if user.is_superuser%}
-                                    Super- Admin
-                                    {% else %} Admin {% endif %}</h6>
-                                <h6><i class="fas fa-envelope fa-sm mr-2 "></i>{{user.email}}
-                                </h6>
+                                <h6><i class="fas fa-briefcase fa-sm mr-2 "></i>{{user.profile.job_position}}
+                                    <h6><i class="fas fa-envelope fa-sm mr-2 "></i>{{user.email}}</h6>
+                                    <h6><i class="fas fa-mobile-alt fa-sm mr-2 "></i>{{user.profile.mobile_number}}</h6>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="mt-3 "
                     style="background-color:#EAEDED; padding: 15px; min-height: 30vh; height: auto;box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
-                    <h6><b>Recent Activities:</b></h6>
-                    <div style=" max-height: 50vh; overflow-y: scroll; overflow-x: hidden;">
+                    <h6><b>Activities:</b></h6>
+                    <div style=" max-height: 50vh; overflow-y: auto; overflow-x: hidden;">
                         <table id="" class="table" style="width:100%;">
                             <tbody>
-                                {% for log in logs %}
-                                {% if log.0 == user.username%}
+                                {% for log in all_logs %}
+                                {% if log.username.username == user.username%}
                                 <tr style="font-size: 12px;">
                                     <td>
                                         <div class="row">
                                             <div class="col">
-                                                <b>{{log.1}}</b>
+                                                <b>{{log.activity}}</b>
                                             </div>
                                             <div class="col">
-                                                <small class="float-right">{{log.2}}</small>
+                                                <small class="float-right">{{log.date_time}}</small>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col ml-3">
-                                                {{log.3}}
+                                                {{log.audit_details}}
                                             </div>
                                         </div>
                                     </td>
@@ -213,5 +227,27 @@
     {% include 'MASTERLIST-ConfirmationModals.html' %}
 </body>
 <script src="{% static 'js/aeirbs-masterlist.js' %}"></script>
+<script>
+    $(".table-masterlist").click(function () {
+        if ($(".userDetails").is(':visible')) {
+            $(".userDetails").hide();
+
+            var username = $(this).data("username");
+            var id = "#userDetails" + username;
+            $(".left-padding").width("65%");
+            $(".user").css("padding", "0 25px 25px 25px");
+            $(".userContainer").css("padding", "0 12.5px 25px 25px");
+            $(id).show();
+        }
+        else {
+            var username = $(this).data("username");
+            var id = "#userDetails" + username;
+            $(".left-padding").width("65%");
+            $(".user").css("padding", "0 25px 25px 25px");
+            $(".userContainer").css("padding", "0 12.5px 25px 25px");
+            $(id).show();
+        }
+    });
+</script>
 
 {% endblock body %}

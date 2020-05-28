@@ -54,7 +54,8 @@ urlpatterns = [
     path('generate-maintenance-report/', reports_views.generatePDF_maintenanceReport, name='generatePDF_maintenanceReport'),
     path('generate-incident/', reports_views.generatePDF_incident, name='generatePDF_incident'),
     path('generate-incident-report/', reports_views.generatePDF_incidentReport, name='generatePDF_incidentReport'),
-    path('generate-summary/', reports_views.generatePDF_summary, name='generatePDF_summary'),
+    path('generate-summary-report/', reports_views.generatePDF_summary, name='generatePDF_summary'),
+    path('generate-summary/', reports_views.generate_summary, name='gen_sum'),
 
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
 

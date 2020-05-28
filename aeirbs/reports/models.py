@@ -11,6 +11,9 @@ AUDIT_TYPE= [
     (2, 'Maintenance Logs')
 ]
 
+class TemporaryImage(models.Model):
+    temp_image = models.ImageField(upload_to='temp_image')
+
 class AuditLogs(models.Model):
     log_id = models.CharField(max_length=15, unique=True)
     activity = models.CharField(max_length=100)

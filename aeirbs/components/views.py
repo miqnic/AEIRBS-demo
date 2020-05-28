@@ -13,7 +13,7 @@ from aeirbs.helper import sort_filter_components
 
 from .models import Alarm, Sensor, Device, Device_Sensor, INCIDENT_TYPE, STATUS, DEFAULT_IMAGE
 from accounts.models import JobPosition 
-from reports.models import AuditLogs
+from reports.models import AuditLogs, TemporaryImage
 
 import serial
 import json
@@ -283,6 +283,11 @@ def add_device(request):
             add_deviceLink = request.POST.get("addDeviceLink")
             add_devicePortNumber = request.POST.get("addDevicePortNumber")
             add_deviceImage = request.FILES.get("addDeviceImage")
+            
+            image = TemporaryImage.objects.create(
+                temp_image = add_deviceImage
+            )
+            image.save()
 
             #Validate User Input
             if not add_deviceProductID.strip():
@@ -314,7 +319,9 @@ def add_device(request):
             context["inputDeviceName"] = add_deviceName
             context["inputDeviceLink"] = add_deviceLink
             context["inputDevicePortNumber"] = add_devicePortNumber
+            context["inputDeviceImage"] = TemporaryImage.objects.all().reverse().first()
             context["errors"] = errors
+            context["error"] = True
             context["addComponent"] = "device"
             context["floor_locations"] = FLOOR_LOCATIONS
 
@@ -322,6 +329,7 @@ def add_device(request):
                 messages.error(request, f'Invalid Input!')  
                 return render(request, 'SETTINGS-AddComponent.html',  context = context)
             else:
+                TemporaryImage.objects.all().delete()
                 #Format User Input
                 add_deviceName = format_input(add_deviceName)
                 add_devicePortNumber = format_portNumber(add_devicePortNumber)            

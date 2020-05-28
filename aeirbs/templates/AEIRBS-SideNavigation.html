@@ -28,7 +28,7 @@
               <i class="fas fa-cogs fa-lg" style="border-radius: 5px;"></i></h6>
             </a>
           </li>
-
+          {% if request.user.is_superuser == True %}
           <li class="mx-2 my-2">
             <a id="masterlist" class="masterlist text" href="{% url 'masterlist' %}" style="border-radius: 5px;">
               <div class="row">
@@ -45,6 +45,7 @@
               <i class="fas fa-users fa-lg"></i>
             </a>
           </li>
+          {% endif %}
 
           <li class="mx-2 my-2" >
             <a id="reports" class="reports text" style="border-radius: 5px;">

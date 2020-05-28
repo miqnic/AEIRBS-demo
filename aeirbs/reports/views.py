@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .models import AuditLogs, IncidentReport
+from .models import AuditLogs, IncidentReport, Incident
 from components.models import Device
   
 from django.shortcuts import render
@@ -31,213 +31,23 @@ def audit(request):
         
 def incident(request):
     if request.user.is_authenticated:
-        incident_reports = IncidentReport.objects.all()
-        return render(request, "AEIRBS-Incident.html", {'incident_reports': incident_reports})
-    else:
-        return render(request, 'AEIRBS-Login.html')
-
-def summary(request):
-    if request.user.is_authenticated:
-        context = {}
-        context["summary"] = [1,2,3,4,5,1]
-        return render(request, "AEIRBS-Summary.html", context = context)
-    else:
-        return render(request, 'AEIRBS-Login.html')
-
-#Audit Logs
-def component_logs(request):
-    if request.user.is_authenticated and request.user.is_superuser:
         context = {}
         context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
-        audit_logs = AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False)
+        context['incidents'] = Incident.objects.all()
+        all_incidents = IncidentReport.objects.all()
+
+        for incident in all_incidents:
+            print(incident.incident_type)
 
         if request.method == 'POST':
-            keyword = request.POST.get("keyword")
-            audit_logs = AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, username__last_name__contains = keyword)
+            if request.POST.get("filterIncidents"):
+                print("HERE")
+                type = int(request.POST.get("filterIncidents")) 
+                all_incidents = IncidentReport.objects.filter(incident_type = type) 
+                context['selected'] = type
 
-        context['audit_logs'] = audit_logs
-
-        return render(request, "AUDIT-ComponentLogs.html", context = context)
-    else:
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-def user_logs(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        context = {}
-        context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
-        audit_logs = AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False)
-
-        if request.method == 'POST':
-            keyword = request.POST.get("keyword")
-            audit_logs = AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, username__last_name__contains = keyword)
-
-        context['audit_logs'] = audit_logs
-
-        return render(request, "AUDIT-UserLogs.html", context = context)
-    else:
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-def maintenance_logs(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        context = {}
-        context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
-        audit_logs = AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False)
-
-        if request.method == 'POST':
-            keyword = request.POST.get("keyword")
-            audit_logs = AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, username__last_name__contains = keyword)
-
-        context['audit_logs'] = audit_logs
-
-        return render(request, "AUDIT-MaintenanceLogs.html", context = context)
-    else:
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-def clear_logs(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            audit_type = int(request.POST.get("clearAuditType"))
-            audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False)
-            for log in audit_logs:
-                log.audit_isDeleted = True
-                log.save()
-            if audit_type == 0:
-                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
-                add_log = AuditLogs.objects.create(
-                    log_id = "CL0" + str(log_count + 1),
-                    activity = "Clear Component Logs",
-                    username = request.user,
-                    audit_details = str(request.user) + " cleared all Component Logs from the system.",
-                    audit_type = audit_type
-                )
-                add_log.save()
-                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
-                messages.success(request, f'Cleared Component Logs successfully!')
-                return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
-            if audit_type == 1:
-                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
-                add_log = AuditLogs.objects.create(
-                    log_id = "UL0" + str(log_count + 1),
-                    activity = "Clear User Logs",
-                    username = request.user,
-                    audit_details = str(request.user) + " cleared all User Logs from the system.",
-                    audit_type = audit_type
-                )
-                add_log.save()
-                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
-                messages.success(request, f'Cleared User Logs successfully!')
-                return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
-            if audit_type == 2:
-                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
-                add_log = AuditLogs.objects.create(
-                    log_id = "ML0" + str(log_count + 1),
-                    activity = "Clear Maintenance Logs",
-                    username = request.user,
-                    audit_details = str(request.user) + " cleared all Maintenance Logs from the system.",
-                    audit_type = audit_type
-                )
-                add_log.save()
-                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
-                messages.success(request, f'Cleared Maintenance Logs successfully!')
-                return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
-    else:
-        return render(request, 'AEIRBS-Login.html')
-
-#PDF Creation
-def renderPDF(template_src, context_dict={}):
-	template = get_template(template_src)
-	html  = template.render(context_dict)
-	result = BytesIO()
-	pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
-	if not pdf.err:
-		return HttpResponse(result.getvalue(), content_type='application/pdf')
-	return None
-
-def generatePDF_audit(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        if request.method == 'POST':
-            auditType = int(request.POST.get("auditType"))
-            audit_logs = AuditLogs.objects.filter(audit_type = auditType)
-            dateTime = datetime.datetime.now()
-            date = dateTime.strftime("%x")
-            time = dateTime.strftime("%X")
-            context = {}
-
-            context['audit_type'] = auditType
-            context['audit_logs'] = audit_logs.reverse()
-            context['date'] = date
-            context['time'] = time
-            
-            pdf = renderPDF('reports/generatePDF-audit.html', context)
-            if pdf:
-                response = HttpResponse(pdf, content_type='application/pdf')
-                filename = 'AuditLogs(' + str(date) + '-' + str(time) +  ').pdf' 
-                content = "inline; filename=%s" %(filename)
-                response['Content-Disposition'] = content
-                return response
-            return HttpResponse("Not Found")    
-    else:
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-def incident(request):
-    if request.user.is_authenticated:
-        context = {}
-        context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
-        context['incident_reports'] = IncidentReport.objects.all()
+        context['incident_reports'] = all_incidents
         return render(request, "AEIRBS-Incident.html", context = context)
-        
-def generatePDF_maintenanceReport(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        if request.method == 'POST':
-            auditID = request.POST.get("auditID")
-            audit = AuditLogs.objects.filter(log_id = auditID)
-            dateTime = datetime.datetime.now()
-            date = dateTime.strftime("%x")
-            time = dateTime.strftime("%X")
-            context = {}
-
-            context['auditID'] = auditID
-            context['audit'] = audit
-            context['date'] = date
-            context['time'] = time
-            
-            pdf = renderPDF('reports/generatePDF-maintenanceReport.html', context)
-            if pdf:
-                response = HttpResponse(pdf, content_type='application/pdf')
-                filename = 'MaintenanceReport(' + str(date) + '-' + str(time) +  ').pdf' 
-                content = "inline; filename=%s" %(filename)
-                response['Content-Disposition'] = content
-                return response
-            return HttpResponse("Not Found")    
-    else:
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-def generatePDF_incident(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        incident_id = request.POST.get("download_incident")
-        incident_reports = IncidentReport.objects.filter(id=incident_id)
-        dateTime = datetime.datetime.now()
-        date = dateTime.strftime("%x")
-        time = dateTime.strftime("%X")
-        context = {}
-
-        context['incident_reports'] = incident_reports
-        context['date'] = date
-        context['time'] = time
-
-        for report in incident_reports:
-            print(report.incident_type)
-        
-        pdf = renderPDF('reports/generatePDF-incident.html', context)
-        if pdf:
-            response = HttpResponse(pdf, content_type='application/pdf')
-            filename = 'IncidentLogs(' + str(date) + '-' + str(time) +  ').pdf' 
-            content = "inline; filename=%s" %(filename)
-            response['Content-Disposition'] = content
-            return response
-        return HttpResponse("Not Found")    
-    else:
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def summary(request):
     if request.user.is_authenticated:
@@ -246,10 +56,12 @@ def summary(request):
         return render(request, "AEIRBS-Summary.html", context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
+
 
 def generate_summary(request):
     if request.user.is_authenticated:
-        dates = request.POST.get('dateRange').split('-')
+        date_range = request.POST.get('dateRange')
+        dates = date_range.split('-')
         start = dates[0].split('/')
         end = dates[1].split('/')
         startday = int(start[1])
@@ -329,8 +141,6 @@ def generate_summary(request):
             fr_months.append(month_key)
             fr_count.append(fr["count"])
         
-        
-
         intctr = 0
         for mos in months:
             if mos in eq_months:
@@ -358,16 +168,204 @@ def generate_summary(request):
         
 
         context = {'months':months, 'eq_lvls': eq_lvls, 'eq_cntlvl': eq_cntlvl, 'eq_months': eq_months, 'eq_total': eq_total, 'fr_lvls': fr_lvls, 'fr_cntlvl': fr_cntlvl, 'fr_months': fr_months,'fr_total': fr_total, 'fl_lvls': fl_lvls, 'fl_cntlvl': fl_cntlvl, 'fl_months': fl_months, 'fl_total': fl_total}
-
-        print(context)
-
+        context["inputDateRange"] = date_range
         context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
         return render(request, "AEIRBS-Summary.html", context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
 
+#Audit Logs
+def component_logs(request):
+    if request.user.is_authenticated:
+        context = {}
+        context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
+        audit_logs = AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False)
+
+        if request.method == 'POST':
+            keyword = request.POST.get("keyword")
+            audit_logs = AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 0, audit_isDeleted = False, username__last_name__contains = keyword)
+
+        context['audit_logs'] = audit_logs
+
+        return render(request, "AUDIT-ComponentLogs.html", context = context)
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def user_logs(request):
+    if request.user.is_authenticated:
+        context = {}
+        context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
+        audit_logs = AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False)
+
+        if request.method == 'POST':
+            keyword = request.POST.get("keyword")
+            audit_logs = AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 1, audit_isDeleted = False, username__last_name__contains = keyword)
+
+        context['audit_logs'] = audit_logs
+
+        return render(request, "AUDIT-UserLogs.html", context = context)
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def maintenance_logs(request):
+    if request.user.is_authenticated:
+        context = {}
+        context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
+        audit_logs = AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False)
+
+        if request.method == 'POST':
+            keyword = request.POST.get("keyword")
+            audit_logs = AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, activity__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, username__first_name__contains = keyword) | AuditLogs.objects.filter(audit_type = 2, audit_isDeleted = False, username__last_name__contains = keyword)
+
+        context['audit_logs'] = audit_logs
+
+        return render(request, "AUDIT-MaintenanceLogs.html", context = context)
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def clear_logs(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            audit_type = int(request.POST.get("clearAuditType"))
+            audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False)
+            for log in audit_logs:
+                log.audit_isDeleted = True
+                log.save()
+            if audit_type == 0:
+                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
+                add_log = AuditLogs.objects.create(
+                    log_id = "CL0" + str(log_count + 1),
+                    activity = "Clear Component Logs",
+                    username = request.user,
+                    audit_details = str(request.user) + " cleared all Component Logs from the system.",
+                    audit_type = audit_type
+                )
+                add_log.save()
+                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
+                messages.success(request, f'Cleared Component Logs successfully!')
+                return render(request, "AUDIT-ComponentLogs.html", {'audit_logs': audit_logs})
+            if audit_type == 1:
+                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
+                add_log = AuditLogs.objects.create(
+                    log_id = "UL0" + str(log_count + 1),
+                    activity = "Clear User Logs",
+                    username = request.user,
+                    audit_details = str(request.user) + " cleared all User Logs from the system.",
+                    audit_type = audit_type
+                )
+                add_log.save()
+                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
+                messages.success(request, f'Cleared User Logs successfully!')
+                return render(request, "AUDIT-UserLogs.html", {'audit_logs': audit_logs})
+            if audit_type == 2:
+                log_count = AuditLogs.objects.filter(audit_type = audit_type).count()
+                add_log = AuditLogs.objects.create(
+                    log_id = "ML0" + str(log_count + 1),
+                    activity = "Clear Maintenance Logs",
+                    username = request.user,
+                    audit_details = str(request.user) + " cleared all Maintenance Logs from the system.",
+                    audit_type = audit_type
+                )
+                add_log.save()
+                audit_logs = AuditLogs.objects.filter(audit_type = audit_type, audit_isDeleted = False) 
+                messages.success(request, f'Cleared Maintenance Logs successfully!')
+                return render(request, "AUDIT-MaintenanceLogs.html", {'audit_logs': audit_logs})
+    else:
+        return render(request, 'AEIRBS-Login.html')
+
+#PDF Creation
+def renderPDF(template_src, context_dict={}):
+	template = get_template(template_src)
+	html  = template.render(context_dict)
+	result = BytesIO()
+	pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+	if not pdf.err:
+		return HttpResponse(result.getvalue(), content_type='application/pdf')
+	return None
+
+def generatePDF_audit(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        if request.method == 'POST':
+            auditType = int(request.POST.get("auditType"))
+            audit_logs = AuditLogs.objects.filter(audit_type = auditType)
+            total = audit_logs.count()
+            dateTime = datetime.datetime.now()
+            date = dateTime.strftime("%x")
+            time = dateTime.strftime("%X")
+            context = {}
+
+            context['audit_type'] = auditType
+            context['audit_logs'] = audit_logs.reverse()
+            context['total'] = total
+            context['date'] = date
+            context['time'] = time
+            
+            pdf = renderPDF('reports/generatePDF-audit.html', context)
+            if pdf:
+                response = HttpResponse(pdf, content_type='application/pdf')
+                filename = 'AuditLogs(' + str(date) + '-' + str(time) +  ').pdf' 
+                content = "inline; filename=%s" %(filename)
+                response['Content-Disposition'] = content
+                return response
+            return HttpResponse("Not Found")    
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def generatePDF_maintenanceReport(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        if request.method == 'POST':
+            auditID = request.POST.get("auditID")
+            audit = AuditLogs.objects.filter(log_id = auditID).first()
+            dateTime = datetime.datetime.now()
+            date = dateTime.strftime("%x")
+            time = dateTime.strftime("%X")
+            context = {}
+
+            context['auditID'] = auditID
+            context['audit'] = audit
+            context['date'] = date
+            context['time'] = time
+            
+            pdf = renderPDF('reports/generatePDF-maintenanceReport.html', context)
+            if pdf:
+                response = HttpResponse(pdf, content_type='application/pdf')
+                filename = 'MaintenanceReport(' + str(date) + '-' + str(time) +  ').pdf' 
+                content = "inline; filename=%s" %(filename)
+                response['Content-Disposition'] = content
+                return response
+            return HttpResponse("Not Found")    
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def generatePDF_incident(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        incident_reports = IncidentReport.objects.all().reverse()
+        dateTime = datetime.datetime.now()
+        date = dateTime.strftime("%x")
+        time = dateTime.strftime("%X")
+        context = {}
+
+        context['incident_reports'] = incident_reports
+        context['date'] = date
+        context['time'] = time
+        context['eq'] = IncidentReport.objects.filter(incident_type = 1).count()
+        context['fr'] = IncidentReport.objects.filter(incident_type = 2).count()
+        context['fl'] = IncidentReport.objects.filter(incident_type = 3).count() 
+
+        for report in incident_reports:
+            print(report.incident_type)
         
+        pdf = renderPDF('reports/generatePDF-incident.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = 'IncidentLogs(' + str(date) + '-' + str(time) +  ').pdf' 
+            content = "inline; filename=%s" %(filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not Found")    
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         
 def generatePDF_incidentReport(request):
     if request.user.is_authenticated and request.user.is_superuser:

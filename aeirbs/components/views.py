@@ -288,7 +288,8 @@ def ajax_data(request):
 
     for alarm in alarms:
         all_alarms.append(alarm.announcement)
-
+        
+        FLOOR_LOCATIONS = get_floorLocations()
     data = {'alert': alert, 'temp': float(ard[1]), 'dist': float(ard[0]), 'floor_locations': FLOOR_LOCATIONS, 'dev_id': current_device.device_id, 'dev_name': current_device.device_name, 'all_alarms': all_alarms}
     return HttpResponse(json.dumps(data))
 
@@ -296,6 +297,7 @@ def ajax_data(request):
 def autoalarm_mail(request):
     # TEMP - Mail content
     context = {}
+    FLOOR_LOCATIONS = get_floorLocations()
     context['deviceID'] = request.POST.get('device_id')
     deviceType = request.POST.get('device_type')
     all_sa = User.objects.filter(is_superuser=1, is_active=1)
@@ -324,6 +326,8 @@ def autoalarm_mail(request):
 def add_component(request):
     if request.user.is_authenticated:
         context = {}
+        
+        FLOOR_LOCATIONS = get_floorLocations()
         context['floor_locations'] = FLOOR_LOCATIONS
         context['incident_type'] = INCIDENT_TYPE
 
@@ -334,6 +338,8 @@ def add_component(request):
 def fire_components(request):
     if request.user.is_authenticated:
         context = {}
+        
+        FLOOR_LOCATIONS = get_floorLocations()
         context['all_devices'] =  Device.objects.filter(device_isDeleted=False)
         context['all_sensors'] = Sensor.objects.filter(sensor_isDeleted=False)
         context['all_components'] = Device_Sensor.objects.all()
@@ -372,6 +378,7 @@ def fire_components(request):
 def earthquake_components(request):
     if request.user.is_authenticated:
         context = {}
+        FLOOR_LOCATIONS = get_floorLocations()
         context['all_devices'] =  Device.objects.filter(device_isDeleted=False)
         context['all_sensors'] = Sensor.objects.filter(sensor_isDeleted=False)
         context['all_components'] = Device_Sensor.objects.all()
@@ -410,6 +417,7 @@ def earthquake_components(request):
 def flood_components(request):
     if request.user.is_authenticated:
         context = {}
+        FLOOR_LOCATIONS = get_floorLocations()
         context['all_devices'] =  Device.objects.filter(device_isDeleted=False)
         context['all_sensors'] = Sensor.objects.filter(sensor_isDeleted=False)
         context['all_components'] = Device_Sensor.objects.all()
@@ -492,6 +500,7 @@ def devices(request):
 def sensors(request):
     if request.user.is_authenticated:
         context = {}
+        FLOOR_LOCATIONS = get_floorLocations()
         context['all_devices'] =  Device.objects.filter(device_isDeleted=False)
         context['all_sensors'] = Sensor.objects.filter(sensor_isDeleted=False).order_by('sensor_id')
         context['all_components'] = Device_Sensor.objects.all()
@@ -541,6 +550,7 @@ def add_device(request):
         if request.method == 'POST':
             context = {}
             errors = {}
+            FLOOR_LOCATIONS = get_floorLocations()
             all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 
             #Get User Input
@@ -919,6 +929,8 @@ def edit_device(request):
         if request.method == 'POST':
             context = {}
             errors = {}
+            FLOOR_LOCATIONS = get_floorLocations()
+
             all_devices = Device.objects.all()
             all_userLogs = AuditLogs.objects.filter(audit_type = 0).count()
 

@@ -23,11 +23,11 @@ def addadmin_mail(recipient, lastname, username):
     # TEMP - Mail content
     context = {}
     context['username'] = username
-    context['lastname'] = username
+    context['lastname'] = lastname
     context['now'] = date.today().strftime("%d/%m/%Y")
     
     mail_body = render_to_string('mail/mail_adduser.html', context = context)
-    email = EmailMessage("AEIRBS: Account Creation", mail_body, "damim526@gmail.com", [recipient])
+    email = EmailMessage("AEIRBS: Account Creation", mail_body, "aeirbs@gmail.com", [recipient])
     email.content_subtype = 'html'
 
     send_email = email.send()
@@ -39,14 +39,14 @@ def deladmin_mail(recipient):
     context['now'] = date.today().strftime("%d/%m/%Y")
     
     mail_body = render_to_string('mail/mail_deluser.html', context = context)
-    email = EmailMessage("AEIRBS: Account termination", mail_body, "damim526@gmail.com", [recipient])
+    email = EmailMessage("AEIRBS: Account termination", mail_body, "aeirbs@gmail.com", [recipient])
     email.content_subtype = 'html'
 
     send_email = email.send()
     return HttpResponse('%s'%send_email)
 
 def changepass_mail(username, email, fname, lname):
-    all_ithead = User.objects.all().filter(profile__job_position="It Head")
+    all_ithead = User.objects.filter(profile__job_position="It Head")
     # TEMP - Mail content
     context = {}
     context['username'] = username
@@ -59,7 +59,7 @@ def changepass_mail(username, email, fname, lname):
         it_emails.append(it.email)
     
     mail_body = render_to_string('mail/mail_changepass.html', context = context)
-    email = EmailMessage("AEIRBS: Forgot Password", mail_body, "damim526@gmail.com", it_emails)
+    email = EmailMessage("AEIRBS: Forgot Password", mail_body, "aeirbs@gmail.com", it_emails)
     email.content_subtype = 'html'
 
     send_email = email.send()

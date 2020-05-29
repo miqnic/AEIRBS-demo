@@ -40,7 +40,7 @@ def ajax_data(request):
     componentID = request.POST.get("componentID")
 
     all_components = Device_Sensor.objects.all()
-    all_devices = Device.objects.all()
+    all_devices = Device.objects.filter(device_status = 0) | Device.objects.filter(device_status = 2)
     all_incidents = Incident.objects.all()
     all_userLogs = AuditLogs.objects.filter(audit_type = 2).count()
 
@@ -126,7 +126,7 @@ def ajax_data(request):
                 add_increp = IncidentReport.objects.create(
                     device_sensor_id = current_device,
                     incident_type_id = current_incident.id,
-                    incident_level = "EQ_I",
+                    incident_level = "EQ_II",
                 )
                 add_increp.save()
 
@@ -139,7 +139,7 @@ def ajax_data(request):
                 add_increp = IncidentReport.objects.create(
                     device_sensor_id = current_device,
                     incident_type_id = current_incident.id,
-                    incident_level = "EQ_I",
+                    incident_level = "EQ_III",
                 )
                 add_increp.save()
         
@@ -282,7 +282,14 @@ def ajax_data(request):
                 )
                 add_increp.save()
 
-    data = {'alert': alert, 'temp': float(ard[1]), 'dist': float(ard[0]), 'floor_locations': FLOOR_LOCATIONS, 'dev_id': current_device.device_id, 'dev_name': current_device.device_name}
+    alarms = Alarm.objects.all()
+
+    all_alarms = []
+
+    for alarm in alarms:
+        all_alarms.append(alarm.announcement)
+
+    data = {'alert': alert, 'temp': float(ard[1]), 'dist': float(ard[0]), 'floor_locations': FLOOR_LOCATIONS, 'dev_id': current_device.device_id, 'dev_name': current_device.device_name, 'all_alarms': all_alarms}
     return HttpResponse(json.dumps(data))
 
 # auto-email
@@ -291,6 +298,12 @@ def autoalarm_mail(request):
     context = {}
     context['deviceID'] = request.POST.get('device_id')
     deviceType = request.POST.get('device_type')
+    all_sa = User.objects.filter(is_superuser=1, is_active=1)
+
+    emails = ['aeirbs@gmail.com']
+
+    for sa in all_sa:
+        emails.append(sa.email)
 
     if deviceType == 1:
         context['deviceType'] = "Earthquake"
@@ -302,7 +315,7 @@ def autoalarm_mail(request):
     context['deviceFloor'] = request.POST.get('device_floor')
     print(context)
     mail_body = render_to_string('mail/mail_alarm.html', context = context)
-    email = EmailMessage("AEIRBS: EMERGENCY", mail_body, "damim526@gmail.com", ["damim526@gmail.com"])
+    email = EmailMessage("AEIRBS: EMERGENCY", mail_body, "aeirbs@gmail.com", emails)
     email.content_subtype = 'html'
 
     send_email = email.send()

@@ -961,7 +961,7 @@ def edit_device(request):
                         device.device_id = deviceID
                         device.device_name = edit_deviceName
                         device.device_productID = edit_deviceProductID
-                        device.mac_address = edit_devicePortNumber
+                        device.port_number = edit_devicePortNumber
                         device.floor_location = edit_deviceFloorLocation
                         device.device_link = edit_deviceLink
                         device.device_image = edit_deviceImage

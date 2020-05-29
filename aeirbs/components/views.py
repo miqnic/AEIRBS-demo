@@ -200,7 +200,7 @@ def ajax_data(request):
                 add_increp.save()
 
             #FR_FIRST
-            if ((float(ard[0]) >= 300.0) or (float(ard[1]) >= 25.0)) and ((float(ard[0]) < 350.0) or (float(ard[1]) < 25.0)):
+            if ((float(ard[0]) >= 300.0) or (float(ard[1]) >= 25.0)) and ((float(ard[0]) < 350.0) or (float(ard[1]) < 30.0)):
                 print('fire happening')
                 alert = 1
 

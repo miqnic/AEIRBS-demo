@@ -19,8 +19,9 @@
 
         <!--Download PDF-->
         <div class="col-2">
-          <form action="" method="POST">
-            <button type="button" class="btn btn-dark btn-sm mr-3 float-right" id="downloadPDFButton"><i
+          <form action="{% url 'generatePDF_summary' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-dark btn-sm mr-3 float-right" id=""><i
                 class="fas fa-download fa-sm mr-2"></i>Download Report</button>
           </form>
         </div>

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .models import AuditLogs, IncidentReport, Incident
-from components.models import Device
+from components.models import Device, Device_Sensor
   
 from django.shortcuts import render
 from io import BytesIO
@@ -111,6 +111,50 @@ def generate_summary(request):
         fr_cntlvl = []
         fl_cntlvl = []
 
+        eq_alllvls = ['EQ_I','EQ_II','EQ_III','EQ_IV','EQ_V','EQ_VI','EQ_VII','EQ_VIII','EQ_IX','EQ_X']
+        fr_alllvls = ['FR_FIRST','FR_SECOND','FR_THIRD','FR_FOURTH','FR_FIFTH','FR_TFALPHA','FR_TFBRAVO','FR_TFCHARLIE','FR_TFDELTA','FR_TFECHO','FR_GENERAL']
+        fl_alllvls = ['FL_GUTTER','FL_HALFKNEE','FL_HALFTIRE','FL_KNEE','FL_TIRES','FL_WAIST','FL_CHEST']
+
+        eq_cntall = []
+        fr_cntall = []
+        fl_cntall = []        
+
+        for eqlvl in eqlvl_query:
+            eq_lvls.append(eqlvl['incident_level'])
+            eq_cntlvl.append(eqlvl['count'])
+        
+        intctr = 0
+        for eqlvl in eq_alllvls:
+            if eqlvl in eq_lvls:
+                intctr = eq_lvls.index(eqlvl)
+                eq_cntall.append(eq_cntlvl[intctr])
+            else:
+                eq_cntall.append(0)
+        
+        for frlvl in frlvl_query:
+            fr_lvls.append(frlvl['incident_level'])
+            fr_cntlvl.append(frlvl['count'])
+        
+        intctr = 0
+        for frlvl in fr_alllvls:
+            if frlvl in fr_lvls:
+                intctr = fr_lvls.index(frlvl)
+                fr_cntall.append(fr_cntlvl[intctr])
+            else:
+                fr_cntall.append(0)
+
+        for fllvl in fllvl_query:
+            fl_lvls.append(fllvl['incident_level'])
+            fl_cntlvl.append(fllvl['count'])
+        
+        intctr = 0
+        for fllvl in fl_alllvls:
+            if fllvl in fl_lvls:
+                intctr = fl_lvls.index(fllvl)
+                fl_cntall.append(fl_cntlvl[intctr])
+            else:
+                fl_cntall.append(0)
+
         for eqlvl in eqlvl_query:
             eq_lvls.append(eqlvl['incident_level'])
             eq_cntlvl.append(eqlvl['count'])
@@ -167,7 +211,7 @@ def generate_summary(request):
 
         
 
-        context = {'months':months, 'eq_lvls': eq_lvls, 'eq_cntlvl': eq_cntlvl, 'eq_months': eq_months, 'eq_total': eq_total, 'fr_lvls': fr_lvls, 'fr_cntlvl': fr_cntlvl, 'fr_months': fr_months,'fr_total': fr_total, 'fl_lvls': fl_lvls, 'fl_cntlvl': fl_cntlvl, 'fl_months': fl_months, 'fl_total': fl_total}
+        context = {'months':months, 'eq_lvls': eq_alllvls, 'eq_cntlvl': eq_cntall, 'eq_months': eq_months, 'eq_total': eq_total, 'fr_lvls': fr_alllvls, 'fr_cntlvl': fr_cntall, 'fr_months': fr_months,'fr_total': fr_total, 'fl_lvls': fl_alllvls, 'fl_cntlvl': fl_cntall, 'fl_months': fl_months, 'fl_total': fl_total}       
         context["inputDateRange"] = date_range
         context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
@@ -285,7 +329,7 @@ def renderPDF(template_src, context_dict={}):
 	return None
 
 def generatePDF_audit(request):
-    if request.user.is_authenticated and request.user.is_superuser:
+    if request.user.is_authenticated:
         if request.method == 'POST':
             auditType = int(request.POST.get("auditType"))
             audit_logs = AuditLogs.objects.filter(audit_type = auditType).order_by('-date_time')
@@ -313,7 +357,7 @@ def generatePDF_audit(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def generatePDF_maintenanceReport(request):
-    if request.user.is_authenticated and request.user.is_superuser:
+    if request.user.is_authenticated:
         if request.method == 'POST':
             auditID = request.POST.get("auditID")
             audit = AuditLogs.objects.filter(log_id = auditID).first()
@@ -339,19 +383,22 @@ def generatePDF_maintenanceReport(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def generatePDF_incident(request):
-    if request.user.is_authenticated and request.user.is_superuser:
+    if request.user.is_authenticated:
         incident_reports = IncidentReport.objects.all().order_by('-incident_date_time')
+        all_components = Device_Sensor.objects.filter(device_sensor_isDeleted = False)
         dateTime = datetime.datetime.now()
         date = dateTime.strftime("%x")
         time = dateTime.strftime("%X")
         context = {}
 
         context['incident_reports'] = incident_reports
+        context['all_components'] = all_components
         context['date'] = date
         context['time'] = time
         context['eq'] = IncidentReport.objects.filter(incident_type = 1).count()
         context['fr'] = IncidentReport.objects.filter(incident_type = 2).count()
         context['fl'] = IncidentReport.objects.filter(incident_type = 3).count() 
+        context['total'] = IncidentReport.objects.all.count() 
         
         pdf = renderPDF('reports/generatePDF-incident.html', context)
         if pdf:
@@ -365,15 +412,17 @@ def generatePDF_incident(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         
 def generatePDF_incidentReport(request):
-    if request.user.is_authenticated and request.user.is_superuser:
+    if request.user.is_authenticated:
         incident_id = request.POST.get("download_incident")
         incident_reports = IncidentReport.objects.filter(id=incident_id)
+        all_components = Device_Sensor.objects.filter(device_sensor_isDeleted = False)
         dateTime = datetime.datetime.now()
         date = dateTime.strftime("%x")
         time = dateTime.strftime("%X")
         context = {}
 
         context['incident_reports'] = incident_reports
+        context['all_components'] = all_components
         context['date'] = date
         context['time'] = time
 
@@ -389,22 +438,11 @@ def generatePDF_incidentReport(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def generatePDF_summary(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        incident_id = request.POST.get("download_incident")
-        incident_reports = IncidentReport.objects.filter(id=incident_id)
+    if request.user.is_authenticated:
         dateTime = datetime.datetime.now()
         date = dateTime.strftime("%x")
         time = dateTime.strftime("%X")
-        context = {}
-
-        context['incident_reports'] = incident_reports
-        context['date'] = date
-        context['time'] = time
-
-        for report in incident_reports:
-            print(report.incident_type)
-        
-        pdf = renderPDF('reports/generatePDF-summary.html', context)
+        pdf = renderPDF('reports/generatePDF-summary.html')
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = 'SummaryReport(' + str(date) + '-' + str(time) +  ').pdf' 

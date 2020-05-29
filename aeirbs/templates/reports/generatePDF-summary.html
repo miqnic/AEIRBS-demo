@@ -31,7 +31,11 @@
     <script type="text/javascript" charset="utf8"
         src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
-    <title>Audit Logs</title>
+        
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+    <title>Summary Report</title>
 </head>
 <style>
 
@@ -102,6 +106,14 @@
         </table>
         <hr>
     </div>
+
+    <canvas id="summary-chart" height="90%"></canvas>
+    <div class="container-fluid mt-4" style="padding:0 25px 25px 25px; ">
+        <div class="container-fluid"
+          style="background-color: white; padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
+          <center><canvas id="summary-chart" height="90%"></canvas></center>
+        </div>
+      </div>
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo "
@@ -119,5 +131,77 @@
     <script type="text/javascript " charset="utf8 "
         src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js "></script>
 </body>
+<script>
+        var ctx = document.getElementById('summary-chart').getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ["try", "try", "try"],
+            datasets: [
+              {
+                label: 'Earthquake',
+                data: [1,2,3],
+                lineTension: 0,
+                backgroundColor: 'rgb(229, 191, 154, 0.3)',
+                borderColor: 'rgb(229, 191, 154)',
+                borderWidth: 3,
+                pointBorderColor: 'rgb(229, 191, 154)',
+                pointBackgroundColor: 'rgb(229, 191, 154, 0.8)',
+                pointRadius: 3,
+                pointHoverBackgroundColor: 'rgb(254, 193, 7)',
+                pointHoverBorderColor: 'rgb(254, 193, 7)',
+                pointHoverRadius: 5,
+              }, {
+                label: 'Fire',
+                data: [1,2,3],
+                lineTension: 0,
+                backgroundColor: 'rgba(255, 126, 103, 0.3)',
+                borderColor: 'rgba(255, 126, 103)',
+                borderWidth: 3,
+                pointBorderColor: 'rgba(255, 126, 103)',
+                pointBackgroundColor: 'rgba(255, 126, 103, 0.8)',
+                pointRadius: 3,
+                pointHoverBackgroundColor: 'rgb(254, 193, 7)',
+                pointHoverBorderColor: 'rgb(254, 193, 7)',
+                pointHoverRadius: 5,
+              }, {
+                label: 'Flood',
+                data: [1,2,3],
+                lineTension: 0,
+                lineTension: 0,
+                backgroundColor: 'rgba(162, 213, 242, 0.3)',
+                borderColor: 'rgba(162, 213, 242)',
+                borderWidth: 3,
+                pointBorderColor: 'rgba(162, 213, 242)',
+                pointBackgroundColor: 'rgba(162, 213, 242, 0.8)',
+                pointRadius: 3,
+                pointHoverBackgroundColor: 'rgb(254, 193, 7)',
+                pointHoverBorderColor: 'rgb(254, 193, 7)',
+                pointHoverRadius: 5,
+              }
+            ]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Number of Occurrence',
+                  fontFamily: 'Montserrat',
+                  fontStyle: 'bold',
+                }
+              }],
+              xAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Month',
+                  fontFamily: 'Montserrat',
+                  fontStyle: 'bold',
+                }
+              }],
+            }
+          }
+        });
 
+</script>
 </html>

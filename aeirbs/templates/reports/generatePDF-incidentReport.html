@@ -66,21 +66,6 @@
                     <td></td>
                     <td>Time: {{time}}</td>
                 </tr>
-                <tr>
-                    <td style="text-align: left">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;Total Earthquake Incidents: <b>{{eq}}</b></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="text-align: left">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;Total Fire Incidents: <b>{{fr}}</b></td>
-                    <td></td>
-                    <td</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;Total Earthquakes Incidents: <b>{{fl}}</b></td>
-                    <td></td>
-                    <td</td>
-                </tr>
             </tbody>
         </table>
         <br>
@@ -90,7 +75,8 @@
                 <tr>
                     <th>Incident Type</th>
                     <th>Level</th>
-                    <th>Date and Time</th>
+                    <th>Component</th>
+                    <th>Date and Time of Incident</th>
                 </tr>
             </thead>
         </table>
@@ -99,8 +85,15 @@
             <tbody>
                 {% for report in incident_reports %}
                 <tr>
-                    <td>{{report.device_id.device_id}}</td>
+                    <td>{{report.incident_type}}</td>
                     <td>{{report.incident_level}}</td>
+                    <td>
+                        {% for component in all_components %}
+                        {% if component.device_id.device_id == report.device_sensor_id.device_id %}
+                        {{component.sensor_id.sensor_id}}
+                        {% endif %}
+                        {% endfor %}
+                    </td>
                     <td>{{report.incident_date_time|date:"d/m/Y h:i:s"}}</td>
                 </tr>
                 {% endfor %}
@@ -172,45 +165,162 @@
         <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
             to respond.</p>
         <!--FLOOD-->
-        {% elif report.incident_level == "FL_FIRST" %}
-        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
-            to respond.</p>
+        {% elif report.incident_level == "FL_GUTTER"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Gutter</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Measurement: 8 Inches.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Road Accessibilty: Passable to all types of
+            vehicles.</p>
         {% elif report.incident_level == "FL_HALFKNEE" %}
-        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
-            to respond.</p>
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Half Knee</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Measurement: 12 Inches.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passable to all types of vehicles.</p>
         {% elif report.incident_level == "FL_HALFTIRE" %}
-        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
-            to respond.</p>
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Half Tire</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Measurement: 13 Inches.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not passable to light vehicles.</p>
         {% elif report.incident_level == "FL_KNEE" %}
-        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
-            to respond.</p>
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Knee</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Measurement: 19 Inches.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not passable to light vehicles.</p>
         {% elif report.incident_level == "FL_TIRES" %}
-        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
-            to respond.</p>
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Tires</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Measurement: 26 Inches.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not passable to all types of vehicles.</p>
         {% elif report.incident_level == "FL_WAIST" %}
-        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
-            to respond.</p>
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Waist</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Measurement: 37 Inches.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not passable to all types of vehicles.</p>
         {% elif report.incident_level == "FL_CHEST" %}
-        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
-            to respond.</p>A
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Chest</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Measurement: 45 Inches.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not passable to all types of vehicles.</p>
+
+        <!--EARTHQUAKE-->
+        {% elif report.incident_level == "EQ_I"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Scarcely Perceptible</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delicately balanced objects are disturbed
+            slightly.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Still water in containers oscillates slowly.</p>
+        {% elif report.incident_level == "EQ_II"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Slightly Felt</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Felt by few individuals at rest indoors.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hanging Objects swing slightly.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Still water in containers oscillates noticeably.
+        </p>
+        {% elif report.incident_level == "EQ_III"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Weak</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Felt by many people indoors especially in upper
+            floors.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hanging objects swing moderately.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Still water in containers oscillates moderately.
+        </p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Feels like a light truck passing by.</p>
+        {% elif report.incident_level == "EQ_IV"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Moderately Strong</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Felt generally by people indoors and by some
+            people outdoors.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hanging objects swing considerably.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Motor Cars May Rock Slightly.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Water in containers oscillates strongly.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A rumbling sound may sometimes be heard.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Feels like a heavy truck passing by.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liquids in containers are slightly disturbed.</p>
+        {% elif report.incident_level == "EQ_V"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Strong</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Felt by most people indoors and outdoors.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A strong shaking and rocking is felt throughout
+            the building.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hanging objects swing violently.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Small, light, and unstable objects may fall or
+            overturn.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liquids spill from filled open containers.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vehicles rock noticeably.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leaves and twigs of trees shake.</p>
+        {% elif report.incident_level == "EQ_VI"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Very Strong</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Furniture and other heavy objects are displaced..
+        </p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wall plaster may crack..</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;People may lose balance</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Small church bells may ring.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If on the road, it may feel like driving with
+            flat tires.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Very old or poorly built houses and man-made
+            structures are slightly damaged though well-built structures are not affected.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Limited rockfalls and rolling boulders occur in
+            hilly to mountainous areas and escarpments..</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trees shake.</p>
+        {% elif report.incident_level == "EQ_VII"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Destructive</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Heavy objects and furniture overturn or topple.
+        </p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Difficulty standing on upper floors.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Old or poorly-built structures suffer
+            considerable damage.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Some well-built structures are slightly damaged.
+        </p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Some cracks may appear on dikes, fishponds, road
+            surface, or concrete hollow block walls.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Limited liquefaction, lateral spreading and
+            landslides are observed.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trees shake noticeably.</p>
+        {% elif report.incident_level == "EQ_VIII"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Very Destructive</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;People will find it difficult to even stand
+            outdoors.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Many well-built buildings are considerably
+            damaged.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Concrete dikes and foundation of bridges are
+            destroyed by ground settling or toppling.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Railway tracks are bent or broken.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utility posts, towers, and monuments may tilt or
+            topple.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Water and sewer pipes may be bent, twisted, or
+            broken.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liquefaction and lateral spreading cause manmade
+            structures to sink, tilt, or topple.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Numerous landslides and rockfalls occur in
+            mountainous and hilly areas.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Boulders are thrown out from their positions
+            particularly near the epicenter.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fissures and faults rupture.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trees shake violently.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Water splashes over dikes or the banks of rivers.
+        </p>
+        {% elif report.incident_level == "EQ_IX"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Devastating</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;People are forced to the ground</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Most buildings are totally damaged.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bridges and elevated concrete structures are
+            toppled or destroyed..</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Numerous utility posts, towers, and monuments are
+            tilted, toppled, or broken.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sewer pipes are bent, twisted or broken.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Landslides and liquefaction with lateral
+            spreadings and sand boils are widespread.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The ground is distorted into undulations.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trees are shaken very violently with some toppled
+            or broken.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Boulders are commonly thrown out.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;River water splashes violently on slops over
+            dikes and banks.</p>
+        {% elif report.incident_level == "EQ_X"%}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EARTHQUAKE: Completely Devastating</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Many trees are toppled, broken, and uprooted.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Practically all man-made structures are
+            destroyed.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Massive landslides and liquefaction, large-scale
+            subsidence and uplifting of land forms and many ground fissures are observed.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Changes in river courses and destructive seiches
+            in large lakes occur.</p>
+
+
+
 
 
         {% endif %}
         {%endfor %}
+
     </div>
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "

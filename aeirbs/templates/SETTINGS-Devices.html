@@ -84,10 +84,10 @@
             {% if count == 0 %}
             <b>No device available.</b>
             {% endif %}
-
             {% for device in all_devices %}
-            <div class="card card-layout border-0 m-2 component" data-toggle="modal"
-                data-target="#deviceModal{{device.device_id}}" data-component='{{device.device_id}}' style="display: inline-block;" id="card{{device.device_id}}">
+
+            <div class="card card-layout border-0 m-2 component {{device.device_id}}" data-toggle="modal"
+                data-target="#deviceModal{{device.device_id}}" data-component='{{device.device_id}}' style="display: inline-block;">
                 <div class="card-header border-0">
                     <b style="font-size: 16px;">{{device.device_id}}</b>
                 </div>

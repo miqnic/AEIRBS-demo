@@ -1,10 +1,9 @@
 
 $(document).ready(function () {
-    
     $(".masterlist").toggleClass("active");
-    
     $('.masterlistTable').DataTable({
-        "paging":false,
+        "paging":true, 
+        "pagingType": "first_last_numbers",
         searching: false,    
         "order": [],
         'columnDefs': [{
@@ -12,8 +11,6 @@ $(document).ready(function () {
             "orderable": false
         }]
     });
-    $("label").css("font-size", "12px")
-    $(".dataTables_info").css("font-size", "14px")
 
     //checkbox on-load (unchecked by default)
     $(".deleteCheckboxHeader").prop("checked", false);
@@ -61,27 +58,6 @@ $(document).ready(function () {
             }
         });
         $('#deleteList_input').val(username_list);
-    });
-
-    $(".table-masterlist").click(function() {
-        if ($(".userDetails").is(':visible')){
-            $(".userDetails").hide();
-
-            var username = $(this).data("username");
-            var id = "#userDetails" + username;
-            $(".left-padding").width("65%");
-            $(".user").css("padding", "0 25px 25px 25px");
-            $(".userContainer").css("padding", "0 12.5px 25px 25px");
-            $(id).show();
-        }
-        else{
-            var username = $(this).data("username");
-            var id = "#userDetails" + username;
-            $(".left-padding").width("65%");
-            $(".user").css("padding", "0 25px 25px 25px");
-            $(".userContainer").css("padding", "0 12.5px 25px 25px");
-            $(id).show();
-        }
     });
 
     //Close Admin Details

@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.staticfiles.storage import staticfiles_storage
 
 from components import views as components_views
 from accounts import views as accounts_views
@@ -54,9 +53,9 @@ urlpatterns = [
     path('generate-audit/', reports_views.generatePDF_audit, name='generatePDF_audit'),
     path('generate-maintenance-report/', reports_views.generatePDF_maintenanceReport, name='generatePDF_maintenanceReport'),
     path('generate-incident/', reports_views.generatePDF_incident, name='generatePDF_incident'),
-    path('alarm-mailtemp/', components_views.autoalarm_mail, name='alarm_mailtemp'),
     path('generate-incident-report/', reports_views.generatePDF_incidentReport, name='generatePDF_incidentReport'),
-    path('generate-summary/', reports_views.generatePDF_summary, name='generatePDF_summary'),
+    path('generate-summary-report/', reports_views.generatePDF_summary, name='generatePDF_summary'),
+    path('generate-summary/', reports_views.generate_summary, name='gen_sum'),
 
     # path('edit-user/', accounts_views.edit_user, name='edit_user'),
 
@@ -90,21 +89,15 @@ urlpatterns = [
     path('audit/component-logs/', reports_views.component_logs, name='component_logs'),
     path('audit/user-logs/', reports_views.user_logs, name='user_logs'),
     path('audit/maintenance-logs/', reports_views.maintenance_logs, name='maintenance_logs'),
-
-    path('summary/generate/', reports_views.generate_summary, name='gen_sum'),
     
     path('audit/clear-logs/', reports_views.clear_logs, name='clear_logs'),
 
     # ARDUINO
     path('ajax/getdata/', components_views.ajax_data, name='get_data'),
-    # path('ajax/connect/', components_views.dev_connection, name='connect_sensor'),
 
     # EMAIL
     path('alarm-mail/', components_views.autoalarm_mail, name='sendalarm_email'),
-    path('addadmin-mail/', accounts_views.addadmin_mail, name='sendadd_email'),
-    path('deladmin-mail/', accounts_views.deladmin_mail, name='senddel_email'),
-    path('changepass-mail/', accounts_views.changepass_mail, name='changepass_email'),
-    
+    path('addadmin-mail/', accounts_views.addadmin_mail, name='sendadmin_email'),
 ] 
 
 if settings.DEBUG:

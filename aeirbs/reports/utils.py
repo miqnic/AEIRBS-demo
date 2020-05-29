@@ -14,7 +14,7 @@ class IncidentLevels(Enum):
     FR_TFECHO = 'FR_TFECHO'
     FR_GENERAL = 'FR_GENERAL'
     # Flood Alert Levels
-    FL_GUTTER = 'FL_GUTTER'
+    FL_GUTTER = 'FL_FIRST'
     FL_HALFKNEE = 'FL_HALFKNEE'
     FL_HALFTIRE = 'FL_HALFTIRE'
     FL_KNEE = 'FL_KNEE'

@@ -4,7 +4,7 @@
 
 <head>
     <!--Favicon-->
-    <link rel="icon" href="{% static 'icons/logo.png' %}">
+    <link rel="icon" href="{% static 'icons/aeirbs-logo.png' %}">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -82,6 +82,17 @@
             </script>
             {% endif %}
             <!-- Login Form -->
+            {% if messages %} {% for message in messages %}
+            {% if message.tags == 'error'%}
+                <div class="alert alert-timer alert-danger" role="alert">
+                    {{message}}
+                </div>
+            {% else %}
+            <div class="alert alert-timer alert-success" role="alert">
+                {{message}}
+            </div>
+            {% endif %}
+            {% endfor %} {% endif %}
             <form action="{% url 'login_action' %}" method="post" id="loginForm">
                 {% csrf_token %}
                 <div class="input-group mb-3">
@@ -153,6 +164,10 @@
                 </div>
 
                 <div class="text-center">
+                    
+                    <center><button id="backToLogin" name="forgotPassword" type="button"
+                        class="btn btn-link" style="color:#CD6155; font-size:10px;">Back to Login</button>
+                </center>
                     <center><button type="submit" name="forgotpass" class="btn btn-sm btn-warning mt-2">SUBMIT</button>
                     </center>
                 </div>
@@ -176,6 +191,11 @@
 <!--Login JS-->
 <script src="{% static 'js/login.js' %}"></script>
 <script>
+    window.setTimeout(function () {
+        $(".alert-timer").fadeTo(500, 0).slideUp(500, function () {
+            $(this).remove();
+        });
+    }, 4000);
     $('#loginButton').click(function () {
         $('#loginForm').submit();
     });
@@ -183,6 +203,11 @@
         $('#changePassForm').css('display', 'none');
         $('#loginForm').css('display', 'none');
         $('#forgotPassForm').css('display', 'block');
+    });
+    $('#backToLogin').click(function () {
+        $('#changePassForm').css('display', 'none');
+        $('#loginForm').css('display', 'block');
+        $('#forgotPassForm').css('display', 'none');
     });
 </script>
 

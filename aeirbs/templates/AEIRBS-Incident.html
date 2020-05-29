@@ -30,6 +30,7 @@
                                     <select class="filterIncidents custom-select form-control form-control-sm"
                                         name="filterIncidents">
                                         {% if selected == 1 %}
+                                        <option value="">All</option>
                                         <option value="1" selected>Earthquake</option>
                                         <option value="2">Fire</option>
                                         <option value="3">Flood</option>
@@ -38,11 +39,12 @@
                                         <option value="2" selected>Fire</option>
                                         <option value="3">Flood</option>
                                         {% elif selected == 3 %}
+                                        <option value="">All</option>
                                         <option value="1">Earthquake</option>
                                         <option value="2">Fire</option>
                                         <option value="3" selected>Flood</option>
                                         {% else %}
-                                        <option value="">-----</option>
+                                        <option value="">All</option>
                                         <option value="1" >Earthquake</option>
                                         <option value="2">Fire</option>
                                         <option value="3">Flood</option>

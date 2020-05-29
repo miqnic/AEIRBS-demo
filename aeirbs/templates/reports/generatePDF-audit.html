@@ -45,8 +45,8 @@
             <h2>Automatic Emergency Interpreter, Recorder, and Broadcasting System</h2>
         </center>
         <br>
-        <table class="table table-bordered mt-4 " style="text-align: center; width: 100%;">
-            <thead class="table-header">
+        <table class="table table-bordered mt-4 " style="width:100%; text-align:center; ">
+            <thead class="table-header mt-2 ">
                 <tr>
                     <th></th>
                     <th></th>
@@ -68,28 +68,22 @@
                         {% elif audit_type == 2 %}
                         <h1>MAINTENANCE LOGS</h1>
                         {% endif %}
-                        
-                    <td></td>
                     </td>
+                    <td></td>
                     <td>Time: {{time}}</td>
-                </tr>    
-                <tr></tr>            
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Total Logs: <b>{{total}}</b></td>
                 </tr>
             </tbody>
         </table>
         <br>
         <hr>
-        <table class="table table-bordered" style="width:100%; text-align:center; ">
-            <thead class="table-header">
+        <table class="table table-bordered mt-4 " style="width:100%; text-align:center; ">
+            <thead class="table-header mt-2 ">
                 <tr>
                     <th>Audit ID</th>
                     <th>Activity</th>
                     <th>Accountability</th>
                     <th>Date and Time</th>
+                    <th>Details</th>
                 </tr>
             </thead>
         </table>
@@ -101,7 +95,7 @@
                     <td>{{log.log_id}}</td>
                     <td>{{log.activity}}</td>
                     <td>{{log.username.first_name}} {{log.username.last_name}}</td>
-                    <td>{{log.date_time|date:"d/m/Y h:i:s"}}</td>
+                    <td>{{log.date_time}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

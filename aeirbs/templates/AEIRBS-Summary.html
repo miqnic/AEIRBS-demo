@@ -34,7 +34,7 @@
       style=" background-color: rgba(52, 58, 64,.1); padding: 25px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); border-radius: 5px;">
 
       <!--Date Range Form-->
-      <form id="generate-summary" action="{% url 'gen_sum' %}" method="post">
+      <form action="{% url 'gen_sum' %}" method="post">
         {% csrf_token %}
         <div class="row" style="padding-left:25px;">
           <div class="col-4">
@@ -43,8 +43,12 @@
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               </div>
               <input type="text" class="input form-control form-control-sm datefilter" name="dateRange"
-                placeholder="Date Range" value="{{inputDateRange}}" required>
+                placeholder="Date Range" required>
             </div>
+          </div>
+          <div class="col-2">
+            <button type="submit" class="btn btn-dark btn-sm float-left" id="generateReportButton"><i
+                class="fas fa-sync-alt fa-sm mr-2"></i>Generate</button>
           </div>
         </div>
       </form>
@@ -295,7 +299,6 @@
 
   $('.datefilter').on('apply.daterangepicker', function (ev, picker) {
     $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-    $("#generate-summary").submit();
   });
 
   $('.datefilter').on('cancel.daterangepicker', function (ev, picker) {

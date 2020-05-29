@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
-from reports.models import AuditLogs, TemporaryImage
+from reports.models import AuditLogs
 from components.models import Device
 from .models import JobPosition, Profile, DEFAULT_IMAGE
 from django.core.files.storage import FileSystemStorage
@@ -89,7 +89,7 @@ def forgot_password(request):
             return redirect('earthquake_components')
 
     messages.error(request, f'Invalid username')
-    return render(request, 'AEIRBS-Login.html', {'new': 2})
+    return render(request, 'AEIRBS-Login.html', {'new': 0})
 
 # first login - change password
 def login_changepass(request):
@@ -118,23 +118,15 @@ def login_changepass(request):
             messages.success(request, f'Updated user {employeeID} successfully!')
             return redirect('earthquake_components')
 
-    return render(request, 'AEIRBS-Login.html', {'new':1})
+    return render(request, 'AEIRBS-Login.html', {'new':0})
 
 # login 
 def login_action(request):
     if request.method == 'POST':
         if request.POST.get("login"):
-            context = {}
-            errors = {}
             username = request.POST.get("company_id")
             password = request.POST.get("password")
             user = authenticate(username=username, password=password)
-
-            if not username.strip():
-                error_usernameEmpty = "Username is required"
-            
-            if not password.strip():
-                error_passwordEmpty = "Password is required"
 
             if user:
                 # check if user is a new user
@@ -162,7 +154,7 @@ def login_action(request):
                 messages.error(request, f'Invalid credentials.')
                 return redirect('login_page')
         else:
-            return render(request, 'AEIRBS-Login.html')
+            return render(request, 'AEIRBS-Login.html', {'new': 2})
 
 
 def logout_action(request):
@@ -190,7 +182,7 @@ def login_page(request):
 def masterlist(request):
     context = {}
     context['all_users'] = User.objects.all().filter(profile__is_deleted=False)
-    context['all_logs'] = AuditLogs.objects.all().order_by('-date_time')
+    context['all_logs'] = AuditLogs.objects.all()
     context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
     print(context['all_users'])
@@ -219,6 +211,8 @@ def add_user(request):
             add_mobileNumber = request.POST.get("addAdminMobileNumber")
             add_userImage = request.FILES.get("addAdminImage")
 
+            print(add_accessRole)
+            print(add_jobPosition)
             #Validate User Input
             if not add_accessRole.strip():
                 errors["error_accessRoleEmpty"] = "Access Role is required."
@@ -278,11 +272,11 @@ def add_user(request):
             context["inputMobileNumber"] = add_mobileNumber
             context["inputCompanyEmail"] = add_companyEmail
             context["errors"] = errors
-            context["job_positions"] = JobPosition.objects.filter(position_isDeleted = False)
             context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
+                context['job_positions'] = JobPosition.objects.all()
                 return render(request, 'MASTERLIST-AddAdmin.html',  context = context)
             else:
                 #Format User Input
@@ -420,7 +414,6 @@ def edit_user(request):
             context["inputJobPosition"] = edit_jobPosition
             context["inputMobileNumber"] = edit_mobileNumber
             context["inputCompanyEmail"] = edit_companyEmail
-            context["job_positions"] = JobPosition.objects.filter(position_isDeleted = False)
             context["errors"] = errors
 
             if len(errors) > 0:
@@ -504,7 +497,7 @@ def edit_admin(request):
             print(request.POST.get("username"))
             context['username'] = request.POST.get("username")
             context['all_users'] = User.objects.all()
-            context['job_positions'] = JobPosition.objects.filter(position_isDeleted=False)
+            context['job_positions'] = JOB_POSITIONS
             context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
         return render(request, 'MASTERLIST-EditAdmin.html', context = context)
     else:
@@ -512,9 +505,8 @@ def edit_admin(request):
    
 def add_admin(request):
     if request.user.is_authenticated:
-        context = {}
-        context['job_positions'] = JobPosition.objects.filter(position_isDeleted=False)
-        return render(request, 'MASTERLIST-AddAdmin.html', context = context)
+        JOB_POSITIONS = JobPosition.objects.all()
+        return render(request, 'MASTERLIST-AddAdmin.html', {'job_positions': JOB_POSITIONS})
     else:
         return render(request, 'AEIRBS-Login.html')
 

@@ -135,7 +135,7 @@
                                     <select class="custom-select form-control form-control-sm"
                                         name="editAdminJobPosition">
                                         {% for position in job_positions%}
-                                        {% if position.job_position == inputJobPosition %}
+                                        {% if position == inputJobPosition %}
                                         <option value="{{position}}" selected>{{position}}</option>
                                         {% else %}
                                         <option value="{{position}}">{{position}}</option>
@@ -234,7 +234,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <small>Access Role</small>
-                                    <select class="custom-select form-control form-control-sm" name="editAdminAccessRole">
+                                    <select class="form-control form-control-sm" name="editAdminAccessRole">
                                         {% if user.is_superuser == True %}
                                         <option value="adminRole">Admin</option>
                                         <option value="superRole" selected>Super Admin</option>
@@ -296,7 +296,7 @@
                                     <select class="custom-select form-control form-control-sm"
                                         name="editAdminJobPosition">
                                         {% for position in job_positions%}
-                                        {% if position.job_position == user.profile.job_position %}
+                                        {% if position == user.profile.job_position %}
                                         <option value="{{position}}" selected>{{position}}</option>
                                         {% else %}
                                         <option value="{{position}}">{{position}}</option>

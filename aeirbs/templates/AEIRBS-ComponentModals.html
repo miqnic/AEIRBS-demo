@@ -45,6 +45,25 @@
 
             </div>
             <div class="modal-body" style="border-radius:5px">
+
+                <ul class="nav nav-pills nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <a class="m-1 nav-link tabDetails active" id="{{component.device_sensor_id}}-details-tab"
+                            data-toggle="tab" href="#{{component.device_sensor_id}}-details" role="tab"
+                            aria-controls="home" aria-selected="true">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="m-1 nav-link tabData" id="{{component.device_sensor_id}}-data-tab" data-toggle="tab"
+                            href="#{{component.device_sensor_id}}-data" role="tab" aria-controls="profile"
+                            aria-selected="false">Data <small><i
+                                    class="fas fa-exclamation-circle ml-2 text-danger"></i></small></a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="{{component.device_sensor_id}}-details" role="tabpanel"
+                        aria-labelledby="{{component.device_sensor_id}}-details">
+
                         <div class="row m-4 componentDetails">
                             <div class="col-5 mt-2">
                                 <center>
@@ -282,6 +301,23 @@
                                     </div>
                                 </div>
                                 {% endif %}
+
+                                <div class="connectivity row mx-4"
+                                    style="background-color:rgb(30, 132, 73, 0.5); border-radius: 5px; position:relative;">
+                                    <button class="btn btn-link text-dark float-right btn-sm mt-2 mr-2 icon"
+                                        style="position:absolute; right: 2px; top:0;"><i
+                                            class="fas fa-sync-alt"></i></button>
+                                    <div class="mx-3" style="width:100%;">
+                                        <div class="my-2">
+                                            <small><b>Connectivity:</b></small><br>
+                                            {% if component.connectivity_status == 1 %}
+                                            <small class="connectivity-connected">Connected</small>
+                                            {% else %}
+                                            <small class="connectivity-disconnected">Disconnected</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col ml-3" style="background-color: #EAEDED; border-radius: 5px;">
@@ -434,7 +470,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <!--Display Sensor Name-->
+                                                    <!--Display Sensor ID-->
                                                     <div class="form-group">
                                                         <small>Sensor Name</small>
                                                         <select class="custom-select form-control form-control-sm" disabled>
@@ -462,12 +498,23 @@
                                                         <select class="custom-select form-control form-control-sm"
                                                             name="editComponentDeviceID">
                                                             {% for device in all_devices %}
+                                                            {% if device.device_maxedOut == True %}
                                                             {% if device.device_id == component.device_id.device_id %}
                                                             <option value="{{device.device_id}}" selected>
                                                                 ({{device.device_id}}) - {{device.device_name}}</option>
-                                                            {% else %}
-                                                            <option value="{{device.device_id}}">
+                                                            {{device.device_id}}</option>
+                                                            {% endif %}
+                                                            {% else %}`
+                                                            {% if device.device_id == component.device_id.device_id %}
+                                                            <option value="{{device.device_id}}" selected>
                                                                 ({{device.device_id}}) - {{device.device_name}}</option>
+                                                            {{device.device_id}}</option>
+                                                            {% else %}
+                                                            <option value="{{device.device_id}}">({{device.device_id}})
+                                                            {% endif %}
+                                                                -
+                                                                {{device.device_name}}</option>
+                                                            </option>
                                                             {% endif %}
                                                             {% endfor %}
                                                         </select>
@@ -509,6 +556,10 @@
                     </div>
 
                 </div>
+            </div>
+            <div class="tab-pane fade" id="{{component.device_sensor_id}}-data" role="tabpanel"
+                aria-labelledby="{{component.device_sensor_id}}-data">
+                <canvas id="{{component.device_sensor_id}}" width="100%" style="padding: 25px;"></canvas>
             </div>
         </div>
 

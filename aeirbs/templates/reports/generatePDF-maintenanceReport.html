@@ -61,36 +61,46 @@
                 </tr>
                 <tr>
                     <td>
-                        <h1>{{audit.log_id}}</h1>
+                        {% if audit_type == 0 %}
+                        <h1>COMPONENT LOGS</h1>
+                        {% elif audit_type == 1 %}
+                        <h1>USER LOGS</h1>
+                        {% elif audit_type == 2 %}
+                        <h1>MAINTENANCE LOGS</h1>
+                        {% endif %}
                     </td>
                     <td></td>
                     <td>Time: {{time}}</td>
                 </tr>
             </tbody>
         </table>
+        <br>
         <hr>
         <table class="table table-bordered mt-4 " style="width:100%; text-align:center; ">
-            <thead>
+            <thead class="table-header mt-2 ">
                 <tr>
+                    <th>Audit ID</th>
                     <th>Activity</th>
-                    <th>Username</th>
-                    <th>Accountable</th>
+                    <th>Accountability</th>
                     <th>Date and Time</th>
+                    <th>Details</th>
                 </tr>
             </thead>
+        </table>
+        <hr>
+        <table class="table table-bordered mt-4 " style="width:100%; text-align:center; ">
             <tbody>
-                <tr>
-                    <td>{{audit.activity}}</td>
-                    <td>{{audit.username}}</td>
-                    <td>{{audit.username.first_name}} {{audit.username.last_name}}</td>
-                    <td>{{audit.date_time|date:"d/m/Y h:i:s"}}</td>
+                {% for log in audit %}
+                <tr class="table-row ">
+                    <td>{{log.log_id}}</td>
+                    <td>{{log.activity}}</td>
+                    <td>{{log.username.first_name}} {{log.username.last_name}}</td>
+                    <td>{{log.date_time|date:"d/m/Y h:i:s" }}</td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
         <hr>
-        <br>
-
-        <b>Audit Details: </b>{{audit.audit_details}}
     </div>
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "

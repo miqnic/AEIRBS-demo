@@ -16,17 +16,11 @@
     <link href="{% static 'css/aeirbs-login.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
         integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
-
+    
     <!--JS-->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <title>AEIRBS | Login</title>
 </head>
@@ -41,45 +35,56 @@
                 <div class="item">
                     <img src="{% static 'icons/aeirbs-logo.png' %}">
                 </div>
-
+    
                 <div class="flood_ring" style="animation-delay: -1s"></div>
                 <div class="quake_ring" style="animation-delay: -.5s"></div>
                 <div class="fire_ring" style="animation-delay: 0s"></div>
             </div>
-
+    
             <img class="mt-3 mb-4 aeirbs-text" src="{% static 'icons/AEIRBS-text.png' %}" height="90">
         </center>
         <div class="container col-5 login-form">
+            {% if messages %} {% for message in messages %}
+            {% if message.tag == 'error'%}
+                <div class="alert alert-danger" role="alert">
+                    {{message}}
+                </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+                {{message}}
+            </div>
+            {% endif %}
+            {% endfor %} {% endif %}
             <!--Login Form-->
             {% if new == 1 %}
-            <script>
-                $(document).ready(function () {
-                    console.log('1');
-                    $('#loginForm').css('display', 'none');
-                    $('#changePassForm').css('display', 'block');
-                    $('#forgotPassForm').css('display', 'none');
-                });
-            </script>
+                <script>
+                    $(document).ready(function(){
+                         console.log('1');
+                        $('#loginForm').css('display', 'none');
+                        $('#changePassForm').css('display', 'block');
+                        $('#forgotPassForm').css('display', 'none');
+                    });
+                </script>
             {% elif new == 2 %}
-            <script>
-                $(document).ready(function () {
-                    console.log('2');
-                    $('#changePassForm').css('display', 'none');
-                    $('#loginForm').css('display', 'none');
-                    $('#forgotPassForm').css('display', 'block');
-                });
-
-            </script>
+                <script>
+                    $(document).ready(function(){
+                         console.log('2');
+                        $('#changePassForm').css('display', 'none');
+                        $('#loginForm').css('display', 'none');
+                        $('#forgotPassForm').css('display', 'block');
+                    });
+                    
+                </script>
             {% else %}
-            <script>
-                $(document).ready(function () {
-                    console.log('0');
-                    $('#changePassForm').css('display', 'none');
-                    $('#loginForm').css('display', 'block');
-                    $('#forgotPassForm').css('display', 'none');
-                });
-
-            </script>
+                <script>
+                    $(document).ready(function(){
+                         console.log('0');
+                        $('#changePassForm').css('display', 'none');
+                        $('#loginForm').css('display', 'block');
+                        $('#forgotPassForm').css('display', 'none');
+                    });
+                    
+                </script>
             {% endif %}
             <!-- Login Form -->
             <form action="{% url 'login_action' %}" method="post" id="loginForm">
@@ -89,51 +94,40 @@
                         <span class="input-group-text"><img src="{% static 'icons/flat/user.png' %}" height="23"></span>
                     </div>
                     <input type="text" name="company_id" class="form-control form-control-sm" placeholder="Username">
-
-                    <small class="float-right text-danger"
-                        style="font-size: xx-small;">{{error_usernameEmpty}}</small>
-                        <small class="float-right text-danger"
-                            style="font-size: xx-small;"></small>
                 </div>
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                    <div class="input-group-prepend">   
                         <span class="input-group-text"><img src="{% static 'icons/flat/password.png' %}"
                                 height="23"></span>
                     </div>
                     <input type="password" name="password" class="form-control form-control-sm" placeholder="Password">
-
-                    <small class="float-right text-danger"
-                        style="font-size: xx-small;"></small>
                 </div>
 
                 <div class="text-center">
-                    <center><button id="forgotPasswordButton" name="forgotPassword" value="forgotPassword" type="button"
-                            class="btn btn-link" style="color:#CD6155; font-size:10px;">Forgot Password?</button>
-                    </center>
-                    <center><button id="loginButton" type="submit" name="login" value="login"
-                            class="btn btn-sm btn-warning mt-2">LOGIN</button>
+                    <center><button name="forgotPassword" value="forgotPassword" type="submit" class="btn btn-link"
+                            style="color:#CD6155; font-size:10px;">Forgot Password?</button>
+                        </center>
+                    <center><button type="submit" name="login" value="login" class="btn btn-sm btn-warning mt-2">LOGIN</button>
                     </center>
                 </div>
             </form>
 
             <!-- Form for new users -->
-            <form action="{% url 'login_newpass' %}" method="post" id="changePassForm" style="display:none;">
+            <form action="{% url 'login_newpass' %}" method="post" id="changePassForm">
                 {% csrf_token %}
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                    <div class="input-group-prepend">   
                         <span class="input-group-text"><img src="{% static 'icons/flat/password.png' %}"
                                 height="23"></span>
                     </div>
-                    <input type="password" name="new_pass" class="form-control form-control-sm"
-                        placeholder="New Password">
+                    <input type="password" name="new_pass" class="form-control form-control-sm" placeholder="New Password">
                 </div>
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                    <div class="input-group-prepend">   
                         <span class="input-group-text"><img src="{% static 'icons/flat/password.png' %}"
                                 height="23"></span>
                     </div>
-                    <input type="password" name="confirm_password" class="form-control form-control-sm"
-                        placeholder="Confirm Password">
+                    <input type="password" name="confirm_password" class="form-control form-control-sm" placeholder="Confirm Password">
                     <input type="hidden" id="username" name="username" value="{{username}}">
                 </div>
                 <div class="text-center">
@@ -143,7 +137,7 @@
             </form>
 
             <!-- Change password form -->
-            <form action="{% url 'forgot_password' %}" method="post" id="forgotPassForm" style="display:none;">
+            <form action="{% url 'forgot_password' %}" method="post" id="forgotPassForm">
                 {% csrf_token %}
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -175,17 +169,6 @@
     crossorigin="anonymous"></script>
 <!--Login JS-->
 <script src="{% static 'js/login.js' %}"></script>
-<script>
-    $('#loginButton').click(function () {
-        $('#loginForm').submit();
-    });
-    $('#forgotPasswordButton').click(function () {
-        $('#changePassForm').css('display', 'none');
-        $('#loginForm').css('display', 'none');
-        $('#forgotPassForm').css('display', 'block');
-    });
-</script>
-
 </body>
 
 </html>

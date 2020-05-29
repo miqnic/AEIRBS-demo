@@ -88,7 +88,7 @@ class Device_Sensor(models.Model):
     device_sensor_id = models.CharField(max_length=20)
     device_id = models.ForeignKey(Device, on_delete=models.DO_NOTHING)
     sensor_id = models.ForeignKey(Sensor, on_delete=models.DO_NOTHING)
-    sensor_status = models.IntegerField(choices=STATUS, default=3)
+    sensor_status = models.IntegerField(choices=STATUS, default=0)
     connectivity_status = models.BooleanField(default=True)
     last_maintained_datetime = models.DateTimeField(null=True, default=None)
     last_maintained_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, default=None)

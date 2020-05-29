@@ -27,7 +27,7 @@
     <!-- Data Tables Semantic UI-->
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
 
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/aeirbs-default.css'%}">
@@ -48,6 +48,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+
     <script type="text/javascript" src="{% static 'js/say.js'%}"></script>
 
     <!-- Chart.js -->
@@ -56,41 +57,7 @@
     <title>{% block title %}{% endblock title %}</title>
 </head>
 <style>
-    label.form-check-label{
-        font-size: 12px
-
-    }
-    /*Data Tables-Pagination*/
-    ul.pagination li a.page-link {
-        color: #343A40;
-    }
-
-    ul.pagination li.active a.page-link {
-        color: white;
-    }
-
-    ul.pagination .page-link {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-        line-height: 1.5;
-    }
-
-    .page-item.active .page-link {
-        background-color: #343A40;
-        border-color: #343A40;
-    }
-
-    .dataTables_length label {
-        font-size: 15px;
-    }
-
-    .dataTables_info {
-        font-size: 12px
-    }
-
-
-
-    .success-linear-loader {
+    .success-lenear-loader {
         height: 0px;
         width: 1px;
         border-bottom: 5px solid #1E8449;
@@ -103,7 +70,7 @@
         animation-fill-mode: forwards;
     }
 
-    .fail-linear-loader {
+    .fail-lenear-loader {
         height: 0px;
         width: 1px;
         border-bottom: 5px solid #922B21;
@@ -116,7 +83,7 @@
         animation-fill-mode: forwards;
     }
 
-    .warning-linear-loader {
+    .warning-lenear-loader {
         height: 0px;
         width: 1px;
         border-bottom: 5px solid #B7950B;
@@ -221,14 +188,14 @@
                     <strong class="text-dark" style="font-size:xx-large;"><b><b>ALERT!</b></b></strong>
                 </div>
                 <div class="toast-body mt-2">
-                    A sensor located in <b>[floor_location]</b> has been triggered!
+                    A sensor located in <b id="alarm_floor"></b> has been triggered!
                     <div class="row mt-3">
                         <div class="col-2"></div>
                         <div class="col text-left">
                             <small><b>Device-Sensor ID:</b></small>
                         </div>
                         <div class="col text-left">
-                            <small>[ID]</small>
+                            <small id = "alarm_senid"></small>
                         </div>
                         <div class="col-2"></div>
                     </div>
@@ -238,7 +205,7 @@
                             <small><b>Sensor Name:</b></small>
                         </div>
                         <div class="col text-left">
-                            <small>[Name]</small>
+                            <small id="alarm_senname"></small>
                         </div>
                         <div class="col-2"></div>
                     </div>
@@ -248,7 +215,7 @@
                             <small><b>Incident Type:</b></small>
                         </div>
                         <div class="col text-left">
-                            <small>[Type]</small>
+                            <small id="alarm_type"></small>
                         </div>
                         <div class="col-2"></div>
                     </div>
@@ -258,7 +225,7 @@
                             Confirm
                         </button>
                         <button type="button" class="btn btn-dark btn-sm false-alarm">Cancel</button>
-                        <div class="mt-4 warning-linear-loader"></div>
+                        <div class="mt-4 warning-lenear-loader"></div>
 
                         <div class="m-2" style="font-size:x-small; position: absolute; bottom: 0; right: 0;">
                             Note: Public Announcement will be triggered automatically after 5 minutes.
@@ -294,7 +261,7 @@
                 </button>
                 <div class="mt-1 toast-body">
                     <small>{{message}}</small>
-                    <div class="mt-4 fail-linear-loader"></div>
+                    <div class="mt-4 fail-lenear-loader"></div>
                 </div>
             </div>
 
@@ -312,7 +279,7 @@
                 <div class="mt-1 toast-body">
                     <small>{{message}}</small>
                 </div>
-                <div class="mt-4 success-linear-loader"></div>
+                <div class="mt-4 success-lenear-loader"></div>
             </div>
             {% endif %} {% endfor %} {% endif %}
         </div>
@@ -359,6 +326,7 @@
     </script>
     {% endfor %}
 </body>
+
 <!-- Font Awesome JS -->
 <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
     integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
@@ -372,9 +340,9 @@
 <script src="{% static 'js/sidenav-js.js' %}"></script>
 <script src="{% static 'js/topnav-js.js' %}"></script>
 <script src="{% static 'js/home.js' %}"></script>
+<script src="{% static 'js/aeirbs-audit.js' %}"></script>
 <script src="{% static 'js/aeirbs-summary.js' %}"></script>
 <script src="{% static 'js/aeirbs-incident.js' %}"></script>
-<script src="{% static 'js/aeirbs-summary.js' %}"></script>
 <script src="{% static 'js/profile-js.js' %}"></script>
 
 <!--Data Tables Semantic UI-->
@@ -383,9 +351,6 @@
     src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" charset="utf8"
     src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-
-<script type="text/javascript" charset="utf8"
-    src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/date-euro.js"></script>
 <script>
     window.setTimeout(function () {
         $(".alert-timer").fadeTo(500, 0).slideUp(500, function () {
@@ -393,13 +358,12 @@
         });
     }, 4000);
 
-    function soundAlarm() {
         timer = setTimeout(function () {
             audio = say('Alert! Alert! An emergency has been detected!');
             synth = audio[0];
-            msg = audio[1];
+            //msg = audio[1];
 
-            email = $.ajax({
+            /*email = $.ajax({
                 headers: {
                     "X-CSRFTOKEN": "{{ csrf_token }}"
                 },
@@ -412,9 +376,8 @@
                     // TEMP - for debugging
                     alert('error..');
                 }
-            });
+            });*/
         }, 4000);
-    }
 
         function alarm_alert(timer, deviceID, deviceFloor, deviceType, alarm_msg) {
             audio = say(alarm_msg);
@@ -440,8 +403,8 @@
 
             var refreshID = setInterval(function interval() {
                 synth.speak(msg);
-
-                if ($(".alarm").css('display') == 'none' || $(".alarm").css("visibility") == "hidden") {
+                
+                if($(".alarm").css('display') == 'none' || $(".alarm").css("visibility") == "hidden") {
                     synth.cancel(msg);
                     clearInterval(refreshID);
                 }  
@@ -459,11 +422,6 @@
                     $('#alarm_floor').html(floor_locations[floor][1]);
                     break;
                 }
-            }
-
-            if ($(".alarm").css('display') == 'none' || $(".alarm").css("visibility") == "hidden") {
-                email.abort();
-                clearTimeout(timer);
             }
             
             if (deviceType == 1)
@@ -483,21 +441,20 @@
             var timer = setTimeout(alarm_alert(timer, deviceID, deviceFloor, deviceType, alarm_msg), 3000);
         }
 
-    $(".false-alarm").click(function () {
-        $(".alarm").hide();
-    });
+        $(".false-alarm").click(function () {
+            console.log("cancel");
+            $(".alarm").hide();
+        });
 
-    $(".confirm-alarm").click(function () {
-        // TEMP FUNCTION
-        $(".confirm-alarm").hide();
-        $(".false-alarm").hide();
-    });
+        $(".confirm-alarm").click(function () {
+            console.log("confirm");
+            alarm_alert(null);
+        });
 
-    $("#showAlarm").click(function () {
-        $(".alarm").show();
-
-        soundAlarm();
-    });
-</script>
+        $("#showAlarm").click(function () {
+            $(".alarm").show();
+            soundAlarm();
+        });
+    </script>
 
 </html>

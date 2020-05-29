@@ -132,20 +132,14 @@
                                     <small>Job Position</small>
                                     <select class="custom-select form-control form-control-sm"
                                         name="addAdminJobPosition">
-                                        {% if inputJobPosition %}
-                                            {% for position in job_positions%}
-                                            {% if position.job_position == inputJobPosition %}
-                                            <option value="{{position}}" selected>{{position}}</option>
-                                            {% else %}
-                                            <option value="{{position}}">{{position}}</option>
-                                            {% endif %}
-                                            {% endfor %}                                        
+                                        <option value="">-----</option>
+                                        {% for position in job_positions%}
+                                        {% if position == inputJobPosition %}
+                                        <option value="{{position}}" selected>{{position}}</option>
                                         {% else %}
-                                            <option value="">-----</option>
-                                            {% for position in job_positions%}
-                                            <option value="{{position}}">{{position}}</option>
-                                            {% endfor %}
+                                        <option value="{{position}}">{{position}}</option>
                                         {% endif %}
+                                        {% endfor %}
                                     </select>
                                         
                                         <small class="float-right text-danger"

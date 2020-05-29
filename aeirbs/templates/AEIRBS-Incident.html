@@ -81,7 +81,7 @@
                         <td>{{report.incident_date_time|date:"d/m/Y H:i:s"}}</td>
                         <td>
                             {% if request.user.is_superuser %}
-                            <form action="{% url 'generatePDF_incident' %} " method="post">
+                            <form action="{% url 'generatePDF_incidentReport' %} " method="post">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{report.id}}" name="download_incident">
                                 <button type="submit" class="btn btn-link btn-sm downloadbtn" id="generateReport"

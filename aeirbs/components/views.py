@@ -79,22 +79,19 @@ def fire_components(request):
 
         all_components = Device_Sensor.objects.all()
         if request.method == 'POST':
-            if request.POST.get('keyword'):
-                keyword = request.POST.get('keyword')
-                context['fire_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
-                context['count'] = (Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)).count()
-
-            else:
+            if request.POST.get('sortComponent') or request.POST.get('filterComponent') or request.POST.get('ascDesc'):
                 sortBy = request.POST.get('sortComponent')
                 filterBy = int(request.POST.get('filterComponent'))
                 asc_desc = request.POST.get('ascDesc')
-                print(sortBy)
-                print(filterBy)
-                context['fire_components'] = sort_filter_components(request, 1, sortBy, filterBy, asc_desc)
-                context['count'] = sort_filter_components(request, 1, sortBy, filterBy, asc_desc).count()
+                context['all_devices'] = sort_filter_components(request, 4, sortBy, filterBy, asc_desc)
+                context['count'] = sort_filter_components(request, 4, sortBy, filterBy, asc_desc).count()
                 context['sort'] = sortBy
                 context['filter'] = filterBy
                 context['ascending_descending'] = asc_desc
+            else:
+                keyword = request.POST.get('keyword')
+                context['fire_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+                context['count'] = (Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=1, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)).count()
 
         return render(request, 'DASHBOARD-FireComponents.html', context = context)
     else:
@@ -120,21 +117,19 @@ def earthquake_components(request):
 
         all_components = Device_Sensor.objects.all()
         if request.method == 'POST':
-            if request.POST.get('keyword'):
-                keyword = request.POST.get('keyword')
-                context['earthquake_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
-                context['count'] = (Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)).count()
-            else:
+            if request.POST.get('sortComponent') or request.POST.get('filterComponent') or request.POST.get('ascDesc'):
                 sortBy = request.POST.get('sortComponent')
                 filterBy = int(request.POST.get('filterComponent'))
                 asc_desc = request.POST.get('ascDesc')
-                print(sortBy)
-                print(filterBy)
-                context['earthquake_components'] = sort_filter_components(request, 0, sortBy, filterBy, asc_desc)
-                context['count'] = sort_filter_components(request, 0, sortBy, filterBy, asc_desc).count()
+                context['all_devices'] = sort_filter_components(request, 4, sortBy, filterBy, asc_desc)
+                context['count'] = sort_filter_components(request, 4, sortBy, filterBy, asc_desc).count()
                 context['sort'] = sortBy
                 context['filter'] = filterBy
                 context['ascending_descending'] = asc_desc
+            else:
+                keyword = request.POST.get('keyword')
+                context['earthquake_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+                context['count'] = (Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=0, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)).count()
                 
         return render(request, 'DASHBOARD-EarthquakeComponents.html', context = context)
     else:
@@ -160,21 +155,19 @@ def flood_components(request):
 
         all_components = Device_Sensor.objects.all()
         if request.method == 'POST':
-            if request.POST.get('keyword'):
-                keyword = request.POST.get('keyword')
-                context['flood_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
-                context['count'] = (Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)).count()
-            else:
+            if request.POST.get('sortComponent') or request.POST.get('filterComponent') or request.POST.get('ascDesc'):
                 sortBy = request.POST.get('sortComponent')
                 filterBy = int(request.POST.get('filterComponent'))
                 asc_desc = request.POST.get('ascDesc')
-                print(sortBy)
-                print(filterBy)
-                context['flood_components'] = sort_filter_components(request, 2, sortBy, filterBy, asc_desc)
-                context['count'] = sort_filter_components(request, 2, sortBy, filterBy, asc_desc).count()
+                context['all_devices'] = sort_filter_components(request, 4, sortBy, filterBy, asc_desc)
+                context['count'] = sort_filter_components(request, 4, sortBy, filterBy, asc_desc).count()
                 context['sort'] = sortBy
                 context['filter'] = filterBy
                 context['ascending_descending'] = asc_desc
+            else:
+                keyword = request.POST.get('keyword')
+                context['flood_components'] = Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)
+                context['count'] = (Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, sensor_id__sensor_name__contains = keyword) | Device_Sensor.objects.filter(sensor_id__sensor_type=2, device_sensor_isDeleted = False, device_sensor_id__contains = keyword)).count()
 
         return render(request, 'DASHBOARD-FloodComponents.html', context = context)
     else:
@@ -201,14 +194,7 @@ def devices(request):
         context['sensor_reading'] = " "#getArduinoData()
 
         if request.method == 'POST':
-            if request.POST.get('keyword'):
-                keyword = request.POST.get('keyword')
-                context['all_devices'] = Device.objects.filter(device_isDeleted=False, device_name__contains = keyword) | Device.objects.filter(device_isDeleted = False, device_id__contains = keyword)
-                context['count'] = (Device.objects.filter(device_isDeleted=False, device_name__contains = keyword) | Device.objects.filter(device_isDeleted = False, device_id__contains = keyword)).count()
-            elif request.POST.get('keyword-jobPosition'):
-                keyword = request.POST.get('keyword-jobPosition')
-                context['all_positions'] = JobPosition.objects.filter(position_isDeleted = False, job_position__contains = keyword)
-            else:
+            if request.POST.get('sortComponent') or request.POST.get('filterComponent') or request.POST.get('ascDesc'):
                 sortBy = request.POST.get('sortComponent')
                 filterBy = int(request.POST.get('filterComponent'))
                 asc_desc = request.POST.get('ascDesc')
@@ -217,6 +203,15 @@ def devices(request):
                 context['sort'] = sortBy
                 context['filter'] = filterBy
                 context['ascending_descending'] = asc_desc
+            elif request.POST.get('keyword-jobPosition'):
+                keyword = request.POST.get('keyword-jobPosition')
+                context['all_positions'] = JobPosition.objects.filter(position_isDeleted = False, job_position__contains = keyword)
+            else:
+                keyword = request.POST.get('keyword')
+                print("KEYWORD")
+                context['all_devices'] = Device.objects.filter(device_isDeleted=False, device_name__contains = keyword) | Device.objects.filter(device_isDeleted = False, device_id__contains = keyword)
+                context['count'] = (Device.objects.filter(device_isDeleted=False, device_name__contains = keyword) | Device.objects.filter(device_isDeleted = False, device_id__contains = keyword)).count()
+
 
         return render(request, 'SETTINGS-Devices.html', context = context)
     else:
@@ -510,7 +505,6 @@ def add_comp(request):
             for component in all_components:
                 if component.device_id.device_id == add_deviceID:
                     sensor_connected.append(component.sensor_id.sensor_name)    
-
             
             #Format User Input
             deviceID = Device.objects.filter(device_id = add_deviceID).first()
@@ -582,10 +576,25 @@ def add_comp(request):
                 else:
                     if not device_type == sensor_typeIndex:
                         messages.error(request, f'Error connecting Sensor. Please connect according to Device Type')
-                        return redirect('devices')
+                        for sensor in all_sensors:
+                            if sensor.sensor_id == add_sensorID:
+                                if sensor.sensor_type == 0:
+                                    return redirect('earthquake_components')
+                                elif sensor.sensor_type == 1:
+                                    return redirect('fire_components')    
+                                else:
+                                    return redirect('flood_components')
+
                     if name in sensor_connected:
                         messages.error(request, f'Error connecting Sensor. Sensor is already connected in this Device.')
-                        return redirect('devices')
+                        for sensor in all_sensors:
+                            if sensor.sensor_id == add_sensorID:
+                                if sensor.sensor_type == 0:
+                                    return redirect('earthquake_components')
+                                elif sensor.sensor_type == 1:
+                                    return redirect('fire_components')    
+                                else:
+                                    return redirect('flood_components')
             else:
                 name = remove_whitespace(name)
                 name = name[0:5].upper()
@@ -697,7 +706,7 @@ def edit_device(request):
                         device.device_id = deviceID
                         device.device_name = edit_deviceName
                         device.device_productID = edit_deviceProductID
-                        device.mac_address = edit_devicePortNumber
+                        device.port_number= edit_devicePortNumber
                         device.floor_location = edit_deviceFloorLocation
                         device.device_link = edit_deviceLink
                         device.device_image = edit_deviceImage
@@ -962,7 +971,14 @@ def edit_comp(request):
                 else:
                     if not device_type == sensor_typeIndex:
                         messages.error(request, f'Error connecting Sensor. Please connect according to Device Type')
-                        return redirect('devices')
+                        for component in all_components:
+                            if component.device_sensor_id == componentID:
+                                if component.sensor_id.sensor_type == 0:
+                                    return redirect('earthquake_components')
+                                elif component.sensor_id.sensor_type == 1:
+                                    return redirect('fire_components')
+                                else:
+                                    return redirect('flood_components')
                     if name in sensor_connected:
                         for component in all_components:
                             if component.device_sensor_id == componentID:
@@ -970,11 +986,25 @@ def edit_comp(request):
 
                                 if old_device == deviceID:
                                     messages.error(request, f'Sensor is already connected in this Device.')
-                                    return redirect('devices')
+                                    for component in all_components:
+                                        if component.device_sensor_id == componentID:
+                                            if component.sensor_id.sensor_type == 0:
+                                                return redirect('earthquake_components')
+                                            elif component.sensor_id.sensor_type == 1:
+                                                return redirect('fire_components')
+                                            else:
+                                                return redirect('flood_components')
                                 else:
                                     messages.error(request, f'Error connecting Sensor. Sensor is already connected in this Device.')
-                                    return redirect('devices')
-            
+                                    for component in all_components:
+                                        if component.device_sensor_id == componentID:
+                                            if component.sensor_id.sensor_type == 0:
+                                                return redirect('earthquake_components')
+                                            elif component.sensor_id.sensor_type == 1:
+                                                return redirect('fire_components')
+                                            else:
+                                                return redirect('flood_components')
+                                        
             else:
                  for component in all_components:
                     if component.device_sensor_id == componentID:
@@ -1219,6 +1249,11 @@ def status(request):
                     device.last_maintained_datetime = dateTime
                     device.last_maintained_by = user
                     device.save()
+
+                    for component in all_components:
+                        if component.device_id.device_id == componentID:
+                            component.sensor_status = status
+                        component.save()
 
                     if current_statusIndex == 0:
                         current_status = "Connected"

@@ -45,25 +45,6 @@
 
             </div>
             <div class="modal-body" style="border-radius:5px">
-
-                <ul class="nav nav-pills nav-fill" role="tablist">
-                    <li class="nav-item">
-                        <a class="m-1 nav-link tabDetails active" id="{{component.device_sensor_id}}-details-tab"
-                            data-toggle="tab" href="#{{component.device_sensor_id}}-details" role="tab"
-                            aria-controls="home" aria-selected="true">Details</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="m-1 nav-link tabData" id="{{component.device_sensor_id}}-data-tab" data-toggle="tab"
-                            href="#{{component.device_sensor_id}}-data" role="tab" aria-controls="profile"
-                            aria-selected="false">Data <small><i
-                                    class="fas fa-exclamation-circle ml-2 text-danger"></i></small></a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="{{component.device_sensor_id}}-details" role="tabpanel"
-                        aria-labelledby="{{component.device_sensor_id}}-details">
-
                         <div class="row m-4 componentDetails">
                             <div class="col-5 mt-2">
                                 <center>
@@ -453,7 +434,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <!--Display Sensor ID-->
+                                                    <!--Display Sensor Name-->
                                                     <div class="form-group">
                                                         <small>Sensor Name</small>
                                                         <select class="custom-select form-control form-control-sm" disabled>
@@ -481,23 +462,12 @@
                                                         <select class="custom-select form-control form-control-sm"
                                                             name="editComponentDeviceID">
                                                             {% for device in all_devices %}
-                                                            {% if device.device_maxedOut == True %}
                                                             {% if device.device_id == component.device_id.device_id %}
                                                             <option value="{{device.device_id}}" selected>
                                                                 ({{device.device_id}}) - {{device.device_name}}</option>
-                                                            {{device.device_id}}</option>
-                                                            {% endif %}
-                                                            {% else %}`
-                                                            {% if device.device_id == component.device_id.device_id %}
-                                                            <option value="{{device.device_id}}" selected>
-                                                                ({{device.device_id}}) - {{device.device_name}}</option>
-                                                            {{device.device_id}}</option>
                                                             {% else %}
-                                                            <option value="{{device.device_id}}">({{device.device_id}})
-                                                            {% endif %}
-                                                                -
-                                                                {{device.device_name}}</option>
-                                                            </option>
+                                                            <option value="{{device.device_id}}">
+                                                                ({{device.device_id}}) - {{device.device_name}}</option>
                                                             {% endif %}
                                                             {% endfor %}
                                                         </select>
@@ -539,10 +509,6 @@
                     </div>
 
                 </div>
-            </div>
-            <div class="tab-pane fade" id="{{component.device_sensor_id}}-data" role="tabpanel"
-                aria-labelledby="{{component.device_sensor_id}}-data">
-                <canvas id="{{component.device_sensor_id}}" width="100%" style="padding: 25px;"></canvas>
             </div>
         </div>
 

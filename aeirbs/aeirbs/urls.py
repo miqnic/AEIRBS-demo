@@ -64,6 +64,7 @@ urlpatterns = [
     path('login/', accounts_views.login_action, name='login_action'),
     path('login-newpass/', accounts_views.login_changepass, name='login_newpass'),
     path('logout/', accounts_views.logout_action, name='logout_action'),
+    path('forgotpass/', accounts_views.forgot_password, name='forgot_password'),
 
     # DASHBOARD Components
     path('dashboard/earthquake-components/', components_views.earthquake_components, name='earthquake_components'),

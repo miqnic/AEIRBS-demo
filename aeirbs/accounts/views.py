@@ -4,11 +4,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
-from reports.models import AuditLogs
+from reports.models import AuditLogs, TemporaryImage
 from components.models import Device
 from .models import JobPosition, Profile, DEFAULT_IMAGE
 from django.core.files.storage import FileSystemStorage
 import django.contrib.auth.hashers
+from django.template.loader import render_to_string
+
+from components.models import Device
 
 from django.core.mail import EmailMessage
 from datetime import date
@@ -18,23 +21,75 @@ from aeirbs.helper import format_input, with_letter, validate_stringFormat, vali
 # auto-email
 def addadmin_mail(recipient, lastname, username):
     # TEMP - Mail content
-    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>Default Password is: " + lastname + username + "</p><br>" + "</div>"
-
-    email = EmailMessage("AEIRBS: Admin Details", mail_body, "damim526@gmail.com", [recipient])
+    context = {}
+    context['username'] = username
+    context['lastname'] = username
+    context['now'] = date.today().strftime("%d/%m/%Y")
+    
+    mail_body = render_to_string('mail/mail_adduser.html', context = context)
+    email = EmailMessage("AEIRBS: Account Creation", mail_body, "damim526@gmail.com", [recipient])
     email.content_subtype = 'html'
 
     send_email = email.send()
+    return HttpResponse('%s'%send_email)
 
 def deladmin_mail(recipient):
     # TEMP - Mail content
-    now = date.today().strftime("%d/%m/%Y")
-
-    mail_body = "<div style='margin: 0px 30px 0px;'>" + "<h1>American bobtail tom burmese</h1>" + "<p>Grimalkin tom. Turkish angora grimalkin kitty, or balinese , grimalkin american bobtail but ocicat. Scottish fold grimalkin or himalayan siberian. Egyptian mau scottish fold ocelot, tomcat lion and balinese bombay. Lynx malkin</p><br>" + "<p>YOUR ACCOUNT HAS BEEN TERMINATED AS OF "+ now +"</p><br>" + "</div>"
-
+    context = {}
+    context['now'] = date.today().strftime("%d/%m/%Y")
+    
+    mail_body = render_to_string('mail/mail_deluser.html', context = context)
     email = EmailMessage("AEIRBS: Account termination", mail_body, "damim526@gmail.com", [recipient])
     email.content_subtype = 'html'
 
     send_email = email.send()
+    return HttpResponse('%s'%send_email)
+
+def changepass_mail(username, email, fname, lname):
+    all_ithead = User.objects.all().filter(profile__job_position="It Head")
+    # TEMP - Mail content
+    context = {}
+    context['username'] = username
+    context['email'] = email
+    context['fname'] = fname
+    context['lname'] = lname
+    it_emails = []
+
+    for it in all_ithead:
+        it_emails.append(it.email)
+    
+    mail_body = render_to_string('mail/mail_changepass.html', context = context)
+    email = EmailMessage("AEIRBS: Forgot Password", mail_body, "damim526@gmail.com", it_emails)
+    email.content_subtype = 'html'
+
+    send_email = email.send()
+    return HttpResponse('%s'%send_email)
+
+# forgotten password
+def forgot_password(request):
+    employeeID = request.POST.get("company_id")
+
+    all_users = User.objects.all()
+    all_userLogs = AuditLogs.objects.filter(audit_type = 1).count()
+
+    for user in all_users:
+        if user.username == employeeID:
+            add_log = AuditLogs.objects.create(
+                log_id = "UL0" + str(all_userLogs + 1),
+                activity = "Forgotten password",
+                username = user,
+                audit_details = str(user) + " has forgotten their password.",
+                audit_type = 1
+            )
+            add_log.save()
+
+            changepass_mail(user.username, user.email, user.first_name, user.last_name)
+
+            messages.success(request, f'Successfully sent an email to the IT Head. Please wait for their response email.')
+            return redirect('earthquake_components')
+
+    messages.error(request, f'Invalid username')
+    return render(request, 'AEIRBS-Login.html', {'new': 2})
 
 # first login - change password
 def login_changepass(request):
@@ -63,21 +118,30 @@ def login_changepass(request):
             messages.success(request, f'Updated user {employeeID} successfully!')
             return redirect('earthquake_components')
 
-    return render(request, 'AEIRBS-Login.html')
+    return render(request, 'AEIRBS-Login.html', {'new':1})
 
 # login 
 def login_action(request):
     if request.method == 'POST':
-        username = request.POST.get("company_id")
-        password = request.POST.get("password")
-        user = authenticate(username=username, password=password)
+        if request.POST.get("login"):
+            context = {}
+            errors = {}
+            username = request.POST.get("company_id")
+            password = request.POST.get("password")
+            user = authenticate(username=username, password=password)
 
-        if user:
-            # check if user is a new user
-            if user.profile.logged == 0:
-                return render(request, 'AEIRBS-Login.html', {'new': 1, 'username': username})
+            if not username.strip():
+                error_usernameEmpty = "Username is required"
+            
+            if not password.strip():
+                error_passwordEmpty = "Password is required"
 
-            login(request, user)
+            if user:
+                # check if user is a new user
+                if user.profile.logged == 0:
+                    return render(request, 'AEIRBS-Login.html', {'new': 1, 'username': username})
+
+                login(request, user)
 
                 # added comment
 
@@ -92,11 +156,14 @@ def login_action(request):
                 )
                 add_log.save()
 
-            messages.success(request, f'Logged in successfully!')
-            return redirect('earthquake_components')
+                messages.success(request, f'Logged in successfully!')
+                return redirect('earthquake_components')
+            else:
+                messages.error(request, f'Invalid credentials.')
+                return redirect('login_page')
         else:
-            messages.error(request, f'Invalid credentials.')
-            return redirect('login_page')
+            return render(request, 'AEIRBS-Login.html')
+
 
 def logout_action(request):
     # Log: Logged Out
@@ -123,9 +190,10 @@ def login_page(request):
 def masterlist(request):
     context = {}
     context['all_users'] = User.objects.all().filter(profile__is_deleted=False)
-    context['all_logs'] = AuditLogs.objects.filter(audit_isDeleted=False).order_by('-date_time')
-    context['all_devices'] = Device.objects.all()
+    context['all_logs'] = AuditLogs.objects.all().order_by('-date_time')
+    context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
+    print(context['all_users'])
     if request.method == 'POST':
         keyword = request.POST.get("keyword")
         context['all_users'] = User.objects.filter(profile__is_deleted=False, username__contains = keyword) | User.objects.filter(profile__is_deleted=False, first_name__contains = keyword) | User.objects.filter(profile__is_deleted=False, profile__middle_name__contains = keyword) | User.objects.filter(profile__is_deleted=False, last_name__contains = keyword)
@@ -151,8 +219,6 @@ def add_user(request):
             add_mobileNumber = request.POST.get("addAdminMobileNumber")
             add_userImage = request.FILES.get("addAdminImage")
 
-            print(add_accessRole)
-            print(add_jobPosition)
             #Validate User Input
             if not add_accessRole.strip():
                 errors["error_accessRoleEmpty"] = "Access Role is required."
@@ -212,7 +278,8 @@ def add_user(request):
             context["inputMobileNumber"] = add_mobileNumber
             context["inputCompanyEmail"] = add_companyEmail
             context["errors"] = errors
-            context["job_positions"] = JobPosition.objects.all()
+            context["job_positions"] = JobPosition.objects.filter(position_isDeleted = False)
+            context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
 
             if len(errors) > 0:
                 messages.error(request, f'Invalid Input!')  
@@ -353,6 +420,7 @@ def edit_user(request):
             context["inputJobPosition"] = edit_jobPosition
             context["inputMobileNumber"] = edit_mobileNumber
             context["inputCompanyEmail"] = edit_companyEmail
+            context["job_positions"] = JobPosition.objects.filter(position_isDeleted = False)
             context["errors"] = errors
 
             if len(errors) > 0:
@@ -436,15 +504,17 @@ def edit_admin(request):
             print(request.POST.get("username"))
             context['username'] = request.POST.get("username")
             context['all_users'] = User.objects.all()
-            context['job_positions'] = JobPosition.objects.all()
+            context['job_positions'] = JobPosition.objects.filter(position_isDeleted=False)
+            context['all_devices'] = Device.objects.all().filter(device_isDeleted=False)
         return render(request, 'MASTERLIST-EditAdmin.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
    
 def add_admin(request):
     if request.user.is_authenticated:
-        JOB_POSITIONS = JobPosition.objects.all()
-        return render(request, 'MASTERLIST-AddAdmin.html', {'job_positions': JOB_POSITIONS})
+        context = {}
+        context['job_positions'] = JobPosition.objects.filter(position_isDeleted=False)
+        return render(request, 'MASTERLIST-AddAdmin.html', context = context)
     else:
         return render(request, 'AEIRBS-Login.html')
 

@@ -31,7 +31,7 @@
     <script type="text/javascript" charset="utf8"
         src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
-    <title>Audit Logs</title>
+    <title>Incident Reports</title>
 </head>
 <style>
 
@@ -61,16 +61,25 @@
                 </tr>
                 <tr>
                     <td>
-                        {% if audit_type == 0 %}
-                        <h1>COMPONENT LOGS</h1>
-                        {% elif audit_type == 1 %}
-                        <h1>USER LOGS</h1>
-                        {% elif audit_type == 2 %}
-                        <h1>MAINTENANCE LOGS</h1>
-                        {% endif %}
+                        <h1>Incident Report</h1>
                     </td>
                     <td></td>
                     <td>Time: {{time}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;Total Earthquake Incidents: <b>{{eq}}</b></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;Total Fire Incidents: <b>{{fr}}</b></td>
+                    <td></td>
+                    <td</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;Total Earthquakes Incidents: <b>{{fl}}</b></td>
+                    <td></td>
+                    <td</td>
                 </tr>
             </tbody>
         </table>
@@ -79,28 +88,129 @@
         <table class="table table-bordered mt-4 " style="width:100%; text-align:center; ">
             <thead class="table-header mt-2 ">
                 <tr>
-                    <th>Audit ID</th>
-                    <th>Activity</th>
-                    <th>Accountability</th>
+                    <th>Incident Type</th>
+                    <th>Level</th>
                     <th>Date and Time</th>
-                    <th>Details</th>
                 </tr>
             </thead>
         </table>
         <hr>
         <table class="table table-bordered mt-4 " style="width:100%; text-align:center; ">
             <tbody>
-                {% for log in audit %}
-                <tr class="table-row ">
-                    <td>{{log.log_id}}</td>
-                    <td>{{log.activity}}</td>
-                    <td>{{log.username.first_name}} {{log.username.last_name}}</td>
-                    <td>{{log.date_time|date:"d/m/Y h:i:s" }}</td>
+                {% for report in incident_reports %}
+                <tr>
+                    <td>{{report.device_id.device_id}}</td>
+                    <td>{{report.incident_level}}</td>
+                    <td>{{report.incident_date_time|date:"d/m/Y h:i:s"}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         <hr>
+        <br>
+        <h3>Incident Level Information:</h3>
+        {% for report in incident_reports %}
+        <!--FIRE-->
+        {% if report.incident_level == "FR_FIRST" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: First Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of two (2) to three (3) houses are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto four (4) Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_SECOND" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Second Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of four (4) to five (5) houses are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto eight (8) Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_THIRD" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Third Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of six (6) to seven (7) houses or
+            High Rise Building are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 12 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_FOURTH" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Fourth Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of eight (8) to nine (9) houses or
+            High Rise Building are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 16 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_FIFTH" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Fifth Alarm</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimation of 10 to 11 houses or High Rise
+            Building are
+            affected by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 20 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_TFALPHA" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Alpha</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimated area of 12 by 12 houses are affected
+            by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 24 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_TFBRAVO" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Bravo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An estimated area of 15 by 15 houses are affected
+            by the fire.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 28 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_TFCHARLIE" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Charlie</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting significant parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 32 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_TFDELTA" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Delta</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting significant parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 36 Fire Trucks are expected to
+            respond.</p>
+        {% elif report.incident_level == "FR_GENERAL" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRE: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        <!--FLOOD-->
+        {% elif report.incident_level == "FL_FIRST" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_HALFKNEE" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_HALFTIRE" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_KNEE" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_TIRES" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_WAIST" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>
+        {% elif report.incident_level == "FL_CHEST" %}
+        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FLOOD: Task Force Echo</b>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fire affecting Major parts of the area.</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Upto 80 or all available Fire Trucks are expected
+            to respond.</p>A
+
+
+        {% endif %}
+        {%endfor %}
     </div>
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "
@@ -118,6 +228,7 @@
 
     <script type="text/javascript " charset="utf8 "
         src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js "></script>
+
 </body>
 
 </html>

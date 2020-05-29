@@ -288,7 +288,7 @@ def generatePDF_audit(request):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':
             auditType = int(request.POST.get("auditType"))
-            audit_logs = AuditLogs.objects.filter(audit_type = auditType)
+            audit_logs = AuditLogs.objects.filter(audit_type = auditType).order_by('-date_time')
             total = audit_logs.count()
             dateTime = datetime.datetime.now()
             date = dateTime.strftime("%x")
@@ -340,7 +340,7 @@ def generatePDF_maintenanceReport(request):
 
 def generatePDF_incident(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        incident_reports = IncidentReport.objects.all().reverse()
+        incident_reports = IncidentReport.objects.all().order_by('-incident_date_time')
         dateTime = datetime.datetime.now()
         date = dateTime.strftime("%x")
         time = dateTime.strftime("%X")
@@ -352,9 +352,6 @@ def generatePDF_incident(request):
         context['eq'] = IncidentReport.objects.filter(incident_type = 1).count()
         context['fr'] = IncidentReport.objects.filter(incident_type = 2).count()
         context['fl'] = IncidentReport.objects.filter(incident_type = 3).count() 
-
-        for report in incident_reports:
-            print(report.incident_type)
         
         pdf = renderPDF('reports/generatePDF-incident.html', context)
         if pdf:
@@ -380,9 +377,6 @@ def generatePDF_incidentReport(request):
         context['date'] = date
         context['time'] = time
 
-        for report in incident_reports:
-            print(report.incident_type)
-        
         pdf = renderPDF('reports/generatePDF-incidentReport.html', context)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')

@@ -99,7 +99,7 @@
             <tbody>
                 {% for report in incident_reports %}
                 <tr>
-                    <td>{{report.incident_type}}</td>
+                    <td>{{report.device_sensor_id.device_id}}</td>
                     <td>{{report.incident_level}}</td>
                     <td>{{report.incident_date_time|date:"d/m/Y h:i:s"}}</td>
                 </tr>
